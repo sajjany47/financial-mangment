@@ -1,12 +1,22 @@
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import sidebarMenu from "./SidebarMenu";
+import { useEffect, useState } from "react";
 
 const SidebarLayout = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    setCollapsed(window.innerWidth > 540 ? false : true);
+  }, []);
   return (
     <>
-      <Sidebar style={{ height: "100vh" }}>
+      <Sidebar style={{ height: "100vh" }} collapsed={collapsed}>
         <Menu>
-          <MenuItem icon={<i className={""}></i>} style={{ marginTop: "5px" }}>
+          <MenuItem
+            onClick={() => setCollapsed(!collapsed)}
+            icon={<i className={"pi pi-bars"}></i>}
+            style={{ marginTop: "5px" }}
+          >
             <h4>Admin</h4>
           </MenuItem>
           {sidebarMenu.admin.map((item, index) => {

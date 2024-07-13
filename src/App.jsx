@@ -1,12 +1,10 @@
 import "./App.css";
-import SidebarLayout from "./layout/SidebarLayout";
-import Topbar from "./layout/Topbar";
+import Layout from "./layout/Layout";
 
 function App() {
   return (
     <>
-      <Topbar />
-      <SidebarLayout />
+      <Layout />
     </>
   );
 }
