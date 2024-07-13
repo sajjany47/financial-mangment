@@ -2,7 +2,7 @@ const sidebarMenu = {
   admin: [
     {
       title: "Dashboard",
-      icon: "dashboard_icon", // replace with the actual icon reference
+      icon: "pi pi-table", // replace with the actual icon reference
       submenu: [
         { title: "Overview", route: "/dashboard/overview" },
         { title: "Analytics", route: "/dashboard/analytics" },
@@ -11,7 +11,7 @@ const sidebarMenu = {
     },
     {
       title: "Loan Applications",
-      icon: "loan_applications_icon",
+      icon: "pi pi-file",
       submenu: [
         { title: "New Applications", route: "/loan-applications/new" },
         { title: "In Progress", route: "/loan-applications/in-progress" },
@@ -21,7 +21,7 @@ const sidebarMenu = {
     },
     {
       title: "Customer Management",
-      icon: "customer_management_icon",
+      icon: "pi pi-user",
       submenu: [
         { title: "Customer List", route: "/customers/list" },
         { title: "Add New Customer", route: "/customers/add" },
@@ -30,7 +30,7 @@ const sidebarMenu = {
     },
     {
       title: "Loan Management",
-      icon: "loan_management_icon",
+      icon: "pi pi-ticket",
       submenu: [
         { title: "Active Loans", route: "/loans/active" },
         { title: "Pending Payments", route: "/loans/pending-payments" },
@@ -40,7 +40,7 @@ const sidebarMenu = {
     },
     {
       title: "Payments",
-      icon: "payments_icon",
+      icon: "pi pi-money-bill",
       submenu: [
         { title: "Payment History", route: "/payments/history" },
         { title: "Upcoming Payments", route: "/payments/upcoming" },
@@ -50,7 +50,7 @@ const sidebarMenu = {
     },
     {
       title: "Reports",
-      icon: "reports_icon",
+      icon: "pi pi-file-export",
       submenu: [
         { title: "Financial Reports", route: "/reports/financial" },
         { title: "Customer Reports", route: "/reports/customer" },
@@ -59,7 +59,7 @@ const sidebarMenu = {
     },
     {
       title: "Settings",
-      icon: "settings_icon",
+      icon: "pi pi-cog",
       submenu: [
         { title: "General Settings", route: "/settings/general" },
         { title: "User Management", route: "/settings/users" },
@@ -69,7 +69,7 @@ const sidebarMenu = {
     },
     {
       title: "Notifications",
-      icon: "notifications_icon",
+      icon: "pi pi-bell",
       submenu: [
         { title: "System Notifications", route: "/notifications/system" },
         { title: "Customer Notifications", route: "/notifications/customer" },
@@ -78,17 +78,12 @@ const sidebarMenu = {
     },
     {
       title: "Support",
-      icon: "support_icon",
+      icon: "pi pi-question-circle",
       submenu: [
         { title: "Customer Support Tickets", route: "/support/tickets" },
         { title: "FAQs", route: "/support/faqs" },
         { title: "Contact Support", route: "/support/contact" },
       ],
-    },
-    {
-      title: "Logout",
-      icon: "pi pi-check",
-      route: "/logout",
     },
   ],
 };
