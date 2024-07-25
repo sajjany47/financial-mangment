@@ -1,10 +1,12 @@
 import "./App.css";
-import Layout from "./layout/Layout";
+import Login from "./layout/Login";
+// import Layout from "./layout/Layout";
 
 function App() {
   return (
     <>
-      <Layout />
+      {/* <Layout /> */}
+      <Login />
     </>
   );
 }
