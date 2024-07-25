@@ -2,9 +2,22 @@ import { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
+import { userLogin } from "./UserService";
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [checked, setChecked] = useState(false);
+
+  const handelSubmit = () => {
+    userLogin({ username: username, password: password })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <>
       <div className="flex align-items-center justify-content-center">
@@ -29,13 +42,13 @@ const Login = () => {
 
           <div>
             <label htmlFor="email" className="block text-900 font-medium mb-2">
-              Email
+              Username
             </label>
             <InputText
               id="email"
-              type="text"
-              placeholder="Email address"
+              placeholder="Enter Username"
               className="w-full mb-3"
+              onChange={(e) => setUsername(e.target.value)}
             />
 
             <label
@@ -49,6 +62,7 @@ const Login = () => {
               type="password"
               placeholder="Password"
               className="w-full mb-3"
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <div className="flex align-items-center justify-content-between mb-6">
@@ -66,7 +80,7 @@ const Login = () => {
               </a>
             </div>
 
-            <Button label="Sign In" className="w-full" />
+            <Button label="Sign In" className="w-full" onClick={handelSubmit} />
           </div>
         </div>
       </div>

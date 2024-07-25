@@ -13,3 +13,10 @@ export const headerWithToken = {
     Authorization: `Bearer ${token}`,
   },
 };
+
+export const headerWithFormData = {
+  headers: {
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${token}`,
+  },
+};
