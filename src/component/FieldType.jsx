@@ -11,7 +11,7 @@ import { Checkbox } from "primereact/checkbox";
 
 export const InputField = ({ field, form: { touched, errors }, ...props }) => {
   return (
-    <div className="flex align-items-center justify-content-center">
+    <div className="flex align-items-start justify-content-center flex-column">
       {props.label && (
         <label htmlFor={field.name} className="block text-900 font-medium mb-2">
           {props.label}{" "}
@@ -43,7 +43,7 @@ export const DropdownField = ({
   form: { touched, errors },
   ...props
 }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     {props.label && (
       <label htmlFor={field.name} className="block text-900 font-medium mb-2">
         {props.label}{" "}
@@ -70,7 +70,7 @@ export const DropdownField = ({
 );
 
 export const DateField = ({ field, form: { touched, errors }, ...props }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
       {props.requiredlabel === "true" && <span className="text-danger">*</span>}
@@ -94,7 +94,7 @@ export const DateField = ({ field, form: { touched, errors }, ...props }) => (
 );
 
 export const TimeField = ({ field, form: { touched, errors }, ...props }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
       {props.requiredlabel === "true" && <span className="text-danger">*</span>}
@@ -125,7 +125,7 @@ export const RadioField = ({
   form: { touched, errors, setFieldValue },
   ...props
 }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     <label
       style={{ fontWeight: 500 }}
       htmlFor={field.name}
@@ -165,7 +165,7 @@ export const MultiDropdownField = ({
   form: { touched, errors },
   ...props
 }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
       {props.requiredlabel === "true" && <span className="text-danger">*</span>}
@@ -193,7 +193,7 @@ export const TextAreaInputField = ({
   form: { touched, errors },
   ...props
 }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
       {props.requiredlabel === "true" && <span className="text-danger">*</span>}
@@ -222,7 +222,7 @@ export const PasswordFiled = ({
   form: { touched, errors },
   ...props
 }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     {props.label && (
       <label htmlFor={field.name} className="block text-900 font-medium mb-2">
         {props.label}{" "}
@@ -257,7 +257,7 @@ export const CheckField = ({
   form: { touched, errors, setFieldValue },
   ...props
 }) => (
-  <div className="flex align-items-center justify-content-center">
+  <div className="flex align-items-start justify-content-center flex-column">
     <Checkbox
       inputId={field.name}
       {...field}

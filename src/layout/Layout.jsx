@@ -1,15 +1,27 @@
+import { Outlet } from "react-router-dom";
 import SidebarLayout from "./SidebarLayout";
 import Topbar from "./Topbar";
+import { useSelector } from "react-redux";
+import Login from "./Login";
 
 const Layout = () => {
+  const user = useSelector((state) => state.user);
+  console.log(user);
   return (
-    <div className="App">
-      <SidebarLayout />
-      <div className="main-content">
-        <Topbar />
-        {/* Add your main content here */}
-      </div>
-    </div>
+    <>
+      {user ? (
+        <div className="App">
+          <SidebarLayout />
+          <div className="main-content">
+            <Topbar />
+            {/* Add your main content here */}
+            <Outlet />
+          </div>
+        </div>
+      ) : (
+        <Login />
+      )}
+    </>
   );
 };
 
