@@ -3,8 +3,11 @@ import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { userLogin } from "./UserService";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/reducer/UserReducer";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [checked, setChecked] = useState(false);
@@ -12,6 +15,13 @@ const Login = () => {
   const handelSubmit = () => {
     userLogin({ username: username, password: password })
       .then((res) => {
+        dispatch(
+          setUser({
+            data: res.data.data,
+            acccessToken: res.data.accessToken,
+            refreshToken: res.data.refreshToken,
+          })
+        );
         console.log(res);
       })
       .catch((err) => {
