@@ -1,3 +1,4 @@
+import { Formik } from "formik";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 
@@ -17,6 +18,7 @@ const PasswordChange = () => {
           </div>
         </div>
 
+        <Formik initialValues={{ password: "" }}></Formik>
         <div>
           <label htmlFor="email" className="block text-900 font-medium mb-2">
             Password
