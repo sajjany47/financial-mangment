@@ -14,7 +14,13 @@ const Layout = () => {
   const [visible, setVisible] = useState(true);
   const dislogeClose = () => {
     setVisible(false);
-    dispatch(setUser({ data: { ...user.data, isPasswordReset: true } }));
+    dispatch(
+      setUser({
+        data: { ...user.data, isPasswordReset: true },
+        acccessToken: user.acccessToken,
+        refreshToken: user.refreshToken,
+      })
+    );
   };
   return (
     <>

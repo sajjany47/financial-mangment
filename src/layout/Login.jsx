@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { userLogin } from "./UserService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/UserReducer";
 import { Field, Form, Formik } from "formik";
 import { InputField } from "../component/FieldType";
@@ -10,7 +10,7 @@ import { InputField } from "../component/FieldType";
 const Login = () => {
   const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
-
+  const data = useSelector((state) => state.user.user);
   const handelSubmit = (values) => {
     userLogin(values)
       .then((res) => {
@@ -26,7 +26,7 @@ const Login = () => {
         console.log(err);
       });
   };
-
+  console.log(data);
   return (
     <>
       <Formik
