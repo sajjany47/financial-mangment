@@ -14,6 +14,7 @@ const Login = () => {
   const handelSubmit = (values) => {
     userLogin(values)
       .then((res) => {
+        localStorage.setItem("token", res.data.accessToken);
         dispatch(
           setUser({
             data: res.data.data,

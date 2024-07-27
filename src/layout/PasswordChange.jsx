@@ -2,9 +2,40 @@
 import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { InputField } from "../component/FieldType";
+import { userPasswordReset } from "./UserService";
+import * as Yup from "yup";
+import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 const PasswordChange = (props) => {
+  const userDetails = useSelector((state) => state.user.user);
+  const validationSchema = Yup.object({
+    password: Yup.string().required("Password is required"),
+    confirmPassword: Yup.string().oneOf(
+      [Yup.ref("password"), null],
+      "password must match"
+    ),
+  });
   const handelSubmit = (values) => {
+    const reqData = {
+      password: values.password,
+      id: props.type === "user" ? userDetails.data._id : props.id,
+    };
+    userPasswordReset(reqData)
+      .then((res) => {
+        Swal.fire({
+          title: res.message,
+          text: "You clicked the button!",
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: error.response.data.message,
+          text: "You clicked the button!",
+          icon: "error",
+        });
+      });
     console.log(values);
     props.dislogeClose();
   };
@@ -12,6 +43,7 @@ const PasswordChange = (props) => {
     <Formik
       initialValues={{ password: "", confirmPassword: "" }}
       onSubmit={handelSubmit}
+      validationSchema={validationSchema}
     >
       {({ handleSubmit }) => (
         <Form onSubmit={handleSubmit}>

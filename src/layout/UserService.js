@@ -1,5 +1,9 @@
 import axios from "axios";
-import { apiPath, headerWithOutToken } from "../shared/constant";
+import {
+  apiPath,
+  headerWithOutToken,
+  headerWithToken,
+} from "../shared/constant";
 
 export const userLogin = async (payload) => {
   try {
@@ -10,6 +14,19 @@ export const userLogin = async (payload) => {
     );
     return response.data;
   } catch (error) {
-    return error.response.data.message;
+    return error;
+  }
+};
+
+export const userPasswordReset = async (payload) => {
+  try {
+    const response = await axios.post(
+      `${apiPath}/user/login`,
+      payload,
+      headerWithToken
+    );
+    return response.data;
+  } catch (error) {
+    return error;
   }
 };

@@ -28,15 +28,17 @@ const Layout = () => {
         <>
           {!user.data.isPasswordReset ? (
             <Dialog
-              header="Header"
+              draggable={false}
+              closeIcon={false}
               visible={visible}
               style={{ width: "45vw" }}
+              className="customDialoge"
               onHide={() => {
                 if (!visible) return;
                 setVisible(false);
               }}
             >
-              <PasswordChange dislogeClose={dislogeClose} />
+              <PasswordChange dislogeClose={dislogeClose} type="user" />
             </Dialog>
           ) : (
             <div className="App">
