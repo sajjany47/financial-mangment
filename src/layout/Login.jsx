@@ -7,6 +7,7 @@ import { setUser } from "../store/reducer/UserReducer";
 import { Field, Form, Formik } from "formik";
 import { InputField } from "../component/FieldType";
 import * as Yup from "yup";
+// import Swal from "sweetalert2";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,10 @@ const Login = () => {
       })
       .catch((err) => {
         console.log(err);
+        // Swal.fire({
+        //   title: err,
+        //   icon: "error",
+        // });
       });
   };
 
