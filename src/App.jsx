@@ -2,8 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import PasswordChange from "./layout/PasswordChange";
 import Layout from "./layout/Layout";
-// import "primereact/resources/themes/lara-light-cyan/theme.css";
-import "../node_modules/primereact/resources/themes/lara-light-cyan/theme.css";
 
 function App() {
   return (
