@@ -25,19 +25,17 @@ const PasswordChange = (props) => {
       .then((res) => {
         Swal.fire({
           title: res.message,
-          text: "You clicked the button!",
           icon: "success",
         });
+        props.dislogeClose();
       })
       .catch((error) => {
         Swal.fire({
           title: error.response.data.message,
-          text: "You clicked the button!",
           icon: "error",
         });
       });
     console.log(values);
-    props.dislogeClose();
   };
   return (
     <Formik

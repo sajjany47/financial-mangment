@@ -21,7 +21,7 @@ export const userLogin = async (payload) => {
 export const userPasswordReset = async (payload) => {
   try {
     const response = await axios.post(
-      `${apiPath}/user/login`,
+      `${apiPath}/user/update-password`,
       payload,
       headerWithToken
     );
