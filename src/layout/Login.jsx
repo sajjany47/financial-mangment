@@ -2,19 +2,26 @@ import { useState } from "react";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { userLogin } from "./UserService";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducer/UserReducer";
 import { Field, Form, Formik } from "formik";
 import { InputField } from "../component/FieldType";
+import * as Yup from "yup";
 
 const Login = () => {
   const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
-  const data = useSelector((state) => state.user.user);
+
+  const validationSchema = Yup.object({
+    username: Yup.string().required("Username is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
   const handelSubmit = (values) => {
     userLogin(values)
       .then((res) => {
-        localStorage.setItem("token", res.data.accessToken);
+        sessionStorage.setItem("token", res.data.accessToken);
+
         dispatch(
           setUser({
             data: res.data.data,
@@ -27,12 +34,13 @@ const Login = () => {
         console.log(err);
       });
   };
-  console.log(data);
+
   return (
     <>
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={handelSubmit}
+        validationSchema={validationSchema}
       >
         {({ handleSubmit }) => (
           <Form onSubmit={handleSubmit}>

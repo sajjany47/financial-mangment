@@ -16,7 +16,7 @@ export const InputField = ({ field, form: { touched, errors }, ...props }) => {
         <label htmlFor={field.name} className="block text-900 font-medium mb-2">
           {props.label}{" "}
           {props.requiredlabel === "true" && (
-            <span className="text-danger">*</span>
+            <span className="text-red-400">*</span>
           )}
         </label>
       )}
@@ -25,14 +25,14 @@ export const InputField = ({ field, form: { touched, errors }, ...props }) => {
         {...field}
         {...props}
         value={field.value ? field.value : ""}
-        className={`w-full mb-3  ${
+        className={`w-full mb-1  ${
           Boolean(getIn(errors, field.name)) &&
           getIn(touched, field.name) &&
           "p-invalid"
         }`}
       />
       {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-        <small className="text-danger">{getIn(errors, field.name)}</small>
+        <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
       )}
     </div>
   );
@@ -48,7 +48,7 @@ export const DropdownField = ({
       <label htmlFor={field.name} className="block text-900 font-medium mb-2">
         {props.label}{" "}
         {props.requiredlabel === "true" && (
-          <span className="text-danger">*</span>
+          <span className="text-red-400 ">*</span>
         )}
       </label>
     )}
@@ -56,7 +56,7 @@ export const DropdownField = ({
       id={field.name}
       {...field}
       {...props}
-      className={`w-full mb-3  ${
+      className={`w-full mb-1  ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -64,7 +64,7 @@ export const DropdownField = ({
     />
 
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
@@ -73,14 +73,16 @@ export const DateField = ({ field, form: { touched, errors }, ...props }) => (
   <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
-      {props.requiredlabel === "true" && <span className="text-danger">*</span>}
+      {props.requiredlabel === "true" && (
+        <span className="text-red-400">*</span>
+      )}
     </label>
     <Calendar
       id={field.name}
       {...field}
       {...props}
       showIcon
-      className={`w-full mb-3  ${
+      className={`w-full mb-1  ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -88,7 +90,7 @@ export const DateField = ({ field, form: { touched, errors }, ...props }) => (
     />
 
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
@@ -97,7 +99,9 @@ export const TimeField = ({ field, form: { touched, errors }, ...props }) => (
   <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
-      {props.requiredlabel === "true" && <span className="text-danger">*</span>}
+      {props.requiredlabel === "true" && (
+        <span className="text-red-400">*</span>
+      )}
     </label>
     <Calendar
       id={field.name}
@@ -107,7 +111,7 @@ export const TimeField = ({ field, form: { touched, errors }, ...props }) => (
       timeOnly
       // stepMinute={30}
       icon={() => <i className="pi pi-clock" style={{ fontSize: "20px" }} />}
-      className={`w-full mb-3  ${
+      className={`w-full mb-1  ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -115,7 +119,7 @@ export const TimeField = ({ field, form: { touched, errors }, ...props }) => (
     />
 
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
@@ -132,7 +136,9 @@ export const RadioField = ({
       className="block text-900 font-medium mb-2"
     >
       {props.label}{" "}
-      {props.requiredlabel === "true" && <span className="text-danger">*</span>}
+      {props.requiredlabel === "true" && (
+        <span className="text-red-400">*</span>
+      )}
     </label>
     <div className="flex flex-wrap gap-3">
       {props.radiolist.map((item) => {
@@ -155,7 +161,7 @@ export const RadioField = ({
     </div>
 
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
@@ -168,13 +174,15 @@ export const MultiDropdownField = ({
   <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
-      {props.requiredlabel === "true" && <span className="text-danger">*</span>}
+      {props.requiredlabel === "true" && (
+        <span className="text-red-400">*</span>
+      )}
     </label>
     <MultiSelect
       id={field.name}
       {...field}
       {...props}
-      className={`w-full mb-3  ${
+      className={`w-full mb-1  ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -183,7 +191,7 @@ export const MultiDropdownField = ({
     />
 
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
@@ -196,7 +204,9 @@ export const TextAreaInputField = ({
   <div className="flex align-items-start justify-content-center flex-column">
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
-      {props.requiredlabel === "true" && <span className="text-danger">*</span>}
+      {props.requiredlabel === "true" && (
+        <span className="text-red-400">*</span>
+      )}
     </label>
     <InputTextarea
       id={field.name}
@@ -204,7 +214,7 @@ export const TextAreaInputField = ({
       {...props}
       type="textarea"
       value={field.value ? field.value : ""}
-      className={`w-full mb-3  ${
+      className={`w-full mb-1  ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -212,7 +222,7 @@ export const TextAreaInputField = ({
     />
 
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
@@ -227,7 +237,7 @@ export const PasswordFiled = ({
       <label htmlFor={field.name} className="block text-900 font-medium mb-2">
         {props.label}{" "}
         {props.requiredlabel === "true" && (
-          <span className="text-danger">*</span>
+          <span className="text-red-400">*</span>
         )}
       </label>
     )}
@@ -238,7 +248,7 @@ export const PasswordFiled = ({
       {...props}
       style={{ width: "100%" }}
       value={field.value ? field.value : ""}
-      className={`w-full mb-3  ${
+      className={`w-full mb-1  ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -247,7 +257,7 @@ export const PasswordFiled = ({
     />
 
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
@@ -267,10 +277,12 @@ export const CheckField = ({
     />
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
       {props.label}{" "}
-      {props.requiredlabel === "true" && <span className="text-danger">*</span>}
+      {props.requiredlabel === "true" && (
+        <span className="text-red-400 ">*</span>
+      )}
     </label>
     {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
-      <small className="text-danger">{getIn(errors, field.name)}</small>
+      <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
     )}
   </div>
 );
