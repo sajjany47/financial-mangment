@@ -1,23 +1,48 @@
 import { Outlet } from "react-router-dom";
 import SidebarLayout from "./SidebarLayout";
 import Topbar from "./Topbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Login from "./Login";
+import { Dialog } from "primereact/dialog";
+import { useState } from "react";
+import PasswordChange from "./PasswordChange";
+import { setUser } from "../store/reducer/UserReducer";
 
 const Layout = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user?.user);
-  console.log(user);
+  const [visible, setVisible] = useState(true);
+  const dislogeClose = () => {
+    setVisible(false);
+    dispatch(setUser({ data: { ...user.data, isPasswordReset: true } }));
+  };
   return (
     <>
       {user.acccessToken ? (
-        <div className="App">
-          <SidebarLayout />
-          <div className="main-content">
-            <Topbar />
-            {/* Add your main content here */}
-            <Outlet />
-          </div>
-        </div>
+        <>
+          {!user.data.isPasswordReset ? (
+            <Dialog
+              header="Header"
+              visible={visible}
+              style={{ width: "45vw" }}
+              onHide={() => {
+                if (!visible) return;
+                setVisible(false);
+              }}
+            >
+              <PasswordChange dislogeClose={dislogeClose} />
+            </Dialog>
+          ) : (
+            <div className="App">
+              <SidebarLayout />
+              <div className="main-content">
+                <Topbar />
+                {/* Add your main content here */}
+                <Outlet />
+              </div>
+            </div>
+          )}
+        </>
       ) : (
         <Login />
       )}

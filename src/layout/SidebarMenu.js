@@ -86,6 +86,16 @@ const sidebarMenu = {
       ],
     },
   ],
+  "branch-manager": [],
+  "state-manager": [],
+  "loan-manager": [],
+  "product-manager": [],
+  "collection-department-head": [],
+  "collection-department": [],
+  "loan-department": [],
+  "verication-department": [],
+  "financial-manager": [],
+  customer: [],
 };
 
 export default sidebarMenu;
