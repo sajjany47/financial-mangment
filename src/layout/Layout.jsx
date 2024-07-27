@@ -5,11 +5,11 @@ import { useSelector } from "react-redux";
 import Login from "./Login";
 
 const Layout = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user?.user);
   console.log(user);
   return (
     <>
-      {user ? (
+      {user.acccessToken ? (
         <div className="App">
           <SidebarLayout />
           <div className="main-content">

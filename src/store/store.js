@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
+import UserReducer from "./reducer/UserReducer";
 import storage from "redux-persist/lib/storage/session";
-import { setUser } from "./reducer/UserReducer";
 import {
   persistReducer,
   FLUSH,
@@ -16,7 +16,8 @@ const persistConfig = {
   storage: storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, setUser);
+const persistedReducer = persistReducer(persistConfig, UserReducer);
+
 export const store = configureStore({
   reducer: {
     user: persistedReducer,

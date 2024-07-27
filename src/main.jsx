@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import persistStore from "redux-persist/es/persistStore";
+
 // import "../node_modules/primeflex/themes/primeone-light.css ";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

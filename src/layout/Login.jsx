@@ -21,12 +21,12 @@ const Login = () => {
             refreshToken: res.data.refreshToken,
           })
         );
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
   return (
     <>
       <Formik
