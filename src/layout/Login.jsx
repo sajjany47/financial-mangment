@@ -21,7 +21,6 @@ const Login = () => {
   const handelSubmit = (values) => {
     userLogin(values)
       .then((res) => {
-        console.log(res);
         dispatch(
           setUser({
             data: res.data.data,
