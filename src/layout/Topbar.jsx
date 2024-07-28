@@ -53,7 +53,6 @@ export default function Topbar() {
           icon: "pi pi-sign-out",
 
           command: () => {
-            console.log("first");
             dispatch(
               setUser({
                 data: {},

@@ -35,7 +35,6 @@ const PasswordChange = (props) => {
           icon: "error",
         });
       });
-    console.log(values);
   };
   return (
     <Formik

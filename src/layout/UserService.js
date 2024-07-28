@@ -14,8 +14,7 @@ export const userLogin = async (payload) => {
     );
     return response.data;
   } catch (error) {
-    const err = error.response.data;
-    throw err;
+    return error;
   }
 };
 
@@ -28,7 +27,6 @@ export const userPasswordReset = async (payload) => {
     );
     return response.data;
   } catch (error) {
-    const err = error.response.data;
-    throw err;
+    return error;
   }
 };

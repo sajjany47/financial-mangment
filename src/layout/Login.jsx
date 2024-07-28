@@ -21,8 +21,7 @@ const Login = () => {
   const handelSubmit = (values) => {
     userLogin(values)
       .then((res) => {
-        sessionStorage.setItem("token", res.data.accessToken);
-
+        console.log(res);
         dispatch(
           setUser({
             data: res.data.data,
@@ -30,6 +29,7 @@ const Login = () => {
             refreshToken: res.data.refreshToken,
           })
         );
+        sessionStorage.setItem("token", res.data?.accessToken);
       })
       .catch((err) => {
         console.log(err);
