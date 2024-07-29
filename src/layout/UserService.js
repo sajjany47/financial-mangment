@@ -5,6 +5,18 @@ import {
   headerWithToken,
 } from "../shared/constant";
 
+export const RefreshToken = async (payload) => {
+  try {
+    const response = await axios.post(
+      `${apiPath}/user/refresh-token`,
+      payload,
+      headerWithToken
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 export const userLogin = async (payload) => {
   try {
     const response = await axios.post(
