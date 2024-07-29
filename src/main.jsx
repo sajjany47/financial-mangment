@@ -20,7 +20,7 @@ import {
 
 export const Root = () => {
   useEffect(() => {
-    Instance.interceptors.request.use(
+    Instance.interceptors.response.use(
       (res) => {
         return res;
       },

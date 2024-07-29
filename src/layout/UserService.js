@@ -1,14 +1,13 @@
-import axios from "axios";
 import {
-  apiPath,
   headerWithOutToken,
   headerWithToken,
+  Instance,
 } from "../shared/constant";
 
 export const RefreshToken = async (payload) => {
   try {
-    const response = await axios.post(
-      `${apiPath}/user/refresh-token`,
+    const response = await Instance.post(
+      `/user/refresh-token`,
       payload,
       headerWithToken
     );
@@ -19,8 +18,8 @@ export const RefreshToken = async (payload) => {
 };
 export const userLogin = async (payload) => {
   try {
-    const response = await axios.post(
-      `${apiPath}/user/login`,
+    const response = await Instance.post(
+      `/user/login`,
       payload,
       headerWithOutToken
     );
@@ -32,8 +31,8 @@ export const userLogin = async (payload) => {
 
 export const userPasswordReset = async (payload) => {
   try {
-    const response = await axios.post(
-      `${apiPath}/user/update-password`,
+    const response = await Instance.post(
+      `/user/update-password`,
       payload,
       headerWithToken
     );
