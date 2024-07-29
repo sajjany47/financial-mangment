@@ -6,12 +6,16 @@ import {
 } from "../shared/constant";
 
 export const userLogin = async (payload) => {
-  const response = await axios.post(
-    `${apiPath}/user/login`,
-    payload,
-    headerWithOutToken
-  );
-  return response.data;
+  try {
+    const response = await axios.post(
+      `${apiPath}/user/login`,
+      payload,
+      headerWithOutToken
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 export const userPasswordReset = async (payload) => {
@@ -23,6 +27,6 @@ export const userPasswordReset = async (payload) => {
     );
     return response.data;
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
