@@ -11,12 +11,18 @@ import { store } from "./store/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import persistStore from "redux-persist/es/persistStore";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistStore(store)}>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </PersistGate>
-  </Provider>
-);
+export const Root = () => {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistStore(store)}>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </PersistGate>
+    </Provider>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(<Root />);
