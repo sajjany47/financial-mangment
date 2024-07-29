@@ -27,7 +27,8 @@ export const Root = () => {
       async (error) => {
         if (error.response.status === 403) {
           try {
-            const result = await RefreshToken();
+            const payload = sessionStorage.getItem(REFRESH_TOKEN_STORAGE_KEY);
+            const result = await RefreshToken(payload);
             const accessToken = result.data.accessToken;
             const refreshToken = result.data.refreshToken;
             sessionStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);

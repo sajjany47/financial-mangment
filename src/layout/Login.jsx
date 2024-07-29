@@ -7,6 +7,10 @@ import { setUser } from "../store/reducer/UserReducer";
 import { Field, Form, Formik } from "formik";
 import { InputField } from "../component/FieldType";
 import * as Yup from "yup";
+import {
+  ACCESS_TOKEN_STORAGE_KEY,
+  REFRESH_TOKEN_STORAGE_KEY,
+} from "../shared/Config";
 // import Swal from "sweetalert2";
 
 const Login = () => {
@@ -27,6 +31,11 @@ const Login = () => {
             acccessToken: res.data.accessToken,
             refreshToken: res.data.refreshToken,
           })
+        );
+        sessionStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, res.data.accessToken);
+        sessionStorage.setItem(
+          REFRESH_TOKEN_STORAGE_KEY,
+          res.data.refreshToken
         );
         sessionStorage.setItem("token", res.data?.accessToken);
       })
