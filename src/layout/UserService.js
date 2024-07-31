@@ -41,3 +41,12 @@ export const userPasswordReset = async (payload) => {
     throw new Error(error);
   }
 };
+
+export const logout = async () => {
+  try {
+    const response = await Instance.get(`/user/logout`, headerWithToken);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

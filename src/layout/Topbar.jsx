@@ -5,8 +5,12 @@ import { Menu } from "primereact/menu";
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducer/UserReducer";
+import { logout } from "./UserService";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 export default function Topbar() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const menuRef = useRef();
   const items = [
@@ -35,6 +39,24 @@ export default function Topbar() {
     </div>
   );
 
+  const logoutUser = () => {
+    logout().then((res) => {
+      Swal.fire({
+        title: res.message,
+        icon: "success",
+      });
+    });
+    dispatch(
+      setUser({
+        data: {},
+        acccessToken: "",
+        refreshToken: "",
+      })
+    );
+    sessionStorage.removeItem("token");
+    navigate("/");
+  };
+
   const menuTemplate = [
     {
       //   label: "Profile",
@@ -53,14 +75,7 @@ export default function Topbar() {
           icon: "pi pi-sign-out",
 
           command: () => {
-            dispatch(
-              setUser({
-                data: {},
-                acccessToken: "",
-                refreshToken: "",
-              })
-            );
-            sessionStorage.removeItem("token");
+            logoutUser();
           },
         },
       ],
