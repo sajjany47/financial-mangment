@@ -37,7 +37,6 @@ const Login = () => {
           REFRESH_TOKEN_STORAGE_KEY,
           res.data.refreshToken
         );
-        sessionStorage.setItem("token", res.data?.accessToken);
       })
       .catch((err) => {
         console.log(err);
