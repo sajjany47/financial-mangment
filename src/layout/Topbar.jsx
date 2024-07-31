@@ -8,7 +8,10 @@ import { setUser } from "../store/reducer/UserReducer";
 import { logout } from "./UserService";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN_STORAGE_KEY } from "../shared/Config";
+import {
+  ACCESS_TOKEN_STORAGE_KEY,
+  REFRESH_TOKEN_STORAGE_KEY,
+} from "../shared/Config";
 
 export default function Topbar() {
   const navigate = useNavigate();
@@ -55,6 +58,7 @@ export default function Topbar() {
       })
     );
     sessionStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+    sessionStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
     navigate("/");
   };
 
