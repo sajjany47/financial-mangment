@@ -9,7 +9,7 @@ export const RefreshToken = async (payload) => {
     const response = await Instance.post(
       `/user/refresh-token`,
       payload,
-      headerWithToken
+      headerWithToken()
     );
     return response.data;
   } catch (error) {
@@ -21,7 +21,7 @@ export const userLogin = async (payload) => {
     const response = await Instance.post(
       `/user/login`,
       payload,
-      headerWithOutToken
+      headerWithOutToken()
     );
     return response.data;
   } catch (error) {
@@ -30,11 +30,12 @@ export const userLogin = async (payload) => {
 };
 
 export const userPasswordReset = async (payload) => {
+  console.log(headerWithToken);
   try {
     const response = await Instance.post(
       `/user/update-password`,
       payload,
-      headerWithToken
+      headerWithToken()
     );
     return response.data;
   } catch (error) {
@@ -45,7 +46,7 @@ export const userPasswordReset = async (payload) => {
 export const logout = async () => {
   try {
     console.log(headerWithToken);
-    const response = await Instance.get(`/user/logout`, headerWithToken);
+    const response = await Instance.get(`/user/logout`, headerWithToken());
     return response.data;
   } catch (error) {
     throw new Error(error);

@@ -21,20 +21,19 @@ const PasswordChange = (props) => {
       password: values.password,
       id: props.type === "user" ? userDetails.data._id : props.id,
     };
-    userPasswordReset(reqData)
-      .then((res) => {
-        Swal.fire({
-          title: res.message,
-          icon: "success",
-        });
-        props.dislogeClose();
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: error.response.data.message,
-          icon: "error",
-        });
+    userPasswordReset(reqData).then((res) => {
+      Swal.fire({
+        title: res.message,
+        icon: "success",
       });
+      props.dislogeClose();
+    });
+    // .catch((error) => {
+    //   Swal.fire({
+    //     title: error.message,
+    //     icon: "error",
+    //   });
+    // });
   };
   return (
     <Formik
