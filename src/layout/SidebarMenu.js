@@ -10,7 +10,7 @@ const sidebarMenu = {
       ],
     },
     {
-      title: "Loan Applications",
+      title: "Loan",
       icon: "pi pi-file",
       submenu: [
         { title: "New Applications", route: "/loan-applications/new" },
@@ -20,12 +20,11 @@ const sidebarMenu = {
       ],
     },
     {
-      title: "Customer Management",
+      title: "User",
       icon: "pi pi-user",
       submenu: [
-        { title: "Customer List", route: "/customers/list" },
-        { title: "Add New Customer", route: "/customers/add" },
-        { title: "Customer Profiles", route: "/customers/profiles" },
+        { title: "Customer", route: "/customers/list" },
+        { title: "Employee", route: "/customers/add" },
       ],
     },
     {

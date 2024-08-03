@@ -3,6 +3,7 @@ import sidebarMenu from "./SidebarMenu";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Position } from "../shared/Config";
+import { NavLink } from "react-router-dom";
 
 const SidebarLayout = () => {
   const user = useSelector((state) => state.user?.user);
@@ -58,8 +59,11 @@ const SidebarLayout = () => {
               >
                 {item.submenu.map((res, ind) => {
                   return (
-                    <MenuItem key={ind} icon={<i className={res.icon}></i>}>
-                      {" "}
+                    <MenuItem
+                      key={ind}
+                      icon={<i className={res.icon}></i>}
+                      component={<NavLink to={res.route} />}
+                    >
                       {res.title}{" "}
                     </MenuItem>
                   );
@@ -70,6 +74,7 @@ const SidebarLayout = () => {
                 key={index}
                 icon={<i className={item.icon}></i>}
                 style={{ marginTop: "5px" }}
+                component={<NavLink to={item.route} />}
               >
                 {item.title}
               </MenuItem>

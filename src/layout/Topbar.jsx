@@ -7,21 +7,27 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducer/UserReducer";
 import { logout } from "./UserService";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ACCESS_TOKEN_STORAGE_KEY,
   REFRESH_TOKEN_STORAGE_KEY,
 } from "../shared/Config";
+import { capitalizeFirstLetter } from "../shared/constant";
 
 export default function Topbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const path = location.pathname.split("/");
+  const filterPath = path.filter((item) => item !== "");
+
   const dispatch = useDispatch();
   const menuRef = useRef();
-  const items = [
-    { label: "Electronics" },
-    { label: "Computer" },
-    { label: "Accessories" },
-  ];
+  const items = filterPath.map((e) => ({ label: capitalizeFirstLetter(e) }));
+  // [
+  //   { label: "Electronics" },
+  //   { label: "Computer" },
+  //   { label: "Accessories" },
+  // ];
   const home = { icon: "pi pi-home", url: "https://primereact.org" };
   const start = <BreadCrumb model={items} home={home} />;
   const end = (
@@ -88,7 +94,7 @@ export default function Topbar() {
   ];
 
   return (
-    <div className="card">
+    <div className="card mb-3">
       <Menubar start={start} end={end} />
       <Menu
         model={menuTemplate}
