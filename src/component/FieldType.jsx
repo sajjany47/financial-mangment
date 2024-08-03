@@ -25,7 +25,8 @@ export const InputField = ({ field, form: { touched, errors }, ...props }) => {
         {...field}
         {...props}
         value={field.value ? field.value : ""}
-        className={`w-full mb-1  ${
+        placeholder={`Enter ${props.label}`}
+        className={`w-full mb-1 ${props.customStyle}  ${
           Boolean(getIn(errors, field.name)) &&
           getIn(touched, field.name) &&
           "p-invalid"
@@ -56,7 +57,8 @@ export const DropdownField = ({
       id={field.name}
       {...field}
       {...props}
-      className={`w-full mb-1  ${
+      placeholder={`Select ${props.label}`}
+      className={`w-full mb-1 ${props.customStyle} ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -81,8 +83,9 @@ export const DateField = ({ field, form: { touched, errors }, ...props }) => (
       id={field.name}
       {...field}
       {...props}
+      placeholder={`Select ${props.label}`}
       showIcon
-      className={`w-full mb-1  ${
+      className={`w-full mb-1 ${props.customStyle} ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -107,11 +110,12 @@ export const TimeField = ({ field, form: { touched, errors }, ...props }) => (
       id={field.name}
       {...field}
       {...props}
+      placeholder={`Select ${props.label}`}
       showIcon
       timeOnly
       // stepMinute={30}
       icon={() => <i className="pi pi-clock" style={{ fontSize: "20px" }} />}
-      className={`w-full mb-1  ${
+      className={`w-full mb-1 ${props.customStyle} ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -182,7 +186,8 @@ export const MultiDropdownField = ({
       id={field.name}
       {...field}
       {...props}
-      className={`w-full mb-1  ${
+      placeholder={`Select ${props.label}`}
+      className={`w-full mb-1 ${props.customStyle} ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -212,9 +217,10 @@ export const TextAreaInputField = ({
       id={field.name}
       {...field}
       {...props}
+      placeholder={`Enter ${props.label}`}
       type="textarea"
       value={field.value ? field.value : ""}
-      className={`w-full mb-1  ${
+      className={`w-full mb-1 ${props.customStyle} ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"
@@ -246,9 +252,10 @@ export const PasswordFiled = ({
       id={field.name}
       {...field}
       {...props}
+      placeholder={`Enter ${props.label}`}
       style={{ width: "100%" }}
       value={field.value ? field.value : ""}
-      className={`w-full mb-1  ${
+      className={`w-full mb-1 ${props.customStyle} ${
         Boolean(getIn(errors, field.name)) &&
         getIn(touched, field.name) &&
         "p-invalid"

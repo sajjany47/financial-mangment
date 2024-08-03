@@ -12,6 +12,20 @@ export const Position = {
   CUSTOMER: "customer",
 };
 
+export const DropdownPosition = [
+  { label: "ADMIN", value: "admin" },
+  { label: "BM", value: "branch-manager" },
+  { label: "SM", value: "state-manager" },
+  { label: "LM", value: "loan-manager" },
+  { label: "PM", value: "product-manager" },
+  { label: "CDM", value: "collection-department-head" },
+  { label: "CD", value: "collection-department" },
+  { label: "LD", value: "loan-department" },
+  { label: "VD", value: "verification-department" },
+  { label: "FM", value: "financial-manager" },
+  { label: "CUSTOMER", value: "customer" },
+];
+
 export const Status = {
   PENDING: "pending",
   VERIFIED: "verified",
