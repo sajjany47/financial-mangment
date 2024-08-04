@@ -14,16 +14,16 @@ const DocumentDetails = (props) => {
     // .matches("/^[A-Z]{3}d{7}$/", "Enter valid voter number"),
     panNumber: Yup.string().required("Pan number is required"),
     // .matches("/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/", "Enter valid pan number"),
-    // passportNumber: Yup.string()
-    //   // .required("Passport number is required")
-    //   // .matches("/^[A-Z]{1}[0-9]{7}$/", "Enter valid Passport number"),
+    passportNumber: Yup.string(),
+    // .required("Passport number is required")
+    // .matches("/^[A-Z]{1}[0-9]{7}$/", "Enter valid Passport number"),
     aadharImage: Yup.string().required("Aadhar Image is required"),
     voterImage: Yup.string().required("Voter Image is required"),
     panImage: Yup.string().required("Pan Image is required"),
     passportImage: Yup.string().when("passportNumber", {
-      is: (val) => val !== "", // Check if passportNumber is not empty
+      is: (val) => val !== "" && val !== undefined, // Check if passportNumber is not empty
       then: () => Yup.string().required("Passport Image is required"),
-      otherwise: Yup.string().notRequired(),
+      otherwise: () => Yup.string().notRequired(),
     }),
   });
   const initialValues = {

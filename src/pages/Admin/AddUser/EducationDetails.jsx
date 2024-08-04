@@ -68,7 +68,7 @@ const EducationDetails = (props) => {
         )
         .required("Work details are required")
         .min(1, "At least one work detail is required"),
-      otherwise: Yup.array().notRequired(),
+      otherwise: () => Yup.array().notRequired(),
     }),
   });
   const initialValues = {

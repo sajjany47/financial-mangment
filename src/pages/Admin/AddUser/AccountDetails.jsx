@@ -17,7 +17,7 @@ const AccountDetails = (props) => {
       "Passbook Front Page image is required"
     ),
     uanImage: Yup.string().when("uan", {
-      is: (val) => val !== "",
+      is: (val) => val !== "" && val !== undefined,
       then: () => Yup.string().required("UAN image is required"),
     }),
   });
