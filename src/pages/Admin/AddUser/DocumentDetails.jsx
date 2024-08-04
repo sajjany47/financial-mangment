@@ -8,7 +8,6 @@ import { ErrorMessage } from "./EducationDetails";
 
 const DocumentDetails = (props) => {
   const documentsSchema = Yup.object().shape({
-    id: Yup.string().required("Id is required"),
     aadharNumber: Yup.string().required("Aadhar number is required"),
     // .matches("^d{12}$", "Enter valid Aadhar number"),
     voterNumber: Yup.string().required("Voter number is required"),
@@ -22,7 +21,7 @@ const DocumentDetails = (props) => {
     voterImage: Yup.string().required("Voter Image is required"),
     panImage: Yup.string().required("Pan Image is required"),
     passportImage: Yup.string().when("passportNumber", {
-      is: (val) => val !== "",
+      is: (val) => val !== "", // Check if passportNumber is not empty
       then: () => Yup.string().required("Passport Image is required"),
       otherwise: Yup.string().notRequired(),
     }),

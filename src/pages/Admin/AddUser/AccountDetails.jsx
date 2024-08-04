@@ -8,7 +8,6 @@ import { ErrorMessage } from "./EducationDetails";
 
 const AccountDetails = (props) => {
   const accountDetailSchema = Yup.object().shape({
-    id: Yup.string().required("Id is required"),
     bankName: Yup.string().required("Bank name is required"),
     accountNumber: Yup.string().required("Account number is required"),
     // .matches("/^d{9,18}$/", "Enter valid Account number"),

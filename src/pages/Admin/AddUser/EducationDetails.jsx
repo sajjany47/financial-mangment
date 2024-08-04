@@ -20,61 +20,59 @@ export const ErrorMessage = (errors, name, touched) => {
 };
 const EducationDetails = (props) => {
   const educationOrCompanyDetailSchema = Yup.object().shape({
-    id: Yup.string().required("Id is required"),
-
     education: Yup.array()
       .of(
         Yup.object().shape({
           boardName: Yup.string().required("Board name is required"),
           passingYear: Yup.string()
             .required("Passing year is required")
-            .matches("/^d{4}$/", "Enter valid year"),
+            .matches(/^\d{4}$/, "Enter a valid year"),
           marksPercentage: Yup.string()
-            .required("Passing year is required")
+            .required("Marks percentage is required")
             .matches(
-              "/^(100(.0{1,2})?|(d{1,2})(.d{1,2})?)$/",
-              "Enter valid percentage"
+              /^(100(\.0{1,2})?|(\d{1,2})(\.\d{1,2})?)$/,
+              "Enter a valid percentage"
             ),
           resultImage: Yup.string().required("Marksheet is required"),
         })
       )
-      .required("Education details is required")
-      .min(1, "Education details is required "),
+      .required("Education details are required")
+      .min(1, "At least one education detail is required"),
+
     fresherOrExperience: Yup.string()
       .oneOf([fresherOrExperience.EXPERIENCE, fresherOrExperience.FRESHER])
-      .required("Select one of this"),
+      .required("Select one of these"),
+
     workDetail: Yup.array().when("fresherOrExperience", {
       is: (val) => val === fresherOrExperience.EXPERIENCE,
-      then: () =>
-        Yup.array()
-          .of(
-            Yup.object().shape({
-              companyName: Yup.string().required("Company name is required"),
-              position: Yup.string().required("Position is required"),
-              startingYear: Yup.string()
-                .required("Starting year is required")
-                .matches(/^\d{4}$/, "Enter a valid year"),
-              endingYear: Yup.string()
-                .required("Ending year is required")
-                .matches(/^\d{4}$/, "Enter a valid year"),
-              experienceLetter: Yup.string().required(
-                "Experience Letter is required"
-              ),
-              relievingLetter: Yup.string().required(
-                "Relieving Letter is required"
-              ),
-              appointmentLetter: Yup.string().required(
-                "Appointment Letter is required"
-              ),
-              salarySlip: Yup.string().required("Salary Slip is required"),
-            })
-          )
-          .required("Work details are required")
-          .min(1, "At least one work detail is required"),
+      then: Yup.array()
+        .of(
+          Yup.object().shape({
+            companyName: Yup.string().required("Company name is required"),
+            position: Yup.string().required("Position is required"),
+            startingYear: Yup.string().required("Starting year is required"),
+            // .matches(/^\d{4}$/, "Enter a valid year"),
+            endingYear: Yup.string().required("Ending year is required"),
+            // .matches(/^\d{4}$/, "Enter a valid year"),
+            experienceLetter: Yup.string().required(
+              "Experience Letter is required"
+            ),
+            relievingLetter: Yup.string().required(
+              "Relieving Letter is required"
+            ),
+            appointmentLetter: Yup.string().required(
+              "Appointment Letter is required"
+            ),
+            salarySlip: Yup.string().required("Salary Slip is required"),
+          })
+        )
+        .required("Work details are required")
+        .min(1, "At least one work detail is required"),
       otherwise: Yup.array().notRequired(),
     }),
   });
   const initialValues = {
+    id: "1",
     education: [
       {
         boardName: "",
@@ -489,6 +487,7 @@ const EducationDetails = (props) => {
                 label={props.type === "add" ? "Submit & Next" : "Update"}
                 icon="pi pi-arrow-right"
                 iconPos="right"
+                type="submit"
               />
             </div>
           </div>
