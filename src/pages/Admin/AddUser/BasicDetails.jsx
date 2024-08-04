@@ -9,11 +9,14 @@ import {
 import { DropdownPosition, Position } from "../../../shared/Config";
 import { Button } from "primereact/button";
 import * as Yup from "yup";
+import { ErrorMessage } from "./EducationDetails";
+import { Image } from "primereact/image";
 
 const BasicDetails = (props) => {
   const adminSignUpSchema30 = Yup.object().shape({
     username: Yup.string().required("Username is required"),
     name: Yup.string().required("Name is required"),
+    userImage: Yup.string().required("User Profile Picture is required"),
     mobile: Yup.string().required("Mobile number is required"),
     email: Yup.string()
       // .matches("/S+@S+.S+/", "Please enter valid email")
@@ -74,6 +77,8 @@ const BasicDetails = (props) => {
     pincode: "",
     jobBranchName: "",
     role: props.role,
+    userImage: "",
+    userImagePre: "",
   };
   const handelSubmit = (values) => {
     // eslint-disable-next-line react/prop-types
@@ -87,7 +92,7 @@ const BasicDetails = (props) => {
       initialValues={initialValues}
       validationSchema={adminSignUpSchema30}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, setFieldValue, errors, touched, values }) => (
         <Form onSubmit={handleSubmit}>
           <div className="flex flex-column ">
             <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
@@ -173,6 +178,33 @@ const BasicDetails = (props) => {
                     component={DropdownField}
                     name="jobBranchName"
                     options={[]}
+                  />
+                </div>
+                <div className="col-12 md:col-3">
+                  <label
+                    htmlFor="userImage"
+                    className="block  font-medium mb-2 custom-file-upload"
+                  >
+                    Upload User Profile Picture
+                  </label>
+                  <input
+                    id="userImage"
+                    name="userImage"
+                    type="file"
+                    onChange={(e) => {
+                      setFieldValue("userImage", e.target.files[0]);
+                      setFieldValue(
+                        "userImagePre",
+                        URL.createObjectURL(e.target.files[0])
+                      );
+                    }}
+                  />
+                  {ErrorMessage(errors, `userImage`, touched)}
+                  <Image
+                    src={values.userImagePre}
+                    alt="Image"
+                    width="260"
+                    height="260"
                   />
                 </div>
               </div>
