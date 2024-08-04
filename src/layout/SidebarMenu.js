@@ -24,7 +24,7 @@ const sidebarMenu = {
       icon: "pi pi-user",
       submenu: [
         { title: "Customer", route: "/customers/list" },
-        { title: "Employee", route: "/customers/add" },
+        { title: "Employee", route: "/employee/list" },
       ],
     },
     {

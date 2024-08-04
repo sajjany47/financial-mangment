@@ -1,19 +1,19 @@
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 
-const CustomerList = () => {
+const EmployeeList = () => {
   const navigate = useNavigate();
   return (
     <>
       <div className="flex justify-content-end">
         <Button
-          label="Add Customer"
+          label="Add Employee"
           icon="pi pi-user-plus"
-          onClick={() => navigate("/customers/add", { state: { type: "add" } })}
+          onClick={() => navigate("/employee/add", { state: { type: "add" } })}
         />
       </div>
     </>
   );
 };
 
-export default CustomerList;
+export default EmployeeList;

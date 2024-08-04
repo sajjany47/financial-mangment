@@ -3,7 +3,9 @@ import "./App.css";
 import PasswordChange from "./layout/PasswordChange";
 import Layout from "./layout/Layout";
 import CustomerList from "./pages/Admin/AddUser/CustomerList";
-import AddCustomer from "./pages/Admin/AddUser/AddCustomer";
+import AddCustomers from "./pages/Admin/AddUser/AddCustomers";
+import EmployeeList from "./pages/Admin/AddUser/EmployeeList";
+import AddEmployee from "./pages/Admin/AddUser/AddEmployee";
 
 function App() {
   return (
@@ -13,7 +15,9 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/reset-password" element={<PasswordChange />} />
             <Route path="/customers/list" element={<CustomerList />} />
-            <Route path="/customers/add" element={<AddCustomer />} />
+            <Route path="/customers/add" element={<AddCustomers />} />
+            <Route path="/employee/list" element={<EmployeeList />} />
+            <Route path="/employee/add" element={<AddEmployee />} />
           </Route>
         </Routes>
       </BrowserRouter>

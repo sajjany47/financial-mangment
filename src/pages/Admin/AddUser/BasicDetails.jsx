@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Field, Form, Formik } from "formik";
 import {
   DateField,
@@ -35,7 +36,7 @@ const BasicDetails = (props) => {
         <Form onSubmit={handleSubmit}>
           <div className="flex flex-column ">
             <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-              <div className="grid p-4">
+              <div className="grid p-3">
                 <div className="col-12 md:col-3">
                   <Field label="Name" component={InputField} name="name" />
                 </div>
@@ -119,10 +120,19 @@ const BasicDetails = (props) => {
               </div>
             </div>
           </div>
-          <div className="flex pt-4 justify-content-end">
+          <div className="flex pt-4 justify-content-end gap-2">
+            {props.type === "edit" && (
+              <Button
+                type="button"
+                label={"Next"}
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                onClick={() => props.next()}
+              />
+            )}
             <Button
               type="submit"
-              label="Next"
+              label={props.type === "add" ? "Submit & Next" : "Update"}
               icon="pi pi-arrow-right"
               iconPos="right"
             />
