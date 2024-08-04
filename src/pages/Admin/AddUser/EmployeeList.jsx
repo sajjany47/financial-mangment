@@ -9,7 +9,11 @@ const EmployeeList = () => {
         <Button
           label="Add Employee"
           icon="pi pi-user-plus"
-          onClick={() => navigate("/employee/add", { state: { type: "add" } })}
+          onClick={() =>
+            navigate("/employee/add", {
+              state: { type: "add", role: "employee" },
+            })
+          }
         />
       </div>
     </>

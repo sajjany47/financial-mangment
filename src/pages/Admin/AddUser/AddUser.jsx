@@ -22,7 +22,7 @@ const AddUser = () => {
     <div className="card flex justify-content-center">
       <Stepper ref={stepperRef} style={{ flexBasis: "75rem" }}>
         <StepperPanel header="Basic">
-          <BasicDetails next={next} type={state.type} />
+          <BasicDetails next={next} type={state.type} role={state.role} />
         </StepperPanel>
         <StepperPanel header="Education & Experience">
           <EducationDetails next={next} back={back} type={state.type} />

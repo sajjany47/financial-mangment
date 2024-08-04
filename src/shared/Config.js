@@ -1,4 +1,5 @@
 export const Position = {
+  CUSTOMER: "customer",
   ADMIN: "admin",
   BM: "branch-manager",
   SM: "state-manager",
@@ -9,7 +10,6 @@ export const Position = {
   LD: "loan-department",
   VD: "verication-department",
   FM: "financial-manager",
-  CUSTOMER: "customer",
 };
 
 export const DropdownPosition = [

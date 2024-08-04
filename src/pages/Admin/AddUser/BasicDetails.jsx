@@ -6,10 +6,60 @@ import {
   InputField,
   TextAreaInputField,
 } from "../../../component/FieldType";
-import { DropdownPosition } from "../../../shared/Config";
+import { DropdownPosition, Position } from "../../../shared/Config";
 import { Button } from "primereact/button";
+import * as Yup from "yup";
 
 const BasicDetails = (props) => {
+  const adminSignUpSchema30 = Yup.object().shape({
+    username: Yup.string().required("Username is required"),
+    name: Yup.string().required("Name is required"),
+    mobile: Yup.string().required("Mobile number is required"),
+    email: Yup.string()
+      // .matches("/S+@S+.S+/", "Please enter valid email")
+      .required("Email is required"),
+    dob: Yup.date()
+      .required("Date of birth is required")
+      .max(
+        new Date(Date.now() - 567648000000),
+        "You must be at least 18 years"
+      ),
+    position: Yup.string().when("role", {
+      is: (val) => val !== Position.CUSTOMER,
+      then: () =>
+        Yup.string()
+          .oneOf([
+            Position.ADMIN,
+            Position.AM,
+            Position.CD,
+            Position.CDM,
+            Position.CM,
+            Position.CUSTOMER,
+            Position.FM,
+            Position.LD,
+            Position.LM,
+            Position.PM,
+            Position.SM,
+            Position.VD,
+          ])
+          .required("Position is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+    jobBranchName: Yup.string()
+      .when("position", {
+        is: (val) => val !== Position.CUSTOMER,
+        then: () => Yup.string().required("Branch is required"),
+        otherwise: () => Yup.string().notRequired(),
+      })
+      .required("Branch is required"),
+    address: Yup.string().required("Address is required"),
+    state: Yup.string().required("State is required"),
+    country: Yup.string().required("Country is required"),
+    city: Yup.string().required("City is required"),
+    pincode: Yup.string()
+      .matches(/^\d{6}$/, "Enter valid pincode")
+      .required("Pincode is required"),
+  });
   const initialValues = {
     name: "",
     username: "",
@@ -23,6 +73,7 @@ const BasicDetails = (props) => {
     city: "",
     pincode: "",
     jobBranchName: "",
+    role: props.role,
   };
   const handelSubmit = (values) => {
     // eslint-disable-next-line react/prop-types
@@ -31,7 +82,11 @@ const BasicDetails = (props) => {
   };
 
   return (
-    <Formik onSubmit={handelSubmit} initialValues={initialValues}>
+    <Formik
+      onSubmit={handelSubmit}
+      initialValues={initialValues}
+      validationSchema={adminSignUpSchema30}
+    >
       {({ handleSubmit }) => (
         <Form onSubmit={handleSubmit}>
           <div className="flex flex-column ">
@@ -61,14 +116,17 @@ const BasicDetails = (props) => {
                     name="dob"
                   />
                 </div>
-                <div className="col-12 md:col-3">
-                  <Field
-                    label="Position"
-                    component={DropdownField}
-                    options={DropdownPosition}
-                    name="position"
-                  />
-                </div>
+                {props.role !== Position.CUSTOMER && (
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Position"
+                      component={DropdownField}
+                      options={DropdownPosition}
+                      name="position"
+                    />
+                  </div>
+                )}
+
                 <div className="col-12 md:col-3">
                   <Field
                     label="Address"

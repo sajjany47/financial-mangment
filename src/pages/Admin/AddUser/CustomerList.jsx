@@ -9,7 +9,11 @@ const CustomerList = () => {
         <Button
           label="Add Customer"
           icon="pi pi-user-plus"
-          onClick={() => navigate("/customers/add", { state: { type: "add" } })}
+          onClick={() =>
+            navigate("/customers/add", {
+              state: { type: "add", role: "customer" },
+            })
+          }
         />
       </div>
     </>
