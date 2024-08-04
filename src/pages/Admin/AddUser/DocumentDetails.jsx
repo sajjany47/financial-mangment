@@ -67,6 +67,12 @@ const DocumentDetails = (props) => {
                     label="Voter Number"
                     component={InputField}
                     name="voterNumber"
+                    onChange={(e) => {
+                      setFieldValue(
+                        "voterNumber",
+                        e.target.value.toUpperCase()
+                      );
+                    }}
                   />
                 </div>
 
@@ -75,6 +81,9 @@ const DocumentDetails = (props) => {
                     label="Pan Number"
                     component={InputField}
                     name="panNumber"
+                    onChange={(e) => {
+                      setFieldValue("panNumber", e.target.value.toUpperCase());
+                    }}
                   />
                 </div>
                 <div className="col-12 md:col-3">
@@ -82,6 +91,12 @@ const DocumentDetails = (props) => {
                     label="Passport Number"
                     component={InputField}
                     name="passportNumber"
+                    onChange={(e) => {
+                      setFieldValue(
+                        "passportNumber",
+                        e.target.value.toUpperCase()
+                      );
+                    }}
                   />
                 </div>
                 <div className="col-12 md:col-3">

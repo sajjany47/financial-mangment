@@ -51,9 +51,7 @@ const EducationDetails = (props) => {
             companyName: Yup.string().required("Company name is required"),
             position: Yup.string().required("Position is required"),
             startingYear: Yup.string().required("Starting year is required"),
-            // .matches(/^\d{4}$/, "Enter a valid year"),
             endingYear: Yup.string().required("Ending year is required"),
-            // .matches(/^\d{4}$/, "Enter a valid year"),
             experienceLetter: Yup.string().required(
               "Experience Letter is required"
             ),
