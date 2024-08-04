@@ -1,6 +1,6 @@
 import { Field, Form, Formik } from "formik";
 import { InputField } from "../../../component/FieldType";
-import { FileUpload } from "primereact/fileupload";
+import { Image } from "primereact/image";
 
 const AccountDetails = () => {
   const initialValues = {
@@ -8,6 +8,11 @@ const AccountDetails = () => {
     bankName: "",
     branchName: "",
     ifsc: "",
+    uan: "",
+    passbookImage: "",
+    uanImage: "",
+    passbookPreview: "",
+    uanPreview: "",
   };
   const handelSubmit = (values) => {
     console.log(values);
@@ -15,7 +20,7 @@ const AccountDetails = () => {
   return (
     <div className="p-3">
       <Formik onSubmit={handelSubmit} initialValues={initialValues}>
-        {({ handelSubmit }) => (
+        {({ handelSubmit, setFieldValue, values }) => (
           <Form onSubmit={handelSubmit}>
             <div className="grid">
               <div className="col-12 md:col-3">
@@ -43,22 +48,64 @@ const AccountDetails = () => {
                   name="branchName"
                 />
               </div>
+              <div className="col-12 md:col-3">
+                <Field label="UAN (EPFO)" component={InputField} name="uan" />
+              </div>
               <div className="col-12">
-                <label className="block text-900 font-medium mb-2">
-                  Bank Passbook or statement{" "}
-                </label>
-                <FileUpload
-                  name="demo[]"
-                  url={"/api/upload"}
-                  multiple
-                  accept="image/*"
-                  maxFileSize={1000000}
-                  emptyTemplate={
-                    <p className="m-0">
-                      Drag and drop files to here to upload.
-                    </p>
-                  }
-                />
+                <div className="grid">
+                  <div className="col-12 md:col-3">
+                    <label
+                      htmlFor="passbookImage"
+                      className="block  font-medium mb-2 custom-file-upload"
+                    >
+                      Bank Passbook or statement{" "}
+                    </label>
+                    <input
+                      id="passbookImage"
+                      name="passbookImage"
+                      type="file"
+                      onChange={(e) => {
+                        setFieldValue("passbookImage", e.target.files[0]);
+                        setFieldValue(
+                          "passbookPreview",
+                          URL.createObjectURL(e.target.files[0])
+                        );
+                      }}
+                    />
+                    <Image
+                      src={values.passbookPreview}
+                      alt="Image"
+                      width="260"
+                      height="260"
+                    />
+                  </div>
+                  <div className="col-12 md:col-3">
+                    <label
+                      htmlFor="uan-upload"
+                      className="block  font-medium mb-2 custom-file-upload"
+                    >
+                      Upload UAN (EPFO) Image{" "}
+                    </label>
+                    <input
+                      id="uan-upload"
+                      name="aadharImage"
+                      type="file"
+                      onChange={(e) => {
+                        setFieldValue("uan", e.target.files[0]);
+                        setFieldValue(
+                          "uanImage",
+                          URL.createObjectURL(e.target.files[0])
+                        );
+                      }}
+                    />
+                    <Image
+                      src={values.uanImage}
+                      alt="Image"
+                      width="260"
+                      height="260"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </Form>
