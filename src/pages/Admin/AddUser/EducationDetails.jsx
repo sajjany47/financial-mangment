@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Field, FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik, getIn } from "formik";
 import {
   DateField,
   InputField,
@@ -10,6 +10,14 @@ import { fresherOrExperience } from "../../../shared/Config";
 import { Image } from "primereact/image";
 import * as Yup from "yup";
 
+export const ErrorMessage = (errors, name, touched) => {
+  return (
+    Boolean(getIn(errors, name)) &&
+    getIn(touched, name) && (
+      <small className="text-red-400 mb-1">{getIn(errors, name)}</small>
+    )
+  );
+};
 const EducationDetails = (props) => {
   const educationOrCompanyDetailSchema = Yup.object().shape({
     id: Yup.string().required("Id is required"),
@@ -27,7 +35,7 @@ const EducationDetails = (props) => {
               "/^(100(.0{1,2})?|(d{1,2})(.d{1,2})?)$/",
               "Enter valid percentage"
             ),
-          resultImage: Yup.string().required("Board name is required"),
+          resultImage: Yup.string().required("Marksheet is required"),
         })
       )
       .required("Education details is required")
@@ -98,13 +106,14 @@ const EducationDetails = (props) => {
     console.log(values);
     props.next();
   };
+
   return (
     <Formik
       onSubmit={handelSubmit}
       initialValues={initialValues}
       validationSchema={educationOrCompanyDetailSchema}
     >
-      {({ handleSubmit, values, setFieldValue }) => (
+      {({ handleSubmit, values, setFieldValue, touched, errors }) => (
         <Form onSubmit={handleSubmit}>
           <div className="flex flex-column">
             <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
@@ -164,6 +173,11 @@ const EducationDetails = (props) => {
                                       );
                                     }}
                                   />
+                                  {ErrorMessage(
+                                    errors,
+                                    `education.${index}.resultImage`,
+                                    touched
+                                  )}
                                 </div>
                                 <div className="col-12 md:col-3">
                                   <Image
@@ -292,6 +306,11 @@ const EducationDetails = (props) => {
                                       );
                                     }}
                                   />
+                                  {ErrorMessage(
+                                    errors,
+                                    `workDetail.${index}.appointmentLetter`,
+                                    touched
+                                  )}
                                   <Image
                                     src={
                                       values.workDetail[index]
@@ -324,6 +343,11 @@ const EducationDetails = (props) => {
                                       );
                                     }}
                                   />
+                                  {ErrorMessage(
+                                    errors,
+                                    `workDetail.${index}.salarySlip`,
+                                    touched
+                                  )}
                                   <Image
                                     src={
                                       values.workDetail[index].slarySlipPreview
@@ -355,6 +379,11 @@ const EducationDetails = (props) => {
                                       );
                                     }}
                                   />
+                                  {ErrorMessage(
+                                    errors,
+                                    `workDetail.${index}.experienceLetter`,
+                                    touched
+                                  )}
                                   <Image
                                     src={
                                       values.workDetail[index].experiencePreview
@@ -386,6 +415,11 @@ const EducationDetails = (props) => {
                                       );
                                     }}
                                   />
+                                  {ErrorMessage(
+                                    errors,
+                                    `workDetail.${index}.relievingLetter`,
+                                    touched
+                                  )}
                                   <Image
                                     src={
                                       values.workDetail[index].relievingPreview

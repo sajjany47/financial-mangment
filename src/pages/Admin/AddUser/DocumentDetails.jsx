@@ -3,8 +3,30 @@ import { Field, Form, Formik } from "formik";
 import { InputField } from "../../../component/FieldType";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
+import * as Yup from "yup";
+import { ErrorMessage } from "./EducationDetails";
 
 const DocumentDetails = (props) => {
+  const documentsSchema = Yup.object().shape({
+    id: Yup.string().required("Id is required"),
+    aadharNumber: Yup.string().required("Aadhar number is required"),
+    // .matches("^d{12}$", "Enter valid Aadhar number"),
+    voterNumber: Yup.string().required("Voter number is required"),
+    // .matches("/^[A-Z]{3}d{7}$/", "Enter valid voter number"),
+    panNumber: Yup.string().required("Pan number is required"),
+    // .matches("/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/", "Enter valid pan number"),
+    // passportNumber: Yup.string()
+    //   // .required("Passport number is required")
+    //   // .matches("/^[A-Z]{1}[0-9]{7}$/", "Enter valid Passport number"),
+    aadharImage: Yup.string().required("Aadhar Image is required"),
+    voterImage: Yup.string().required("Voter Image is required"),
+    panImage: Yup.string().required("Pan Image is required"),
+    passportImage: Yup.string().when("passportNumber", {
+      is: (val) => val !== "",
+      then: () => Yup.string().required("Passport Image is required"),
+      otherwise: Yup.string().notRequired(),
+    }),
+  });
   const initialValues = {
     aadharNumber: "",
     voterNumber: "",
@@ -24,8 +46,12 @@ const DocumentDetails = (props) => {
     props.next();
   };
   return (
-    <Formik onSubmit={handelSubmit} initialValues={initialValues}>
-      {({ handleSubmit, setFieldValue, values }) => (
+    <Formik
+      onSubmit={handelSubmit}
+      initialValues={initialValues}
+      validationSchema={documentsSchema}
+    >
+      {({ handleSubmit, setFieldValue, values, touched, errors }) => (
         <Form onSubmit={handleSubmit}>
           <div className="flex flex-column">
             <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
@@ -78,6 +104,7 @@ const DocumentDetails = (props) => {
                       );
                     }}
                   />
+                  {ErrorMessage(errors, `aadharImage`, touched)}
                   <Image
                     src={values.aadharImagePre}
                     alt="Image"
@@ -104,6 +131,7 @@ const DocumentDetails = (props) => {
                       );
                     }}
                   />
+                  {ErrorMessage(errors, `panImage`, touched)}
                   <Image
                     src={values.panImagePre}
                     alt="Image"
@@ -130,6 +158,7 @@ const DocumentDetails = (props) => {
                       );
                     }}
                   />
+                  {ErrorMessage(errors, `voterImage`, touched)}
                   <Image
                     src={values.voterImagePre}
                     alt="Image"
@@ -156,6 +185,7 @@ const DocumentDetails = (props) => {
                       );
                     }}
                   />
+                  {ErrorMessage(errors, `passportImage`, touched)}
                   <Image
                     src={values.passportImagePre}
                     alt="Image"
@@ -190,6 +220,7 @@ const DocumentDetails = (props) => {
                 label={props.type === "add" ? "Submit & Next" : "Update"}
                 icon="pi pi-arrow-right"
                 iconPos="right"
+                type="submit"
               />
             </div>
           </div>

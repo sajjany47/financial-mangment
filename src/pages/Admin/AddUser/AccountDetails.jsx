@@ -3,8 +3,25 @@ import { Field, Form, Formik } from "formik";
 import { InputField } from "../../../component/FieldType";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
+import * as Yup from "yup";
+import { ErrorMessage } from "./EducationDetails";
 
 const AccountDetails = (props) => {
+  const accountDetailSchema = Yup.object().shape({
+    id: Yup.string().required("Id is required"),
+    bankName: Yup.string().required("Bank name is required"),
+    accountNumber: Yup.string().required("Account number is required"),
+    // .matches("/^d{9,18}$/", "Enter valid Account number"),
+    branchName: Yup.string().required("Branch name is required"),
+    ifsc: Yup.string().required("IFSC code is required"),
+    passbookImage: Yup.string().required(
+      "Passbook Front Page image is required"
+    ),
+    uanImage: Yup.string().when("uan", {
+      is: (val) => val !== "",
+      then: () => Yup.string().required("UAN image is required"),
+    }),
+  });
   const initialValues = {
     accountNumber: "",
     bankName: "",
@@ -15,13 +32,18 @@ const AccountDetails = (props) => {
     uanImage: "",
     passbookPreview: "",
     uanPreview: "",
+    id: 1,
   };
   const handelSubmit = (values) => {
     console.log(values);
   };
   return (
-    <Formik onSubmit={handelSubmit} initialValues={initialValues}>
-      {({ handleSubmit, setFieldValue, values }) => (
+    <Formik
+      onSubmit={handelSubmit}
+      initialValues={initialValues}
+      validationSchema={accountDetailSchema}
+    >
+      {({ handleSubmit, setFieldValue, values, touched, errors }) => (
         <Form onSubmit={handleSubmit}>
           <div className="flex flex-column">
             <div className="border-2 border-dashed surface-border border-round surface-ground  font-medium">
@@ -75,6 +97,7 @@ const AccountDetails = (props) => {
                           );
                         }}
                       />
+                      {ErrorMessage(errors, `passbookImage`, touched)}
                       <Image
                         src={values.passbookPreview}
                         alt="Image"
@@ -91,18 +114,19 @@ const AccountDetails = (props) => {
                       </label>
                       <input
                         id="uan-upload"
-                        name="aadharImage"
+                        name="uanImage"
                         type="file"
                         onChange={(e) => {
-                          setFieldValue("uan", e.target.files[0]);
+                          setFieldValue("uanImage", e.target.files[0]);
                           setFieldValue(
-                            "uanImage",
+                            "uanImagePreviw",
                             URL.createObjectURL(e.target.files[0])
                           );
                         }}
                       />
+                      {ErrorMessage(errors, `uanImage`, touched)}
                       <Image
-                        src={values.uanImage}
+                        src={values.uanImagePreviw}
                         alt="Image"
                         width="260"
                         height="260"
@@ -121,7 +145,7 @@ const AccountDetails = (props) => {
               onClick={() => props.back()}
               type="button"
             />
-            <Button label="Submit" />
+            <Button label="Submit" type="submit" />
           </div>
         </Form>
       )}
