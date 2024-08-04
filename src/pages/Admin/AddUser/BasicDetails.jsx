@@ -82,6 +82,7 @@ const BasicDetails = (props) => {
   };
   const handelSubmit = (values) => {
     // eslint-disable-next-line react/prop-types
+
     props.next();
     console.log(values);
   };
