@@ -9,13 +9,22 @@ import AccountDetails from "./AccountDetails";
 
 const AddCustomer = () => {
   const stepperRef = useRef(null);
+
+  const next = () => {
+    return stepperRef.current.nextCallback();
+  };
+
+  const back = () => {
+    return stepperRef.current.prevCallback();
+  };
   return (
     <div className="card flex justify-content-center">
       <Stepper ref={stepperRef} style={{ flexBasis: "75rem" }}>
         <StepperPanel header="Basic">
-          <div className="flex flex-column ">
+          <BasicDetails next={next} back={back} />
+          {/* <div className="flex flex-column ">
             <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-              <BasicDetails />
+              <BasicDetails next={next} back={back} />
             </div>
           </div>
           <div className="flex pt-4 justify-content-end">
@@ -25,7 +34,7 @@ const AddCustomer = () => {
               iconPos="right"
               onClick={() => stepperRef.current.nextCallback()}
             />
-          </div>
+          </div> */}
         </StepperPanel>
         <StepperPanel header="Education & Experience">
           <div className="flex flex-column">
