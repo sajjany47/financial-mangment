@@ -5,6 +5,8 @@ import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import * as Yup from "yup";
 import { ErrorMessage } from "./EducationDetails";
+import { userAccountUpdate } from "./AddUserService";
+import Swal from "sweetalert2";
 
 const AccountDetails = (props) => {
   const accountDetailSchema = Yup.object().shape({
@@ -35,6 +37,14 @@ const AccountDetails = (props) => {
   };
   const handelSubmit = (values) => {
     console.log(values);
+    userAccountUpdate({ ...values })
+      .then((res) => {
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+      })
+      .catch(() => {});
   };
   return (
     <Formik

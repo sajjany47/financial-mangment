@@ -9,6 +9,8 @@ import { Button } from "primereact/button";
 import { fresherOrExperience } from "../../../shared/Config";
 import { Image } from "primereact/image";
 import * as Yup from "yup";
+import Swal from "sweetalert2";
+import { userEducationUpdate } from "./AddUserService";
 
 export const ErrorMessage = (errors, name, touched) => {
   return (
@@ -99,8 +101,15 @@ const EducationDetails = (props) => {
     ],
   };
   const handelSubmit = (values) => {
-    console.log(values);
-    props.next();
+    userEducationUpdate({ ...values })
+      .then((res) => {
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        props.next();
+      })
+      .catch(() => {});
   };
 
   return (

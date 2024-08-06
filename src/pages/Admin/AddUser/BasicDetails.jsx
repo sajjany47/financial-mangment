@@ -11,7 +11,7 @@ import { Button } from "primereact/button";
 import * as Yup from "yup";
 import { ErrorMessage } from "./EducationDetails";
 import { Image } from "primereact/image";
-import { userBasicUpdate } from "./AddUserService";
+import { userBasicUpdate, userCreate } from "./AddUserService";
 import Swal from "sweetalert2";
 
 const BasicDetails = (props) => {
@@ -91,13 +91,17 @@ const BasicDetails = (props) => {
             title: res.message,
             icon: "success",
           });
+          props.next();
         })
         .catch(() => {});
     } else {
-      console.log("object");
+      userCreate(values).then((res) => {
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+      });
     }
-    props.next();
-    console.log(values);
   };
 
   return (
@@ -194,7 +198,7 @@ const BasicDetails = (props) => {
                     options={[]}
                   />
                 </div>
-                <div className="col-12 md:col-3">
+                <div className="col-12 md:col-3 mt-4">
                   <label
                     htmlFor="userImage"
                     className="block  font-medium mb-2 custom-file-upload"
