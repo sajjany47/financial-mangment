@@ -1,7 +1,10 @@
 import { Button } from "primereact/button";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setAddUser } from "../../../store/reducer/AddUserReducer";
 
 const EmployeeList = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   return (
     <>
@@ -9,11 +12,12 @@ const EmployeeList = () => {
         <Button
           label="Add Employee"
           icon="pi pi-user-plus"
-          onClick={() =>
+          onClick={() => {
             navigate("/employee/add", {
               state: { type: "add", role: "employee" },
-            })
-          }
+            });
+            dispatch(setAddUser({ type: "add", role: "employee" }));
+          }}
         />
       </div>
     </>

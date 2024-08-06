@@ -1,11 +1,11 @@
-import { headerWithToken, Instance } from "../../../shared/constant";
+import { headerWithFormData, Instance } from "../../../shared/constant";
 
 export const userCreate = async (payload) => {
   try {
     const response = await Instance.post(
       `/user/admin-signup`,
       payload,
-      headerWithToken()
+      headerWithFormData()
     );
     return response.data;
   } catch (error) {
@@ -18,7 +18,7 @@ export const userEducationUpdate = async (payload) => {
     const response = await Instance.post(
       `/user/update-education`,
       payload,
-      headerWithToken()
+      headerWithFormData()
     );
     return response.data;
   } catch (error) {
@@ -31,7 +31,7 @@ export const userDocumentUpdate = async (payload) => {
     const response = await Instance.post(
       `/user/update-document`,
       payload,
-      headerWithToken()
+      headerWithFormData()
     );
     return response.data;
   } catch (error) {
@@ -44,7 +44,7 @@ export const userAccountUpdate = async (payload) => {
     const response = await Instance.post(
       `/user/update-account`,
       payload,
-      headerWithToken()
+      headerWithFormData()
     );
     return response.data;
   } catch (error) {
@@ -57,7 +57,7 @@ export const userBasicUpdate = async (payload) => {
     const response = await Instance.post(
       `/user/update-basic`,
       payload,
-      headerWithToken()
+      headerWithFormData()
     );
     return response.data;
   } catch (error) {

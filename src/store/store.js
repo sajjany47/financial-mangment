@@ -10,6 +10,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
+import AddUserReducer from "./reducer/AddUserReducer";
 
 const persistConfig = {
   key: "root",
@@ -17,10 +18,12 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, UserReducer);
+const addUserPersistedReducer = persistReducer(persistConfig, AddUserReducer);
 
 export const store = configureStore({
   reducer: {
     user: persistedReducer,
+    addUser: addUserPersistedReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

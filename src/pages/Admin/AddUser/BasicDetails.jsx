@@ -11,6 +11,8 @@ import { Button } from "primereact/button";
 import * as Yup from "yup";
 import { ErrorMessage } from "./EducationDetails";
 import { Image } from "primereact/image";
+import { userBasicUpdate } from "./AddUserService";
+import Swal from "sweetalert2";
 
 const BasicDetails = (props) => {
   const adminSignUpSchema30 = Yup.object().shape({
@@ -82,7 +84,18 @@ const BasicDetails = (props) => {
   };
   const handelSubmit = (values) => {
     // eslint-disable-next-line react/prop-types
-
+    if (props.type === "edit") {
+      userBasicUpdate({ ...values })
+        .then((res) => {
+          Swal.fire({
+            title: res.message,
+            icon: "success",
+          });
+        })
+        .catch(() => {});
+    } else {
+      console.log("object");
+    }
     props.next();
     console.log(values);
   };
