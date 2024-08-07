@@ -11,8 +11,15 @@ import { Button } from "primereact/button";
 import * as Yup from "yup";
 import { ErrorMessage } from "./EducationDetails";
 import { Image } from "primereact/image";
-import { userBasicUpdate, userCreate } from "./AddUserService";
+import {
+  city,
+  countryList,
+  state,
+  userBasicUpdate,
+  userCreate,
+} from "./AddUserService";
 import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 
 const BasicDetails = (props) => {
   const adminSignUpSchema30 = Yup.object().shape({
@@ -58,13 +65,17 @@ const BasicDetails = (props) => {
       })
       .required("Branch is required"),
     address: Yup.string().required("Address is required"),
-    state: Yup.string().required("State is required"),
-    country: Yup.string().required("Country is required"),
-    city: Yup.string().required("City is required"),
+    state: Yup.object().required("State is required"),
+    country: Yup.object().required("Country is required"),
+    city: Yup.object().required("City is required"),
     pincode: Yup.string()
       .matches(/^\d{6}$/, "Enter valid pincode")
       .required("Pincode is required"),
   });
+
+  const [countryData, setCountryData] = useState([]);
+  const [stateData, setStateData] = useState([]);
+  const [cityData, setCityData] = useState([]);
   const initialValues = {
     name: "",
     username: "",
@@ -81,6 +92,44 @@ const BasicDetails = (props) => {
     role: props.role,
     userImage: "",
     userImagePre: "",
+  };
+
+  useEffect(() => {
+    countryList()
+      .then((res) => {
+        setCountryData(res.data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const stateList = (country) => {
+    state({ country: country })
+      .then((res) => {
+        setStateData(res.data);
+      })
+      .catch(() => {});
+  };
+
+  const cityList = (country, state) => {
+    city({ country: country, state: state })
+      .then((res) => {
+        setCityData(res.data);
+      })
+      .catch(() => {});
+  };
+
+  const handelSate = (setFieldValue, e) => {
+    setFieldValue("state", "");
+    setFieldValue("city", "");
+    setFieldValue("country", e.value);
+    stateList(e.value.iso2);
+  };
+
+  const handelCityList = (setFieldValue, e, value) => {
+    console.log(value.country);
+    setFieldValue("city", "");
+    setFieldValue("state", e.value);
+    cityList(value.country.iso2, e.value.iso2);
   };
   const handelSubmit = (values) => {
     // eslint-disable-next-line react/prop-types
@@ -164,15 +213,23 @@ const BasicDetails = (props) => {
                     label="Country"
                     component={DropdownField}
                     name="country"
-                    options={[]}
+                    optionLabel="name"
+                    optionValue="iso2"
+                    options={countryData}
+                    filter
+                    onChange={(e) => handelSate(setFieldValue, e)}
                   />
                 </div>
                 <div className="col-12 md:col-3">
                   <Field
                     label="State"
+                    filter
                     component={DropdownField}
                     name="state"
-                    options={[]}
+                    optionLabel="name"
+                    optionValue="iso2"
+                    options={stateData}
+                    onChange={(e) => handelCityList(setFieldValue, e, values)}
                   />
                 </div>
                 <div className="col-12 md:col-3">
@@ -180,7 +237,9 @@ const BasicDetails = (props) => {
                     label="City"
                     component={DropdownField}
                     name="city"
-                    options={[]}
+                    options={cityData}
+                    optionLabel="name"
+                    optionValue="id"
                   />
                 </div>
                 <div className="col-12 md:col-3">
