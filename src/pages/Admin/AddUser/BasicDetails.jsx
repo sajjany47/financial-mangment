@@ -126,7 +126,6 @@ const BasicDetails = (props) => {
   };
 
   const handelCityList = (setFieldValue, e, value) => {
-    console.log(value.country);
     setFieldValue("city", "");
     setFieldValue("state", e.value);
     cityList(value.country.iso2, e.value.iso2);
