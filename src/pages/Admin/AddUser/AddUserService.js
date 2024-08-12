@@ -69,13 +69,9 @@ export const userBasicUpdate = async (payload) => {
   }
 };
 
-export const countryList = async (payload) => {
+export const countryList = async () => {
   try {
-    const response = await Instance.get(
-      `/user/country`,
-      payload,
-      headerWithToken()
-    );
+    const response = await Instance.get(`/user/country`, headerWithToken());
     return response.data;
   } catch (error) {
     throw new Error(error);

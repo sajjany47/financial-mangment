@@ -236,6 +236,7 @@ const BasicDetails = (props) => {
                     label="City"
                     component={DropdownField}
                     name="city"
+                    filter
                     options={cityData}
                     optionLabel="name"
                     optionValue="id"
