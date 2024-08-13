@@ -57,13 +57,13 @@ const BasicDetails = (props) => {
           .required("Position is required"),
       otherwise: () => Yup.string().notRequired(),
     }),
-    jobBranchName: Yup.string()
-      .when("position", {
-        is: (val) => val !== Position.CUSTOMER,
-        then: () => Yup.string().required("Branch is required"),
-        otherwise: () => Yup.string().notRequired(),
-      })
-      .required("Branch is required"),
+    // jobBranchName: Yup.string()
+    //   .when("position", {
+    //     is: (val) => val !== Position.CUSTOMER,
+    //     then: () => Yup.string().required("Branch is required"),
+    //     otherwise: () => Yup.string().notRequired(),
+    //   })
+    //   .required("Branch is required"),
     address: Yup.string().required("Address is required"),
     state: Yup.object().required("State is required"),
     country: Yup.object().required("Country is required"),
@@ -131,6 +131,14 @@ const BasicDetails = (props) => {
     cityList(value.country.iso2, e.value.iso2);
   };
   const handelSubmit = (values) => {
+    const reqData = {
+      ...values,
+      city: values.city.id,
+      country: values.country.id,
+      state: values.state.id,
+      position: "customer",
+    };
+
     // eslint-disable-next-line react/prop-types
     if (props.type === "edit") {
       userBasicUpdate({ ...values })
@@ -143,7 +151,7 @@ const BasicDetails = (props) => {
         })
         .catch(() => {});
     } else {
-      userCreate(values).then((res) => {
+      userCreate(reqData).then((res) => {
         Swal.fire({
           title: res.message,
           icon: "success",
