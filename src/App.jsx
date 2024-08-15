@@ -6,6 +6,7 @@ import CustomerList from "./pages/Admin/AddUser/CustomerList";
 import AddCustomers from "./pages/Admin/AddUser/AddCustomers";
 import EmployeeList from "./pages/Admin/AddUser/EmployeeList";
 import AddEmployee from "./pages/Admin/AddUser/AddEmployee";
+import Branch from "./pages/Admin/Branch/Branch";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/reset-password" element={<PasswordChange />} />
             <Route path="/customers/list" element={<CustomerList />} />
+            <Route path="/branch/list" element={<Branch />} />
             <Route path="/customers/add" element={<AddCustomers />} />
             <Route path="/employee/list" element={<EmployeeList />} />
             <Route path="/employee/add" element={<AddEmployee />} />

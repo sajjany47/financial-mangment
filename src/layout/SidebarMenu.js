@@ -10,6 +10,11 @@ const sidebarMenu = {
       ],
     },
     {
+      title: "Branch",
+      icon: "pi pi-building-columns",
+      submenu: [{ title: "Branch", route: "/branch/list" }],
+    },
+    {
       title: "Loan",
       icon: "pi pi-file",
       submenu: [
