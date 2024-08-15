@@ -17,16 +17,12 @@ export const RefreshToken = async (payload) => {
   }
 };
 export const userLogin = async (payload) => {
-  try {
-    const response = await Instance.post(
-      `/user/login`,
-      payload,
-      headerWithOutToken()
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
-  }
+  const response = await Instance.post(
+    `/user/login`,
+    payload,
+    headerWithOutToken()
+  );
+  return response.data;
 };
 
 export const userPasswordReset = async (payload) => {

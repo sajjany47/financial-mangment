@@ -19,6 +19,19 @@ import {
 } from "./shared/Config.js";
 
 export const Root = () => {
+  const errorMessage = (error) => {
+    switch (error.response.status) {
+      case 400:
+        return error.response.data.message.message;
+      case 502:
+        return error.message;
+      case 500:
+        return error.message;
+      default:
+        return error.response.data.message;
+    }
+  };
+
   useEffect(() => {
     Instance.interceptors.response.use(
       (res) => {
@@ -40,17 +53,45 @@ export const Root = () => {
           } catch (error) {
             setTimeout(() => {
               Swal.fire({
-                title: "Failed to get Refresh Token",
+                title: "Failed to generate Refresh Token",
                 icon: "error",
               });
             }, 350);
+            window.location.href = "/login";
           }
+        } else if (error.response.status === 401) {
+          Swal.fire({
+            title: errorMessage(error),
+            icon: "error",
+          });
+          sessionStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+          sessionStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
+          // window.location.href = `http://localhost:5173/`;
         } else {
           Swal.fire({
-            title: error.response.data.message,
+            title: errorMessage(error),
             icon: "error",
           });
         }
+
+        return Promise.reject(error);
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    // Add a request interceptor
+    Instance.interceptors.request.use(
+      function (config) {
+        // Do something before request is sent
+        return config;
+      },
+      function (error) {
+        Swal.fire({
+          title: errorMessage(error),
+          icon: "error",
+        });
+        return Promise.reject(error);
       }
     );
   }, []);

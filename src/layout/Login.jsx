@@ -11,11 +11,12 @@ import {
   ACCESS_TOKEN_STORAGE_KEY,
   REFRESH_TOKEN_STORAGE_KEY,
 } from "../shared/Config";
-// import Swal from "sweetalert2";
+import Loader from "../component/Loader";
 
 const Login = () => {
   const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
     username: Yup.string().required("Username is required"),
@@ -23,8 +24,10 @@ const Login = () => {
   });
 
   const handelSubmit = (values) => {
+    setLoading(true);
     userLogin(values)
       .then((res) => {
+        setLoading(false);
         dispatch(
           setUser({
             data: res.data.data,
@@ -38,17 +41,14 @@ const Login = () => {
           res.data.refreshToken
         );
       })
-      .catch((err) => {
-        console.log(err);
-        // Swal.fire({
-        //   title: err,
-        //   icon: "error",
-        // });
+      .catch(() => {
+        setLoading(false);
       });
   };
 
   return (
     <div className="mt-8">
+      {loading && <Loader />}
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={handelSubmit}
