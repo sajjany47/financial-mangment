@@ -5,11 +5,9 @@ import BasicDetails from "./BasicDetails";
 import EducationDetails from "./EducationDetails";
 import DocumentDetails from "./DocumentDetails";
 import AccountDetails from "./AccountDetails";
-import { useLocation } from "react-router-dom";
 
 const AddUser = () => {
   const stepperRef = useRef(null);
-  const { state } = useLocation();
 
   const next = () => {
     return stepperRef.current.nextCallback();
@@ -22,16 +20,16 @@ const AddUser = () => {
     <div className="card flex justify-content-center">
       <Stepper ref={stepperRef} style={{ flexBasis: "75rem" }}>
         <StepperPanel header="Basic">
-          <BasicDetails next={next} type={state.type} role={state.role} />
+          <BasicDetails next={next} />
         </StepperPanel>
         <StepperPanel header="Education & Experience">
-          <EducationDetails next={next} back={back} type={state.type} />
+          <EducationDetails next={next} back={back} />
         </StepperPanel>
         <StepperPanel header="Document">
-          <DocumentDetails next={next} back={back} type={state.type} />
+          <DocumentDetails next={next} back={back} />
         </StepperPanel>
         <StepperPanel header="Account">
-          <AccountDetails next={next} back={back} type={state.type} />
+          <AccountDetails next={next} back={back} />
         </StepperPanel>
       </Stepper>
     </div>

@@ -13,9 +13,7 @@ const EmployeeList = () => {
           label="Add Employee"
           icon="pi pi-user-plus"
           onClick={() => {
-            navigate("/employee/add", {
-              state: { type: "add", role: "employee" },
-            });
+            navigate("/employee/add");
             dispatch(setAddUser({ type: "add", role: "employee" }));
           }}
         />

@@ -22,7 +22,9 @@ export const Root = () => {
   const errorMessage = (error) => {
     switch (error.response.status) {
       case 400:
-        return error.response.data.message.message;
+        return error.response.data.message.message
+          ? error.response.data.message.message
+          : error.response.data.message;
       case 502:
         return error.message;
       case 500:
