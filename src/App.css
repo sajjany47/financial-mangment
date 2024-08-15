@@ -53,3 +53,7 @@ input[type="file"] {
   z-index: 9999999;
   backdrop-filter: blur(3px);
 }
+
+.swal2-container {
+  z-index: 9999 !important;
+}

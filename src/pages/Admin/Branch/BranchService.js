@@ -1,16 +1,12 @@
 import { headerWithToken, Instance } from "../../../shared/constant";
 
 export const createBranch = async (payload) => {
-  try {
-    const response = await Instance.post(
-      "/branch/create",
-      payload,
-      headerWithToken()
-    );
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
+  const response = await Instance.post(
+    "/branch/create",
+    payload,
+    headerWithToken()
+  );
+  return response.data;
 };
 
 export const updateBranch = async (payload) => {

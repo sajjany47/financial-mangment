@@ -89,11 +89,15 @@ const Branch = () => {
       state: values.state.id,
       city: values.city.id,
     };
-    createBranch(reqData).then((res) => {
-      Swal.fire({ title: res.message, icon: "success" });
-      setLoading(false);
-      setVisible(false);
-    });
+    createBranch(reqData)
+      .then((res) => {
+        Swal.fire({ title: res.message, icon: "success" });
+        setLoading(false);
+        setVisible(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
   return (
     <>
