@@ -21,19 +21,17 @@ const PasswordChange = (props) => {
       password: values.password,
       id: props.type === "user" ? userDetails.data._id : props.id,
     };
-    userPasswordReset(reqData).then((res) => {
-      Swal.fire({
-        title: res.message,
-        icon: "success",
+    userPasswordReset(reqData)
+      .then((res) => {
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        props.dislogeClose();
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      props.dislogeClose();
-    });
-    // .catch((error) => {
-    //   Swal.fire({
-    //     title: error.message,
-    //     icon: "error",
-    //   });
-    // });
   };
   return (
     <Formik
@@ -68,7 +66,7 @@ const PasswordChange = (props) => {
                 name={"confirmPassword"}
                 type="password"
               />
-              <Button label="Sign In" className="w-full" />
+              <Button label="Reset Password" className="w-full mt-2" />
             </div>
           </div>
         </Form>

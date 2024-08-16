@@ -26,7 +26,9 @@ export const Root = () => {
           ? error.response.data.message.message
           : error.response.data.message;
       case 502:
-        return error.message;
+        return error.response.data.message.message
+          ? error.response.data.message.message
+          : error.message;
       case 500:
         return error.message;
       default:

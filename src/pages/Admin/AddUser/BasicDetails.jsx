@@ -20,9 +20,10 @@ import {
 } from "./AddUserService";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { branchList } from "../Branch/BranchService";
 import Loader from "../../../component/Loader";
+import { setAddUser } from "../../../store/reducer/AddUserReducer";
 
 const adminSignUpSchema30 = Yup.object().shape({
   username: Yup.string().required("Username is required"),
@@ -48,10 +49,11 @@ const adminSignUpSchema30 = Yup.object().shape({
       Position.PM,
       Position.SM,
       Position.VD,
+      Position.BM,
     ])
     .required("Position is required"),
 
-  jobBranchName: Yup.string().required("Branch is required"),
+  jobBranchName: Yup.object().required("Branch is required"),
 
   address: Yup.string().required("Address is required"),
   state: Yup.object().required("State is required"),
@@ -62,9 +64,9 @@ const adminSignUpSchema30 = Yup.object().shape({
     .required("Pincode is required"),
 });
 const BasicDetails = (props) => {
+  const dispatch = useDispatch();
   const searchKey = useSelector((state) => state);
-  console.log(searchKey);
-  const [loading, setLoading] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
@@ -82,7 +84,6 @@ const BasicDetails = (props) => {
     city: "",
     pincode: "",
     jobBranchName: "",
-    role: props.role,
     userImage: "",
     userImagePre: "",
   };
@@ -139,32 +140,49 @@ const BasicDetails = (props) => {
     cityList(value.country.iso2, e.value.iso2);
   };
   const handelSubmit = (values) => {
+    setLoading(true);
     const reqData = {
       ...values,
       city: values.city.id,
       country: values.country.id,
       state: values.state.id,
-      position: "customer",
+      jobBranchName: values.jobBranchName._id,
     };
 
     // eslint-disable-next-line react/prop-types
-    if (props.type === "edit") {
+    if (searchKey.addUser.addUser.type === "edit") {
       userBasicUpdate({ ...values })
         .then((res) => {
+          setLoading(false);
           Swal.fire({
             title: res.message,
             icon: "success",
           });
           props.next();
         })
-        .catch(() => {});
-    } else {
-      userCreate(reqData).then((res) => {
-        Swal.fire({
-          title: res.message,
-          icon: "success",
+        .catch(() => {
+          setLoading(false);
         });
-      });
+    } else {
+      console.log({ ...reqData, userImage: values.userImage.name });
+      userCreate({ ...reqData, userImage: "values.userImage.name" })
+        .then((res) => {
+          dispatch(
+            setAddUser({
+              ...searchKey.addUser.addUser,
+              id: res.data._id,
+              data: res.data,
+            })
+          );
+          setLoading(false);
+          Swal.fire({
+            title: res.message,
+            icon: "success",
+          });
+        })
+        .catch(() => {
+          setLoading(false);
+        });
     }
   };
 
@@ -209,16 +227,15 @@ const BasicDetails = (props) => {
                       name="dob"
                     />
                   </div>
-                  {props.role !== Position.CUSTOMER && (
-                    <div className="col-12 md:col-3">
-                      <Field
-                        label="Position"
-                        component={DropdownField}
-                        options={DropdownPosition}
-                        name="position"
-                      />
-                    </div>
-                  )}
+
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Position"
+                      component={DropdownField}
+                      options={DropdownPosition}
+                      name="position"
+                    />
+                  </div>
 
                   <div className="col-12 md:col-3">
                     <Field
@@ -239,6 +256,7 @@ const BasicDetails = (props) => {
                       options={countryData}
                       filter
                       onChange={(e) => {
+                        setFieldValue("jobBranchName", "");
                         handelSate(setFieldValue, e);
                         getBranchList({ country: e.value.id });
                       }}
@@ -254,6 +272,7 @@ const BasicDetails = (props) => {
                       optionValue="iso2"
                       options={stateData}
                       onChange={(e) => {
+                        setFieldValue("jobBranchName", "");
                         handelCityList(setFieldValue, e, values);
                         getBranchList({
                           country: values.country.id,
@@ -272,6 +291,7 @@ const BasicDetails = (props) => {
                       optionLabel="name"
                       optionValue="id"
                       onChange={(e) => {
+                        setFieldValue("jobBranchName", "");
                         setFieldValue("city", e.value);
                         getBranchList({
                           country: values.country.id,
@@ -293,6 +313,7 @@ const BasicDetails = (props) => {
                       label="Branch Name"
                       component={DropdownField}
                       name="jobBranchName"
+                      filter
                       options={branch}
                       optionLabel={"name"}
                       optionValue={"_id"}
@@ -329,7 +350,7 @@ const BasicDetails = (props) => {
               </div>
             </div>
             <div className="flex pt-4 justify-content-end gap-2">
-              {props.type === "edit" && (
+              {searchKey.addUser.addUser.type === "edit" && (
                 <Button
                   type="button"
                   label={"Next"}
@@ -340,7 +361,11 @@ const BasicDetails = (props) => {
               )}
               <Button
                 type="submit"
-                label={props.type === "add" ? "Submit & Next" : "Update"}
+                label={
+                  searchKey.addUser.addUser.type === "add"
+                    ? "Submit & Next"
+                    : "Update"
+                }
                 icon="pi pi-arrow-right"
                 iconPos="right"
               />
