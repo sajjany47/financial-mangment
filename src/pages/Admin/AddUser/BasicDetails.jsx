@@ -164,8 +164,7 @@ const BasicDetails = (props) => {
           setLoading(false);
         });
     } else {
-      console.log({ ...reqData, userImage: values.userImage.name });
-      userCreate({ ...reqData, userImage: "values.userImage.name" })
+      userCreate({ ...reqData, userImage: values.userImage.name })
         .then((res) => {
           dispatch(
             setAddUser({
@@ -179,6 +178,7 @@ const BasicDetails = (props) => {
             title: res.message,
             icon: "success",
           });
+          props.next();
         })
         .catch(() => {
           setLoading(false);
@@ -193,6 +193,7 @@ const BasicDetails = (props) => {
         onSubmit={handelSubmit}
         initialValues={initialValues}
         validationSchema={adminSignUpSchema30}
+        enableReinitialize
       >
         {({ handleSubmit, setFieldValue, errors, touched, values }) => (
           <Form onSubmit={handleSubmit}>

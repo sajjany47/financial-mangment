@@ -11,6 +11,10 @@ import { Image } from "primereact/image";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { userEducationUpdate } from "./AddUserService";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import Loader from "../../../component/Loader";
+import { setAddUser } from "../../../store/reducer/AddUserReducer";
 
 export const ErrorMessage = (errors, name, touched) => {
   return (
@@ -21,6 +25,10 @@ export const ErrorMessage = (errors, name, touched) => {
   );
 };
 const EducationDetails = (props) => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state);
+  const [loading, setLoading] = useState(false);
+  const [imageList, setImageList] = useState([]);
   const educationOrCompanyDetailSchema = Yup.object().shape({
     education: Yup.array()
       .of(
@@ -71,135 +79,515 @@ const EducationDetails = (props) => {
       otherwise: () => Yup.array().notRequired(),
     }),
   });
-  const initialValues = {
-    id: "1",
-    education: [
-      {
-        boardName: "",
-        passingYear: "",
-        marksPercentage: "",
-        resultImage: "",
-        imagePreview: "",
-      },
-    ],
-    fresherOrExperience: "",
-    workDetail: [
-      {
-        companyName: "",
-        position: "",
-        startingYear: "",
-        endingYear: "",
-        experienceLetter: "",
-        relievingLetter: "",
-        appointmentLetter: "",
-        salarySlip: "",
-        experiencePreview: "",
-        relievingPreview: "",
-        appointmentPreview: "",
-        slarySlipPreview: "",
-      },
-    ],
-  };
+  const addUserData = searchKey.addUser.addUser;
+  const initialValues =
+    addUserData.type === "add"
+      ? {
+          id: addUserData.id,
+          education: [
+            {
+              boardName: "",
+              passingYear: "",
+              marksPercentage: "",
+              resultImage: "",
+              imagePreview: "",
+            },
+          ],
+          fresherOrExperience: "",
+          workDetail: [
+            {
+              companyName: "",
+              position: "",
+              startingYear: "",
+              endingYear: "",
+              experienceLetter: "",
+              relievingLetter: "",
+              appointmentLetter: "",
+              salarySlip: "",
+              experiencePreview: "",
+              relievingPreview: "",
+              appointmentPreview: "",
+              slarySlipPreview: "",
+            },
+          ],
+        }
+      : {
+          id: addUserData.id,
+          education: addUserData.data.education.map((item) => ({
+            boardName: item.boardName,
+            passingYear: item.passingYear,
+            marksPercentage: item.marksPercentage,
+            resultImage: item.resultImage,
+            imagePreview: item.resultImage,
+          })),
+          fresherOrExperience: addUserData.data.fresherOrExperience,
+          workDetail: addUserData.data.workDetail.map((item) => ({
+            companyName: item.companyName,
+            position: item.position,
+            startingYear: item.startingYear,
+            endingYear: item.endingYear,
+            experienceLetter: item.experienceLetter,
+            relievingLetter: item.relievingLetter,
+            appointmentLetter: item.appointmentLetter,
+            salarySlip: item.salarySlip,
+            experiencePreview: item.experienceLetter,
+            relievingPreview: item.relievingLetter,
+            appointmentPreview: item.appointmentLetter,
+            slarySlipPreview: item.salarySlip,
+          })),
+        };
   const handelSubmit = (values) => {
-    userEducationUpdate({ ...values })
+    // setLoading(true);
+    let formData = new FormData();
+    formData("id", "66bf909de0f4dabdb4df05c6");
+    formData(
+      "education",
+      JSON.stringify(
+        values.education.map((item) => ({
+          boardName: item.boardName,
+          passingYear: item.passingYear,
+          marksPercentage: item.marksPercentage,
+          resultImage: item.resultImage,
+        }))
+      )
+    );
+    formData("fresherOrExperience", values.fresherOrExperience);
+    if (values.fresherOrExperience === fresherOrExperience.EXPERIENCE) {
+      formData(
+        "workDetail",
+        values.workDetail.map((item) => ({
+          companyName: item.companyName,
+          position: item.position,
+          startingYear: item.startingYear,
+          endingYear: item.endingYear,
+          experienceLetter: item.experienceLetter,
+          relievingLetter: item.relievingLetter,
+          appointmentLetter: item.appointmentLetter,
+          salarySlip: item.salarySlip,
+        }))
+      );
+    } else {
+      formData("workDetail", null);
+    }
+
+    for (let index = 0; index < imageList.length; index++) {
+      formData("image", imageList[index]);
+    }
+
+    // const reqData = {
+    //   id: "66bf909de0f4dabdb4df05c6",
+    //   education: values.education.map((item) => ({
+    //     boardName: item.boardName,
+    //     passingYear: item.passingYear,
+    //     marksPercentage: item.marksPercentage,
+    //     resultImage: item.resultImage.name,
+    //   })),
+    //   fresherOrExperience: values.fresherOrExperience,
+    //   workDetail:
+    //     values.fresherOrExperience === fresherOrExperience.FRESHER
+    //       ? null
+    //       : values.workDetail.map((item) => ({
+    //           companyName: item.companyName,
+    //           position: item.position,
+    //           startingYear: item.startingYear,
+    //           endingYear: item.endingYear,
+    //           experienceLetter: item.experienceLetter.name,
+    //           relievingLetter: item.relievingLetter.name,
+    //           appointmentLetter: item.appointmentLetter.name,
+    //           salarySlip: item.salarySlip.name,
+    //         })),
+    // };
+
+    userEducationUpdate(formData)
       .then((res) => {
+        dispatch(
+          setAddUser({
+            ...searchKey.addUser.addUser,
+            id: res.data._id,
+            data: res.data,
+          })
+        );
+        setLoading(false);
         Swal.fire({
           title: res.message,
           icon: "success",
         });
         props.next();
       })
-      .catch(() => {});
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   return (
-    <Formik
-      onSubmit={handelSubmit}
-      initialValues={initialValues}
-      validationSchema={educationOrCompanyDetailSchema}
-    >
-      {({ handleSubmit, values, setFieldValue, touched, errors }) => (
-        <Form onSubmit={handleSubmit}>
-          <div className="flex flex-column">
-            <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
-              <div className="grid p-3">
-                <div className="col-12 md:col-12">
-                  <FieldArray
-                    name="education"
-                    render={(arrayHelpers) => (
-                      <>
-                        {values.education &&
-                          values.education.map((item, index) => (
-                            <div
-                              className="flex gap-2 align-item-center"
-                              key={index}
-                            >
-                              <div className="grid w-full">
-                                <div className="col-12 md:col-3">
-                                  <Field
-                                    label="Board Name"
-                                    component={InputField}
-                                    name={`education.${index}.boardName`}
-                                  />
+    <>
+      {loading && <Loader />}
+      <Formik
+        onSubmit={handelSubmit}
+        initialValues={initialValues}
+        validationSchema={educationOrCompanyDetailSchema}
+        enableReinitialize
+      >
+        {({ handleSubmit, values, setFieldValue, touched, errors }) => (
+          <Form onSubmit={handleSubmit}>
+            <div className="flex flex-column">
+              <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
+                <div className="grid p-3">
+                  <div className="col-12 md:col-12">
+                    <FieldArray
+                      name="education"
+                      render={(arrayHelpers) => (
+                        <>
+                          {values.education &&
+                            values.education.map((item, index) => (
+                              <div
+                                className="flex gap-2 align-item-center"
+                                key={index}
+                              >
+                                <div className="grid w-full">
+                                  <div className="col-12 md:col-3">
+                                    <Field
+                                      label="Board Name"
+                                      component={InputField}
+                                      name={`education.${index}.boardName`}
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <Field
+                                      label="Passing Year"
+                                      component={InputField}
+                                      name={`education.${index}.passingYear`}
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <Field
+                                      label="Marks (%)"
+                                      component={InputField}
+                                      name={`education.${index}.marksPercentage`}
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3 mt-4">
+                                    <label
+                                      htmlFor={`education.${index}.resultImage`}
+                                      className="block  font-medium mb-2 custom-file-upload"
+                                    >
+                                      Upload Marksheet Image
+                                    </label>
+                                    <input
+                                      id={`education.${index}.resultImage`}
+                                      name={`education.${index}.resultImage`}
+                                      type="file"
+                                      onChange={(e) => {
+                                        setFieldValue(
+                                          `education.${index}.resultImage`,
+                                          `${e.target.files[0].name}-resultImage-${index}`
+                                        );
+                                        setFieldValue(
+                                          `education.${index}.imagePreview`,
+                                          URL.createObjectURL(e.target.files[0])
+                                        );
+                                        setImageList([
+                                          ...imageList,
+                                          {
+                                            ...e.target.files[0],
+                                            name: `${e.target.files[0].name}-resultImage-${index}`,
+                                          },
+                                        ]);
+                                      }}
+                                    />
+                                    {ErrorMessage(
+                                      errors,
+                                      `education.${index}.resultImage`,
+                                      touched
+                                    )}
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <Image
+                                      src={values.education[index].imagePreview}
+                                      alt="Image"
+                                      width="180"
+                                      height="180"
+                                    />
+                                  </div>
                                 </div>
-                                <div className="col-12 md:col-3">
-                                  <Field
-                                    label="Passing Year"
-                                    component={InputField}
-                                    name={`education.${index}.passingYear`}
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <Field
-                                    label="Marks (%)"
-                                    component={InputField}
-                                    name={`education.${index}.marksPercentage`}
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3 mt-4">
-                                  <label
-                                    htmlFor={`education.${index}.resultImage`}
-                                    className="block  font-medium mb-2 custom-file-upload"
-                                  >
-                                    Upload Marksheet Image
-                                  </label>
-                                  <input
-                                    id={`education.${index}.resultImage`}
-                                    name={`education.${index}.resultImage`}
-                                    type="file"
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `education.${index}.resultImage`,
-                                        e.target.files[0]
-                                      );
-                                      setFieldValue(
-                                        `education.${index}.imagePreview`,
-                                        URL.createObjectURL(e.target.files[0])
-                                      );
-                                    }}
-                                  />
-                                  {ErrorMessage(
-                                    errors,
-                                    `education.${index}.resultImage`,
-                                    touched
-                                  )}
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <Image
-                                    src={values.education[index].imagePreview}
-                                    alt="Image"
-                                    width="180"
-                                    height="180"
+
+                                <div>
+                                  <Button
+                                    icon="pi pi-times"
+                                    type="button"
+                                    rounded
+                                    className="mt-4"
+                                    text
+                                    onClick={() => arrayHelpers.remove(index)}
+                                    severity="danger"
+                                    aria-label="Cancel"
+                                    raised
                                   />
                                 </div>
                               </div>
+                            ))}
+                          <div className="col-12">
+                            <Button
+                              className="px-8"
+                              label="Add"
+                              type="button"
+                              onClick={() =>
+                                arrayHelpers.push({
+                                  boardName: "",
+                                  selectClass: "",
+                                  marks: "",
+                                  passingYear: "",
+                                })
+                              }
+                            />
+                          </div>
+                        </>
+                      )}
+                    />
+                  </div>
+                  <div className="col-12">
+                    <Field
+                      label="Fresher or Experience"
+                      component={RadioField}
+                      name={`fresherOrExperience`}
+                      radiolist={[
+                        {
+                          label: "Experience",
+                          value: fresherOrExperience.EXPERIENCE,
+                          id: "1",
+                        },
+                        {
+                          label: "Fresher",
+                          value: fresherOrExperience.FRESHER,
+                          id: "2",
+                        },
+                      ]}
+                    />
+                  </div>
+                  {values.fresherOrExperience ===
+                    fresherOrExperience.EXPERIENCE && (
+                    <FieldArray
+                      name="workDetail"
+                      render={(arrayHelpers) => (
+                        <>
+                          {values.workDetail &&
+                            values.workDetail.map((item, index) => (
+                              <div
+                                className="col-12 flex gap-2 align-item-center"
+                                key={index}
+                              >
+                                <div className="grid w-full">
+                                  <div className="col-12 md:col-3">
+                                    <Field
+                                      label="Institute Name"
+                                      component={InputField}
+                                      name={`workDetail.${index}.companyName`}
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <Field
+                                      label="Position"
+                                      component={InputField}
+                                      name={`workDetail.${index}.position`}
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <Field
+                                      label="Starting Year"
+                                      component={DateField}
+                                      name={`workDetail.${index}.startingYear`}
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <Field
+                                      label="Ending Year"
+                                      component={DateField}
+                                      name={`workDetail.${index}.endingYear`}
+                                    />
+                                  </div>
 
-                              <div>
+                                  <div className="col-12 md:col-3">
+                                    <label
+                                      htmlFor={`workDetail.${index}.appointmentLetter`}
+                                      className="block  font-medium mb-2 custom-file-upload"
+                                    >
+                                      Upload Appointment Letter
+                                    </label>
+                                    <input
+                                      id={`workDetail.${index}.appointmentLetter`}
+                                      name={`workDetail.${index}.appointmentLetter`}
+                                      type="file"
+                                      onChange={(e) => {
+                                        setFieldValue(
+                                          `workDetail.${index}.appointmentLetter`,
+                                          `${e.target.files[0].name}-appointmentLetter-${index}`
+                                        );
+                                        setFieldValue(
+                                          `workDetail.${index}.appointmentPreview`,
+                                          URL.createObjectURL(e.target.files[0])
+                                        );
+                                        setImageList([
+                                          ...imageList,
+                                          {
+                                            ...e.target.files[0],
+                                            name: `${e.target.files[0].name}-appointmentLetter-${index}`,
+                                          },
+                                        ]);
+                                      }}
+                                    />
+                                    {ErrorMessage(
+                                      errors,
+                                      `workDetail.${index}.appointmentLetter`,
+                                      touched
+                                    )}
+                                    <Image
+                                      src={
+                                        values.workDetail[index]
+                                          .appointmentPreview
+                                      }
+                                      alt="Image"
+                                      width="180"
+                                      height="180"
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <label
+                                      htmlFor={`workDetail.${index}.salarySlip`}
+                                      className="block  font-medium mb-2 custom-file-upload"
+                                    >
+                                      Latest Salary Slip
+                                    </label>
+                                    <input
+                                      id={`workDetail.${index}.salarySlip`}
+                                      name={`workDetail.${index}.salarySlip`}
+                                      type="file"
+                                      onChange={(e) => {
+                                        setFieldValue(
+                                          `workDetail.${index}.salarySlip`,
+                                          `${e.target.files[0].name}-salarySlip-${index}`
+                                        );
+                                        setFieldValue(
+                                          `workDetail.${index}.slarySlipPreview`,
+                                          URL.createObjectURL(e.target.files[0])
+                                        );
+                                        setImageList([
+                                          ...imageList,
+                                          {
+                                            ...e.target.files[0],
+                                            name: `${e.target.files[0].name}-salarySlip-${index}`,
+                                          },
+                                        ]);
+                                      }}
+                                    />
+                                    {ErrorMessage(
+                                      errors,
+                                      `workDetail.${index}.salarySlip`,
+                                      touched
+                                    )}
+                                    <Image
+                                      src={
+                                        values.workDetail[index]
+                                          .slarySlipPreview
+                                      }
+                                      alt="Image"
+                                      width="180"
+                                      height="180"
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <label
+                                      htmlFor={`workDetail.${index}.experienceLetter`}
+                                      className="block  font-medium mb-2 custom-file-upload"
+                                    >
+                                      Upload Experience Letter
+                                    </label>
+                                    <input
+                                      id={`workDetail.${index}.experienceLetter`}
+                                      name={`workDetail.${index}.experienceLetter`}
+                                      type="file"
+                                      onChange={(e) => {
+                                        setFieldValue(
+                                          `workDetail.${index}.experienceLetter`,
+                                          `${e.target.files[0].name}-experienceLetter-${index}`
+                                        );
+                                        setFieldValue(
+                                          `workDetail.${index}.experiencePreview`,
+                                          URL.createObjectURL(e.target.files[0])
+                                        );
+                                        setImageList([
+                                          ...imageList,
+                                          {
+                                            ...e.target.files[0],
+                                            name: `${e.target.files[0].name}-experienceLetter-${index}`,
+                                          },
+                                        ]);
+                                      }}
+                                    />
+                                    {ErrorMessage(
+                                      errors,
+                                      `workDetail.${index}.experienceLetter`,
+                                      touched
+                                    )}
+                                    <Image
+                                      src={
+                                        values.workDetail[index]
+                                          .experiencePreview
+                                      }
+                                      alt="Image"
+                                      width="180"
+                                      height="180"
+                                    />
+                                  </div>
+                                  <div className="col-12 md:col-3">
+                                    <label
+                                      htmlFor={`workDetail.${index}.relievingLetter`}
+                                      className="block  font-medium mb-2 custom-file-upload"
+                                    >
+                                      Upload Relieving Letter
+                                    </label>
+                                    <input
+                                      id={`workDetail.${index}.relievingLetter`}
+                                      name={`workDetail.${index}.relievingLetter`}
+                                      type="file"
+                                      onChange={(e) => {
+                                        setFieldValue(
+                                          `workDetail.${index}.relievingLetter`,
+                                          `${e.target.files[0].name}-relievingLetter-${index}`
+                                        );
+                                        setFieldValue(
+                                          `workDetail.${index}.relievingPreview`,
+                                          URL.createObjectURL(e.target.files[0])
+                                        );
+                                        setImageList([
+                                          ...imageList,
+                                          {
+                                            ...e.target.files[0],
+                                            name: `${e.target.files[0].name}-relievingLetter-${index}`,
+                                          },
+                                        ]);
+                                      }}
+                                    />
+                                    {ErrorMessage(
+                                      errors,
+                                      `workDetail.${index}.relievingLetter`,
+                                      touched
+                                    )}
+                                    <Image
+                                      src={
+                                        values.workDetail[index]
+                                          .relievingPreview
+                                      }
+                                      alt="Image"
+                                      width="180"
+                                      height="180"
+                                    />
+                                  </div>
+                                </div>
                                 <Button
                                   icon="pi pi-times"
                                   type="button"
-                                  rounded
                                   className="mt-4"
+                                  rounded
                                   text
                                   onClick={() => arrayHelpers.remove(index)}
                                   severity="danger"
@@ -207,300 +595,61 @@ const EducationDetails = (props) => {
                                   raised
                                 />
                               </div>
-                            </div>
-                          ))}
-                        <div className="col-12">
-                          <Button
-                            className="px-8"
-                            label="Add"
-                            type="button"
-                            onClick={() =>
-                              arrayHelpers.push({
-                                boardName: "",
-                                selectClass: "",
-                                marks: "",
-                                passingYear: "",
-                              })
-                            }
-                          />
-                        </div>
-                      </>
-                    )}
-                  />
+                            ))}
+                          <div className="col-12">
+                            <Button
+                              className="px-8"
+                              type="button"
+                              label="Add"
+                              onClick={() =>
+                                arrayHelpers.push({
+                                  institutionName: "",
+                                  position: "",
+                                  startingYear: "",
+                                  endingYear: "",
+                                })
+                              }
+                            />
+                          </div>
+                        </>
+                      )}
+                    />
+                  )}
                 </div>
-                <div className="col-12">
-                  <Field
-                    label="Fresher or Experience"
-                    component={RadioField}
-                    name={`fresherOrExperience`}
-                    radiolist={[
-                      {
-                        label: "Experience",
-                        value: fresherOrExperience.EXPERIENCE,
-                        id: "1",
-                      },
-                      {
-                        label: "Fresher",
-                        value: fresherOrExperience.FRESHER,
-                        id: "2",
-                      },
-                    ]}
-                  />
-                </div>
-                {values.fresherOrExperience ===
-                  fresherOrExperience.EXPERIENCE && (
-                  <FieldArray
-                    name="workDetail"
-                    render={(arrayHelpers) => (
-                      <>
-                        {values.workDetail &&
-                          values.workDetail.map((item, index) => (
-                            <div
-                              className="col-12 flex gap-2 align-item-center"
-                              key={index}
-                            >
-                              <div className="grid w-full">
-                                <div className="col-12 md:col-3">
-                                  <Field
-                                    label="Institute Name"
-                                    component={InputField}
-                                    name={`workDetail.${index}.companyName`}
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <Field
-                                    label="Position"
-                                    component={InputField}
-                                    name={`workDetail.${index}.position`}
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <Field
-                                    label="Starting Year"
-                                    component={DateField}
-                                    name={`workDetail.${index}.startingYear`}
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <Field
-                                    label="Ending Year"
-                                    component={DateField}
-                                    name={`workDetail.${index}.endingYear`}
-                                  />
-                                </div>
-
-                                <div className="col-12 md:col-3">
-                                  <label
-                                    htmlFor={`workDetail.${index}.appointmentLetter`}
-                                    className="block  font-medium mb-2 custom-file-upload"
-                                  >
-                                    Upload Appointment Letter
-                                  </label>
-                                  <input
-                                    id={`workDetail.${index}.appointmentLetter`}
-                                    name={`workDetail.${index}.appointmentLetter`}
-                                    type="file"
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `workDetail.${index}.appointmentLetter`,
-                                        e.target.files[0]
-                                      );
-                                      setFieldValue(
-                                        `workDetail.${index}.appointmentPreview`,
-                                        URL.createObjectURL(e.target.files[0])
-                                      );
-                                    }}
-                                  />
-                                  {ErrorMessage(
-                                    errors,
-                                    `workDetail.${index}.appointmentLetter`,
-                                    touched
-                                  )}
-                                  <Image
-                                    src={
-                                      values.workDetail[index]
-                                        .appointmentPreview
-                                    }
-                                    alt="Image"
-                                    width="180"
-                                    height="180"
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <label
-                                    htmlFor={`workDetail.${index}.salarySlip`}
-                                    className="block  font-medium mb-2 custom-file-upload"
-                                  >
-                                    Latest Salary Slip
-                                  </label>
-                                  <input
-                                    id={`workDetail.${index}.salarySlip`}
-                                    name={`workDetail.${index}.salarySlip`}
-                                    type="file"
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `workDetail.${index}.salarySlip`,
-                                        e.target.files[0]
-                                      );
-                                      setFieldValue(
-                                        `workDetail.${index}.slarySlipPreview`,
-                                        URL.createObjectURL(e.target.files[0])
-                                      );
-                                    }}
-                                  />
-                                  {ErrorMessage(
-                                    errors,
-                                    `workDetail.${index}.salarySlip`,
-                                    touched
-                                  )}
-                                  <Image
-                                    src={
-                                      values.workDetail[index].slarySlipPreview
-                                    }
-                                    alt="Image"
-                                    width="180"
-                                    height="180"
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <label
-                                    htmlFor={`workDetail.${index}.experienceLetter`}
-                                    className="block  font-medium mb-2 custom-file-upload"
-                                  >
-                                    Upload Experience Letter
-                                  </label>
-                                  <input
-                                    id={`workDetail.${index}.experienceLetter`}
-                                    name={`workDetail.${index}.experienceLetter`}
-                                    type="file"
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `workDetail.${index}.experienceLetter`,
-                                        e.target.files[0]
-                                      );
-                                      setFieldValue(
-                                        `workDetail.${index}.experiencePreview`,
-                                        URL.createObjectURL(e.target.files[0])
-                                      );
-                                    }}
-                                  />
-                                  {ErrorMessage(
-                                    errors,
-                                    `workDetail.${index}.experienceLetter`,
-                                    touched
-                                  )}
-                                  <Image
-                                    src={
-                                      values.workDetail[index].experiencePreview
-                                    }
-                                    alt="Image"
-                                    width="180"
-                                    height="180"
-                                  />
-                                </div>
-                                <div className="col-12 md:col-3">
-                                  <label
-                                    htmlFor={`workDetail.${index}.relievingLetter`}
-                                    className="block  font-medium mb-2 custom-file-upload"
-                                  >
-                                    Upload Relieving Letter
-                                  </label>
-                                  <input
-                                    id={`workDetail.${index}.relievingLetter`}
-                                    name={`workDetail.${index}.relievingLetter`}
-                                    type="file"
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        `workDetail.${index}.relievingLetter`,
-                                        e.target.files[0]
-                                      );
-                                      setFieldValue(
-                                        `workDetail.${index}.relievingPreview`,
-                                        URL.createObjectURL(e.target.files[0])
-                                      );
-                                    }}
-                                  />
-                                  {ErrorMessage(
-                                    errors,
-                                    `workDetail.${index}.relievingLetter`,
-                                    touched
-                                  )}
-                                  <Image
-                                    src={
-                                      values.workDetail[index].relievingPreview
-                                    }
-                                    alt="Image"
-                                    width="180"
-                                    height="180"
-                                  />
-                                </div>
-                              </div>
-                              <Button
-                                icon="pi pi-times"
-                                type="button"
-                                className="mt-4"
-                                rounded
-                                text
-                                onClick={() => arrayHelpers.remove(index)}
-                                severity="danger"
-                                aria-label="Cancel"
-                                raised
-                              />
-                            </div>
-                          ))}
-                        <div className="col-12">
-                          <Button
-                            className="px-8"
-                            type="button"
-                            label="Add"
-                            onClick={() =>
-                              arrayHelpers.push({
-                                institutionName: "",
-                                position: "",
-                                startingYear: "",
-                                endingYear: "",
-                              })
-                            }
-                          />
-                        </div>
-                      </>
-                    )}
-                  />
-                )}
               </div>
             </div>
-          </div>
-          <div className="flex pt-4 justify-content-between">
-            <Button
-              label="Back"
-              severity="secondary"
-              icon="pi pi-arrow-left"
-              // eslint-disable-next-line react/prop-types
-              onClick={() => props.back()}
-              type="button"
-            />
-            <div className="flex  justify-content-end gap-2">
-              {props.type === "edit" && (
+            <div className="flex pt-4 justify-content-between">
+              <Button
+                label="Back"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                // eslint-disable-next-line react/prop-types
+                onClick={() => props.back()}
+                type="button"
+              />
+              <div className="flex  justify-content-end gap-2">
+                {props.type === "edit" && (
+                  <Button
+                    label="Next"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    onClick={() => props.next()}
+                    type="button"
+                  />
+                )}
+
                 <Button
-                  label="Next"
+                  label={props.type === "add" ? "Submit & Next" : "Update"}
                   icon="pi pi-arrow-right"
                   iconPos="right"
-                  onClick={() => props.next()}
-                  type="button"
+                  type="submit"
                 />
-              )}
-
-              <Button
-                label={props.type === "add" ? "Submit & Next" : "Update"}
-                icon="pi pi-arrow-right"
-                iconPos="right"
-                type="submit"
-              />
+              </div>
             </div>
-          </div>
-        </Form>
-      )}
-    </Formik>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 };
 
