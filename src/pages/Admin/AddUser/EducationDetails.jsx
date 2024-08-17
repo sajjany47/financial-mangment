@@ -6,7 +6,11 @@ import { fresherOrExperience } from "../../../shared/Config";
 import { Image } from "primereact/image";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-import { getDetails, userEducationDetailsUpdate } from "./AddUserService";
+import {
+  getDetails,
+  userEducationDetailsUpdate,
+  userUpdate,
+} from "./AddUserService";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Loader from "../../../component/Loader";
@@ -198,6 +202,26 @@ const EducationDetails = (props) => {
       />
     );
   };
+
+  const finalSubmit = () => {
+    userUpdate({
+      ...employeeData,
+      dataType: "educationAndWork",
+      profileRatio:
+        employeeData.profileRatio <= 60 ? 60 : employeeData.profileRatio,
+    })
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        props.next();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   return (
     <>
       {loading && <Loader />}
@@ -213,6 +237,11 @@ const EducationDetails = (props) => {
           <Column header="Image" body={imageBodyTemplate}></Column>
           <Column header="Action" body={actionBodyTemplate}></Column>
         </DataTable>
+        {employeeData?.education?.length <= 0 && (
+          <small className="text-red-400 mb-1">
+            Minimum one degree details required
+          </small>
+        )}
       </div>
       {employeeData.fresherOrExperience === fresherOrExperience.EXPERIENCE && (
         <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
@@ -227,6 +256,11 @@ const EducationDetails = (props) => {
             <Column header="Image" body={imageBodyTemplate}></Column>
             <Column header="Action" body={actionBodyTemplate}></Column>
           </DataTable>
+          {employeeData?.workDetail?.length <= 0 && (
+            <small className="text-red-400 mb-1">
+              Minimum one institute details required
+            </small>
+          )}
         </div>
       )}
       <div className="flex pt-4 justify-content-between">
@@ -244,7 +278,7 @@ const EducationDetails = (props) => {
               label="Next"
               icon="pi pi-arrow-right"
               iconPos="right"
-              onClick={() => props.next()}
+              onClick={() => finalSubmit()}
               type="button"
             />
           )}
