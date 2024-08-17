@@ -13,6 +13,33 @@ export const userCreate = async (payload) => {
   return response.data;
 };
 
+export const userUpdate = async (payload) => {
+  const response = await Instance.post(
+    `/user/update`,
+    payload,
+    headerWithFormData()
+  );
+  return response.data;
+};
+
+export const userEducationDetailsUpdate = async (payload) => {
+  const response = await Instance.post(
+    `/user/update-education`,
+    payload,
+    headerWithFormData()
+  );
+  return response.data;
+};
+
+export const getDetails = async (payload) => {
+  const response = await Instance.get(
+    `/user/:${payload}`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const userEducationUpdate = async (payload) => {
   const response = await Instance.post(
     `/user/update-education`,

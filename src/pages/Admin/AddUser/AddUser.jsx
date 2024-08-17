@@ -18,13 +18,14 @@ const AddUser = () => {
   };
   return (
     <div className="card flex justify-content-center">
-      <Stepper ref={stepperRef} style={{ flexBasis: "75rem" }}>
-        <StepperPanel header="Education & Experience">
-          <EducationDetails next={next} back={back} />
-        </StepperPanel>
+      <Stepper ref={stepperRef} style={{ flexBasis: "75rem" }} activeStep={0}>
         <StepperPanel header="Basic">
           <BasicDetails next={next} />
         </StepperPanel>
+        <StepperPanel header="Education & Experience">
+          <EducationDetails next={next} back={back} />
+        </StepperPanel>
+
         <StepperPanel header="Document">
           <DocumentDetails next={next} back={back} />
         </StepperPanel>

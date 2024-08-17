@@ -6,15 +6,13 @@ import { fresherOrExperience } from "../../../shared/Config";
 import { Image } from "primereact/image";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-import { userEducationUpdate } from "./AddUserService";
-import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { getDetails, userEducationDetailsUpdate } from "./AddUserService";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import Loader from "../../../component/Loader";
-import { setAddUser } from "../../../store/reducer/AddUserReducer";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Dialog } from "primereact/dialog";
-import { FileUpload } from "primereact/fileupload";
 
 export const ErrorMessage = (errors, name, touched) => {
   return (
@@ -25,13 +23,14 @@ export const ErrorMessage = (errors, name, touched) => {
   );
 };
 const EducationDetails = (props) => {
-  const dispatch = useDispatch();
   const searchKey = useSelector((state) => state);
+  const addUserData = searchKey.addUser.addUser;
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [dataType, setDataType] = useState("");
   const [employeeData, setEmployeeData] = useState({});
-  const [resultImage, setResultImage] = useState("");
+  const [actionType, setActionType] = useState("");
+  const [selectedData, setSelectedData] = useState({});
 
   const educationSchema = Yup.object().shape({
     boardName: Yup.string().required("Board name is required"),
@@ -74,7 +73,7 @@ const EducationDetails = (props) => {
       otherwise: () => Yup.array().notRequired(),
     }),
   });
-  const addUserData = searchKey.addUser.addUser;
+
   const initialValues =
     dataType === "education"
       ? {
@@ -94,57 +93,62 @@ const EducationDetails = (props) => {
           appointmentLetter: "",
           salarySlip: "",
         };
+  useEffect(() => {
+    getUserDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
 
+  const getUserDetails = () => {
+    setLoading(true);
+    getDetails(addUserData.id)
+      .then((res) => {
+        setEmployeeData(res.data);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const handelSubmit = (values) => {
-    if (dataType === "education") {
-      console.log("first");
-    } else {
-      console.log("second");
-    }
+    const reqData =
+      dataType === "education"
+        ? {
+            boardName: values.boardName,
+            passingYear: values.passingYear,
+            marksPercentage: values.marksPercentage,
+            resultImage: values.resultImage,
+            actionType: actionType,
+            dataType: dataType,
+          }
+        : {
+            companyName: values.companyName,
+            position: values.position,
+            startingYear: values.startingYear,
+            endingYear: values.endingYear,
+            experienceLetter: values.experienceLetter,
+            relievingLetter: values.relievingLetter,
+            appointmentLetter: values.appointmentLetter,
+            salarySlip: values.salarySlip,
+            actionType: actionType,
+            dataType: dataType,
+          };
 
-    // const reqData = {
-    //   id: "66bf909de0f4dabdb4df05c6",
-    //   education: values.education.map((item) => ({
-    //     boardName: item.boardName,
-    //     passingYear: item.passingYear,
-    //     marksPercentage: item.marksPercentage,
-    //     resultImage: item.resultImage.name,
-    //   })),
-    //   fresherOrExperience: values.fresherOrExperience,
-    //   workDetail:
-    //     values.fresherOrExperience === fresherOrExperience.FRESHER
-    //       ? null
-    //       : values.workDetail.map((item) => ({
-    //           companyName: item.companyName,
-    //           position: item.position,
-    //           startingYear: item.startingYear,
-    //           endingYear: item.endingYear,
-    //           experienceLetter: item.experienceLetter.name,
-    //           relievingLetter: item.relievingLetter.name,
-    //           appointmentLetter: item.appointmentLetter.name,
-    //           salarySlip: item.salarySlip.name,
-    //         })),
-    // };
+    const finalReqData =
+      actionType === "add"
+        ? { ...reqData, id: employeeData._id }
+        : { ...reqData, productId: selectedData._id };
 
-    // userEducationUpdate(values)
-    //   .then((res) => {
-    //     dispatch(
-    //       setAddUser({
-    //         ...searchKey.addUser.addUser,
-    //         id: res.data._id,
-    //         data: res.data,
-    //       })
-    //     );
-    //     setLoading(false);
-    //     Swal.fire({
-    //       title: res.message,
-    //       icon: "success",
-    //     });
-    //     props.next();
-    //   })
-    //   .catch(() => {
-    //     setLoading(false);
-    //   });
+    userEducationDetailsUpdate(finalReqData)
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        props.next();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const header = (data) => {
@@ -160,6 +164,7 @@ const EducationDetails = (props) => {
           onClick={() => {
             setDataType(data);
             setVisible(true);
+            setActionType("add");
           }}
         />
       </div>
@@ -176,15 +181,25 @@ const EducationDetails = (props) => {
     );
   };
   const actionBodyTemplate = (data) => {
-    console.log(data);
-    return <Button icon="pi pi-pencil" rounded text aria-label="Filter" />;
+    return (
+      <Button
+        icon="pi pi-pencil"
+        rounded
+        text
+        aria-label="Filter"
+        onClick={() => {
+          setActionType("edit");
+          setSelectedData(data);
+        }}
+      />
+    );
   };
   return (
     <>
       {loading && <Loader />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
         <DataTable
-          value={[]}
+          value={employeeData?.education ? employeeData.education : []}
           header={() => header("education")}
           tableStyle={{ minWidth: "60rem" }}
         >
@@ -198,7 +213,7 @@ const EducationDetails = (props) => {
       {employeeData.fresherOrExperience === fresherOrExperience.EXPERIENCE && (
         <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
           <DataTable
-            value={[]}
+            value={employeeData?.workDetail ? employeeData.workDetail : []}
             header={() => header("work")}
             tableStyle={{ minWidth: "60rem" }}
           >

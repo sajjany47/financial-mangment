@@ -19,9 +19,10 @@ import { Image } from "primereact/image";
 import {
   city,
   countryList,
+  getDetails,
   state,
-  userBasicUpdate,
   userCreate,
+  userUpdate,
 } from "./AddUserService";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
@@ -71,28 +72,33 @@ const adminSignUpSchema30 = Yup.object().shape({
 const BasicDetails = (props) => {
   const dispatch = useDispatch();
   const searchKey = useSelector((state) => state);
+  const addUserData = searchKey.addUser.addUser;
   const [loading, setLoading] = useState(false);
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
   const [branch, setBranch] = useState([]);
-  const initialValues = {
-    name: "",
-    username: "",
-    mobile: "",
-    email: "",
-    dob: "",
-    position: "",
-    address: "",
-    state: "",
-    country: "",
-    city: "",
-    pincode: "",
-    jobBranchName: "",
-    userImage: "",
-    userImagePre: "",
-    fresherOrExperience: "",
-  };
+  const [getUserData, setGetUerData] = useState({});
+  const initialValues =
+    addUserData.type === "edit"
+      ? { ...getUserData }
+      : {
+          name: "",
+          username: "",
+          mobile: "",
+          email: "",
+          dob: "",
+          position: "",
+          address: "",
+          state: "",
+          country: "",
+          city: "",
+          pincode: "",
+          jobBranchName: "",
+          userImage: "",
+          userImagePre: "",
+          fresherOrExperience: "",
+        };
 
   useEffect(() => {
     setLoading(true);
@@ -104,6 +110,17 @@ const BasicDetails = (props) => {
       .catch(() => {
         setLoading(false);
       });
+
+    if (addUserData.type === "edit") {
+      getDetails(addUserData.id)
+        .then((res) => {
+          setGetUerData(res.data);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getBranchList = (payload) => {
@@ -156,8 +173,13 @@ const BasicDetails = (props) => {
     };
 
     // eslint-disable-next-line react/prop-types
-    if (searchKey.addUser.addUser.type === "edit") {
-      userBasicUpdate({ ...values })
+    if (addUserData.type === "edit") {
+      userUpdate({
+        ...values,
+        dataType: "basic",
+        profileRatio:
+          getUserData.profileRatio <= 30 ? 30 : getUserData.profileRatio,
+      })
         .then((res) => {
           setLoading(false);
           Swal.fire({
@@ -174,7 +196,7 @@ const BasicDetails = (props) => {
         .then((res) => {
           dispatch(
             setAddUser({
-              ...searchKey.addUser.addUser,
+              ...addUserData,
               id: res.data._id,
               data: res.data,
             })
@@ -326,26 +348,8 @@ const BasicDetails = (props) => {
                       optionValue={"_id"}
                     />
                   </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Fresher or Experience"
-                      component={RadioField}
-                      name={`fresherOrExperience`}
-                      radiolist={[
-                        {
-                          label: "Experience",
-                          value: fresherOrExperience.EXPERIENCE,
-                          id: "1",
-                        },
-                        {
-                          label: "Fresher",
-                          value: fresherOrExperience.FRESHER,
-                          id: "2",
-                        },
-                      ]}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3 mt-4">
+
+                  <div className="col-12 md:col-3 ">
                     <label
                       htmlFor="userImage"
                       className="block  font-medium mb-2 custom-file-upload"
@@ -370,6 +374,25 @@ const BasicDetails = (props) => {
                       alt="Image"
                       width="260"
                       height="260"
+                    />
+                  </div>
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Fresher or Experience"
+                      component={RadioField}
+                      name={`fresherOrExperience`}
+                      radiolist={[
+                        {
+                          label: "Experience",
+                          value: fresherOrExperience.EXPERIENCE,
+                          id: "1",
+                        },
+                        {
+                          label: "Fresher",
+                          value: fresherOrExperience.FRESHER,
+                          id: "2",
+                        },
+                      ]}
                     />
                   </div>
                 </div>
