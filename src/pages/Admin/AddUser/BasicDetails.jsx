@@ -4,9 +4,14 @@ import {
   DateField,
   DropdownField,
   InputField,
+  RadioField,
   TextAreaInputField,
 } from "../../../component/FieldType";
-import { DropdownPosition, Position } from "../../../shared/Config";
+import {
+  DropdownPosition,
+  fresherOrExperience,
+  Position,
+} from "../../../shared/Config";
 import { Button } from "primereact/button";
 import * as Yup from "yup";
 import { ErrorMessage } from "./EducationDetails";
@@ -86,6 +91,7 @@ const BasicDetails = (props) => {
     jobBranchName: "",
     userImage: "",
     userImagePre: "",
+    fresherOrExperience: "",
   };
 
   useEffect(() => {
@@ -318,6 +324,25 @@ const BasicDetails = (props) => {
                       options={branch}
                       optionLabel={"name"}
                       optionValue={"_id"}
+                    />
+                  </div>
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Fresher or Experience"
+                      component={RadioField}
+                      name={`fresherOrExperience`}
+                      radiolist={[
+                        {
+                          label: "Experience",
+                          value: fresherOrExperience.EXPERIENCE,
+                          id: "1",
+                        },
+                        {
+                          label: "Fresher",
+                          value: fresherOrExperience.FRESHER,
+                          id: "2",
+                        },
+                      ]}
                     />
                   </div>
                   <div className="col-12 md:col-3 mt-4">

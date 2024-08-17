@@ -1,10 +1,6 @@
 /* eslint-disable react/prop-types */
-import { Field, FieldArray, Form, Formik, getIn } from "formik";
-import {
-  DateField,
-  InputField,
-  RadioField,
-} from "../../../component/FieldType";
+import { Field, Form, Formik, getIn } from "formik";
+import { DateField, InputField } from "../../../component/FieldType";
 import { Button } from "primereact/button";
 import { fresherOrExperience } from "../../../shared/Config";
 import { Image } from "primereact/image";
@@ -15,6 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import Loader from "../../../component/Loader";
 import { setAddUser } from "../../../store/reducer/AddUserReducer";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Dialog } from "primereact/dialog";
+import { FileUpload } from "primereact/fileupload";
 
 export const ErrorMessage = (errors, name, touched) => {
   return (
@@ -28,31 +28,26 @@ const EducationDetails = (props) => {
   const dispatch = useDispatch();
   const searchKey = useSelector((state) => state);
   const [loading, setLoading] = useState(false);
-  const [imageList, setImageList] = useState([]);
-  const educationOrCompanyDetailSchema = Yup.object().shape({
-    education: Yup.array()
-      .of(
-        Yup.object().shape({
-          boardName: Yup.string().required("Board name is required"),
-          passingYear: Yup.string()
-            .required("Passing year is required")
-            .matches(/^\d{4}$/, "Enter a valid year"),
-          marksPercentage: Yup.string()
-            .required("Marks percentage is required")
-            .matches(
-              /^(100(\.0{1,2})?|(\d{1,2})(\.\d{1,2})?)$/,
-              "Enter a valid percentage"
-            ),
-          resultImage: Yup.string().required("Marksheet is required"),
-        })
-      )
-      .required("Education details are required")
-      .min(1, "At least one education detail is required"),
+  const [visible, setVisible] = useState(false);
+  const [dataType, setDataType] = useState("");
+  const [employeeData, setEmployeeData] = useState({});
+  const [resultImage, setResultImage] = useState("");
 
-    fresherOrExperience: Yup.string()
-      .oneOf([fresherOrExperience.EXPERIENCE, fresherOrExperience.FRESHER])
-      .required("Select one of these"),
+  const educationSchema = Yup.object().shape({
+    boardName: Yup.string().required("Board name is required"),
+    passingYear: Yup.string()
+      .required("Passing year is required")
+      .matches(/^\d{4}$/, "Enter a valid year"),
+    marksPercentage: Yup.string()
+      .required("Marks percentage is required")
+      .matches(
+        /^(100(\.0{1,2})?|(\d{1,2})(\.\d{1,2})?)$/,
+        "Enter a valid percentage"
+      ),
+    resultImage: Yup.string().required("Marksheet is required"),
+  });
 
+  const workSchema = Yup.object().shape({
     workDetail: Yup.array().when("fresherOrExperience", {
       is: (val) => val === fresherOrExperience.EXPERIENCE,
       then: Yup.array()
@@ -81,61 +76,24 @@ const EducationDetails = (props) => {
   });
   const addUserData = searchKey.addUser.addUser;
   const initialValues =
-    addUserData.type === "add"
+    dataType === "education"
       ? {
-          id: addUserData.id,
-          education: [
-            {
-              boardName: "",
-              passingYear: "",
-              marksPercentage: "",
-              resultImage: "",
-              imagePreview: "",
-            },
-          ],
-          fresherOrExperience: "",
-          workDetail: [
-            {
-              companyName: "",
-              position: "",
-              startingYear: "",
-              endingYear: "",
-              experienceLetter: "",
-              relievingLetter: "",
-              appointmentLetter: "",
-              salarySlip: "",
-              experiencePreview: "",
-              relievingPreview: "",
-              appointmentPreview: "",
-              slarySlipPreview: "",
-            },
-          ],
+          boardName: "",
+          passingYear: "",
+          marksPercentage: "",
+          resultImage: "",
         }
       : {
-          id: addUserData.id,
-          education: addUserData.data.education.map((item) => ({
-            boardName: item.boardName,
-            passingYear: item.passingYear,
-            marksPercentage: item.marksPercentage,
-            resultImage: item.resultImage,
-            imagePreview: item.resultImage,
-          })),
-          fresherOrExperience: addUserData.data.fresherOrExperience,
-          workDetail: addUserData.data.workDetail.map((item) => ({
-            companyName: item.companyName,
-            position: item.position,
-            startingYear: item.startingYear,
-            endingYear: item.endingYear,
-            experienceLetter: item.experienceLetter,
-            relievingLetter: item.relievingLetter,
-            appointmentLetter: item.appointmentLetter,
-            salarySlip: item.salarySlip,
-            experiencePreview: item.experienceLetter,
-            relievingPreview: item.relievingLetter,
-            appointmentPreview: item.appointmentLetter,
-            slarySlipPreview: item.salarySlip,
-          })),
+          companyName: "",
+          position: "",
+          startingYear: "",
+          endingYear: "",
+          experienceLetter: "",
+          relievingLetter: "",
+          appointmentLetter: "",
+          salarySlip: "",
         };
+
   const handelSubmit = (values) => {
     // setLoading(true);
     let formData = new FormData();
@@ -155,23 +113,21 @@ const EducationDetails = (props) => {
     if (values.fresherOrExperience === fresherOrExperience.EXPERIENCE) {
       formData(
         "workDetail",
-        values.workDetail.map((item) => ({
-          companyName: item.companyName,
-          position: item.position,
-          startingYear: item.startingYear,
-          endingYear: item.endingYear,
-          experienceLetter: item.experienceLetter,
-          relievingLetter: item.relievingLetter,
-          appointmentLetter: item.appointmentLetter,
-          salarySlip: item.salarySlip,
-        }))
+        JSON.stringify(
+          values.workDetail.map((item) => ({
+            companyName: item.companyName,
+            position: item.position,
+            startingYear: item.startingYear,
+            endingYear: item.endingYear,
+            experienceLetter: item.experienceLetter,
+            relievingLetter: item.relievingLetter,
+            appointmentLetter: item.appointmentLetter,
+            salarySlip: item.salarySlip,
+          }))
+        )
       );
     } else {
       formData("workDetail", null);
-    }
-
-    for (let index = 0; index < imageList.length; index++) {
-      formData("image", imageList[index]);
     }
 
     // const reqData = {
@@ -219,436 +175,360 @@ const EducationDetails = (props) => {
       });
   };
 
+  const header = (data) => {
+    return (
+      <div className="flex flex-wrap align-items-center justify-content-between gap-2">
+        <span className="text-xl text-900 font-bold">
+          {data === "education" ? "Education Details" : "Work Details"}
+        </span>
+        <Button
+          icon="pi pi-plus"
+          rounded
+          raised
+          onClick={() => {
+            setDataType(data);
+            setVisible(true);
+          }}
+        />
+      </div>
+    );
+  };
+
+  const imageBodyTemplate = (product) => {
+    return (
+      <img
+        src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
+        alt={product.image}
+        className="w-6rem shadow-2 border-round"
+      />
+    );
+  };
+  const actionBodyTemplate = (data) => {
+    console.log(data);
+    return <Button icon="pi pi-pencil" rounded text aria-label="Filter" />;
+  };
   return (
     <>
       {loading && <Loader />}
-      <Formik
-        onSubmit={handelSubmit}
-        initialValues={initialValues}
-        validationSchema={educationOrCompanyDetailSchema}
-        enableReinitialize
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
+        <DataTable
+          value={[]}
+          header={() => header("education")}
+          tableStyle={{ minWidth: "60rem" }}
+        >
+          <Column field="name" header="Board Name" />
+          <Column field="year" header="Passing Year" />
+          <Column field="Marks" header="Marks" />
+          <Column header="Image" body={imageBodyTemplate}></Column>
+          <Column header="Action" body={actionBodyTemplate}></Column>
+        </DataTable>
+      </div>
+      {employeeData.fresherOrExperience === fresherOrExperience.EXPERIENCE && (
+        <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+          <DataTable
+            value={[]}
+            header={() => header("work")}
+            tableStyle={{ minWidth: "60rem" }}
+          >
+            <Column field="name" header="Board Name" />
+            <Column field="year" header="Passing Year" />
+            <Column field="Marks" header="Marks" />
+            <Column header="Image" body={imageBodyTemplate}></Column>
+            <Column header="Action" body={actionBodyTemplate}></Column>
+          </DataTable>
+        </div>
+      )}
+      <div className="flex pt-4 justify-content-between">
+        <Button
+          label="Back"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          // eslint-disable-next-line react/prop-types
+          onClick={() => props.back()}
+          type="button"
+        />
+        <div className="flex  justify-content-end gap-2">
+          {addUserData.type === "edit" && (
+            <Button
+              label="Next"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              onClick={() => props.next()}
+              type="button"
+            />
+          )}
+
+          <Button
+            label={addUserData.type === "add" ? "Submit & Next" : "Update"}
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            type="submit"
+          />
+        </div>
+      </div>
+
+      <Dialog
+        header={dataType === "education" ? "Education Details" : "Work Details"}
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
       >
-        {({ handleSubmit, values, setFieldValue, touched, errors }) => (
-          <Form onSubmit={handleSubmit}>
-            <div className="flex flex-column">
-              <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
-                <div className="grid p-3">
-                  <div className="col-12 md:col-12">
-                    <FieldArray
-                      name="education"
-                      render={(arrayHelpers) => (
-                        <>
-                          {values.education &&
-                            values.education.map((item, index) => (
-                              <div
-                                className="flex gap-2 align-item-center"
-                                key={index}
-                              >
-                                <div className="grid w-full">
-                                  <div className="col-12 md:col-3">
-                                    <Field
-                                      label="Board Name"
-                                      component={InputField}
-                                      name={`education.${index}.boardName`}
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <Field
-                                      label="Passing Year"
-                                      component={InputField}
-                                      name={`education.${index}.passingYear`}
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <Field
-                                      label="Marks (%)"
-                                      component={InputField}
-                                      name={`education.${index}.marksPercentage`}
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3 mt-4">
-                                    <label
-                                      htmlFor={`education.${index}.resultImage`}
-                                      className="block  font-medium mb-2 custom-file-upload"
-                                    >
-                                      Upload Marksheet Image
-                                    </label>
-                                    <input
-                                      id={`education.${index}.resultImage`}
-                                      name={`education.${index}.resultImage`}
-                                      type="file"
-                                      onChange={(e) => {
-                                        setFieldValue(
-                                          `education.${index}.resultImage`,
-                                          `${e.target.files[0].name}-resultImage-${index}`
-                                        );
-                                        setFieldValue(
-                                          `education.${index}.imagePreview`,
-                                          URL.createObjectURL(e.target.files[0])
-                                        );
-                                        setImageList([
-                                          ...imageList,
-                                          {
-                                            ...e.target.files[0],
-                                            name: `${e.target.files[0].name}-resultImage-${index}`,
-                                          },
-                                        ]);
-                                      }}
-                                    />
-                                    {ErrorMessage(
-                                      errors,
-                                      `education.${index}.resultImage`,
-                                      touched
-                                    )}
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <Image
-                                      src={values.education[index].imagePreview}
-                                      alt="Image"
-                                      width="180"
-                                      height="180"
-                                    />
-                                  </div>
-                                </div>
+        <Formik
+          onSubmit={handelSubmit}
+          initialValues={initialValues}
+          validationSchema={
+            dataType === "education" ? educationSchema : workSchema
+          }
+          enableReinitialize
+        >
+          {({ handleSubmit, values, setFieldValue, touched, errors }) => (
+            <Form onSubmit={handleSubmit}>
+              <div className="flex flex-column">
+                <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
+                  <div className="grid p-3">
+                    {dataType === "education" ? (
+                      <>
+                        <div className="col-12 md:col-4">
+                          <Field
+                            label="Board Name"
+                            component={InputField}
+                            name={`boardName`}
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <Field
+                            label="Passing Year"
+                            component={InputField}
+                            name={`passingYear`}
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <Field
+                            label="Marks (%)"
+                            component={InputField}
+                            name={`marksPercentage`}
+                          />
+                        </div>
 
-                                <div>
-                                  <Button
-                                    icon="pi pi-times"
-                                    type="button"
-                                    rounded
-                                    className="mt-4"
-                                    text
-                                    onClick={() => arrayHelpers.remove(index)}
-                                    severity="danger"
-                                    aria-label="Cancel"
-                                    raised
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                          <div className="col-12">
-                            <Button
-                              className="px-8"
-                              label="Add"
-                              type="button"
-                              onClick={() =>
-                                arrayHelpers.push({
-                                  boardName: "",
-                                  selectClass: "",
-                                  marks: "",
-                                  passingYear: "",
-                                })
+                        {values.resultImage === "" ? (
+                          <div className="col-12 md:col-12">
+                            <label
+                              htmlFor={"resultImage"}
+                              className="block text-900 font-medium mb-2"
+                            >
+                              Marksheet Image
+                            </label>
+                            <FileUpload
+                              name="resultImage"
+                              customUpload
+                              onUpload={(e) =>
+                                setFieldValue("resultImage", e.files[0])
+                              }
+                              multiple
+                              accept="image/*"
+                              maxFileSize={1000000}
+                              emptyTemplate={
+                                <p className="m-0">
+                                  Drag and drop files to here to upload.
+                                </p>
                               }
                             />
                           </div>
-                        </>
-                      )}
-                    />
-                  </div>
-                  <div className="col-12">
-                    <Field
-                      label="Fresher or Experience"
-                      component={RadioField}
-                      name={`fresherOrExperience`}
-                      radiolist={[
-                        {
-                          label: "Experience",
-                          value: fresherOrExperience.EXPERIENCE,
-                          id: "1",
-                        },
-                        {
-                          label: "Fresher",
-                          value: fresherOrExperience.FRESHER,
-                          id: "2",
-                        },
-                      ]}
-                    />
-                  </div>
-                  {values.fresherOrExperience ===
-                    fresherOrExperience.EXPERIENCE && (
-                    <FieldArray
-                      name="workDetail"
-                      render={(arrayHelpers) => (
-                        <>
-                          {values.workDetail &&
-                            values.workDetail.map((item, index) => (
-                              <div
-                                className="col-12 flex gap-2 align-item-center"
-                                key={index}
-                              >
-                                <div className="grid w-full">
-                                  <div className="col-12 md:col-3">
-                                    <Field
-                                      label="Institute Name"
-                                      component={InputField}
-                                      name={`workDetail.${index}.companyName`}
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <Field
-                                      label="Position"
-                                      component={InputField}
-                                      name={`workDetail.${index}.position`}
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <Field
-                                      label="Starting Year"
-                                      component={DateField}
-                                      name={`workDetail.${index}.startingYear`}
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <Field
-                                      label="Ending Year"
-                                      component={DateField}
-                                      name={`workDetail.${index}.endingYear`}
-                                    />
-                                  </div>
-
-                                  <div className="col-12 md:col-3">
-                                    <label
-                                      htmlFor={`workDetail.${index}.appointmentLetter`}
-                                      className="block  font-medium mb-2 custom-file-upload"
-                                    >
-                                      Upload Appointment Letter
-                                    </label>
-                                    <input
-                                      id={`workDetail.${index}.appointmentLetter`}
-                                      name={`workDetail.${index}.appointmentLetter`}
-                                      type="file"
-                                      onChange={(e) => {
-                                        setFieldValue(
-                                          `workDetail.${index}.appointmentLetter`,
-                                          `${e.target.files[0].name}-appointmentLetter-${index}`
-                                        );
-                                        setFieldValue(
-                                          `workDetail.${index}.appointmentPreview`,
-                                          URL.createObjectURL(e.target.files[0])
-                                        );
-                                        setImageList([
-                                          ...imageList,
-                                          {
-                                            ...e.target.files[0],
-                                            name: `${e.target.files[0].name}-appointmentLetter-${index}`,
-                                          },
-                                        ]);
-                                      }}
-                                    />
-                                    {ErrorMessage(
-                                      errors,
-                                      `workDetail.${index}.appointmentLetter`,
-                                      touched
-                                    )}
-                                    <Image
-                                      src={
-                                        values.workDetail[index]
-                                          .appointmentPreview
-                                      }
-                                      alt="Image"
-                                      width="180"
-                                      height="180"
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <label
-                                      htmlFor={`workDetail.${index}.salarySlip`}
-                                      className="block  font-medium mb-2 custom-file-upload"
-                                    >
-                                      Latest Salary Slip
-                                    </label>
-                                    <input
-                                      id={`workDetail.${index}.salarySlip`}
-                                      name={`workDetail.${index}.salarySlip`}
-                                      type="file"
-                                      onChange={(e) => {
-                                        setFieldValue(
-                                          `workDetail.${index}.salarySlip`,
-                                          `${e.target.files[0].name}-salarySlip-${index}`
-                                        );
-                                        setFieldValue(
-                                          `workDetail.${index}.slarySlipPreview`,
-                                          URL.createObjectURL(e.target.files[0])
-                                        );
-                                        setImageList([
-                                          ...imageList,
-                                          {
-                                            ...e.target.files[0],
-                                            name: `${e.target.files[0].name}-salarySlip-${index}`,
-                                          },
-                                        ]);
-                                      }}
-                                    />
-                                    {ErrorMessage(
-                                      errors,
-                                      `workDetail.${index}.salarySlip`,
-                                      touched
-                                    )}
-                                    <Image
-                                      src={
-                                        values.workDetail[index]
-                                          .slarySlipPreview
-                                      }
-                                      alt="Image"
-                                      width="180"
-                                      height="180"
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <label
-                                      htmlFor={`workDetail.${index}.experienceLetter`}
-                                      className="block  font-medium mb-2 custom-file-upload"
-                                    >
-                                      Upload Experience Letter
-                                    </label>
-                                    <input
-                                      id={`workDetail.${index}.experienceLetter`}
-                                      name={`workDetail.${index}.experienceLetter`}
-                                      type="file"
-                                      onChange={(e) => {
-                                        setFieldValue(
-                                          `workDetail.${index}.experienceLetter`,
-                                          `${e.target.files[0].name}-experienceLetter-${index}`
-                                        );
-                                        setFieldValue(
-                                          `workDetail.${index}.experiencePreview`,
-                                          URL.createObjectURL(e.target.files[0])
-                                        );
-                                        setImageList([
-                                          ...imageList,
-                                          {
-                                            ...e.target.files[0],
-                                            name: `${e.target.files[0].name}-experienceLetter-${index}`,
-                                          },
-                                        ]);
-                                      }}
-                                    />
-                                    {ErrorMessage(
-                                      errors,
-                                      `workDetail.${index}.experienceLetter`,
-                                      touched
-                                    )}
-                                    <Image
-                                      src={
-                                        values.workDetail[index]
-                                          .experiencePreview
-                                      }
-                                      alt="Image"
-                                      width="180"
-                                      height="180"
-                                    />
-                                  </div>
-                                  <div className="col-12 md:col-3">
-                                    <label
-                                      htmlFor={`workDetail.${index}.relievingLetter`}
-                                      className="block  font-medium mb-2 custom-file-upload"
-                                    >
-                                      Upload Relieving Letter
-                                    </label>
-                                    <input
-                                      id={`workDetail.${index}.relievingLetter`}
-                                      name={`workDetail.${index}.relievingLetter`}
-                                      type="file"
-                                      onChange={(e) => {
-                                        setFieldValue(
-                                          `workDetail.${index}.relievingLetter`,
-                                          `${e.target.files[0].name}-relievingLetter-${index}`
-                                        );
-                                        setFieldValue(
-                                          `workDetail.${index}.relievingPreview`,
-                                          URL.createObjectURL(e.target.files[0])
-                                        );
-                                        setImageList([
-                                          ...imageList,
-                                          {
-                                            ...e.target.files[0],
-                                            name: `${e.target.files[0].name}-relievingLetter-${index}`,
-                                          },
-                                        ]);
-                                      }}
-                                    />
-                                    {ErrorMessage(
-                                      errors,
-                                      `workDetail.${index}.relievingLetter`,
-                                      touched
-                                    )}
-                                    <Image
-                                      src={
-                                        values.workDetail[index]
-                                          .relievingPreview
-                                      }
-                                      alt="Image"
-                                      width="180"
-                                      height="180"
-                                    />
-                                  </div>
-                                </div>
-                                <Button
-                                  icon="pi pi-times"
-                                  type="button"
-                                  className="mt-4"
-                                  rounded
-                                  text
-                                  onClick={() => arrayHelpers.remove(index)}
-                                  severity="danger"
-                                  aria-label="Cancel"
-                                  raised
-                                />
-                              </div>
-                            ))}
-                          <div className="col-12">
-                            <Button
-                              className="px-8"
-                              type="button"
-                              label="Add"
-                              onClick={() =>
-                                arrayHelpers.push({
-                                  institutionName: "",
-                                  position: "",
-                                  startingYear: "",
-                                  endingYear: "",
-                                })
-                              }
+                        ) : (
+                          <div className="col-12 md:col-3">
+                            <Image
+                              src={URL.createObjectURL(values.resultImage)}
+                              alt="Image"
+                              width="180"
+                              height="180"
                             />
                           </div>
-                        </>
-                      )}
-                    />
-                  )}
+                        )}
+                        <div className="col-12 md:col-3">
+                          <Image
+                            src={values.imagePreview}
+                            alt="Image"
+                            width="180"
+                            height="180"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="col-12 md:col-4">
+                          <Field
+                            label="Institute Name"
+                            component={InputField}
+                            name={`companyName`}
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <Field
+                            label="Position"
+                            component={InputField}
+                            name={`position`}
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <Field
+                            label="Starting Year"
+                            component={DateField}
+                            name={`startingYear`}
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <Field
+                            label="Ending Year"
+                            component={DateField}
+                            name={`endingYear`}
+                          />
+                        </div>
+
+                        <div className="col-12 md:col-4">
+                          <label
+                            htmlFor={`appointmentLetter`}
+                            className="block  font-medium mb-2 custom-file-upload"
+                          >
+                            Upload Appointment Letter
+                          </label>
+                          <input
+                            id={`appointmentLetter`}
+                            name={`appointmentLetter`}
+                            type="file"
+                            onChange={(e) => {
+                              setFieldValue(
+                                `appointmentLetter`,
+                                e.target.files[0]
+                              );
+                              setFieldValue(
+                                `appointmentPreview`,
+                                URL.createObjectURL(e.target.files[0])
+                              );
+                            }}
+                          />
+                          {ErrorMessage(errors, `appointmentLetter`, touched)}
+                          <Image
+                            src={values.appointmentPreview}
+                            alt="Image"
+                            width="180"
+                            height="180"
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <label
+                            htmlFor={`salarySlip`}
+                            className="block  font-medium mb-2 custom-file-upload"
+                          >
+                            Latest Salary Slip
+                          </label>
+                          <input
+                            id={`salarySlip`}
+                            name={`salarySlip`}
+                            type="file"
+                            onChange={(e) => {
+                              setFieldValue(`salarySlip`, e.target.files[0]);
+                              setFieldValue(
+                                `slarySlipPreview`,
+                                URL.createObjectURL(e.target.files[0])
+                              );
+                            }}
+                          />
+                          {ErrorMessage(errors, `salarySlip`, touched)}
+                          <Image
+                            src={values.slarySlipPreview}
+                            alt="Image"
+                            width="180"
+                            height="180"
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <label
+                            htmlFor={`experienceLetter`}
+                            className="block  font-medium mb-2 custom-file-upload"
+                          >
+                            Upload Experience Letter
+                          </label>
+                          <input
+                            id={`experienceLetter`}
+                            name={`experienceLetter`}
+                            type="file"
+                            onChange={(e) => {
+                              setFieldValue(
+                                `experienceLetter`,
+                                e.target.files[0]
+                              );
+                              setFieldValue(
+                                `experiencePreview`,
+                                URL.createObjectURL(e.target.files[0])
+                              );
+                            }}
+                          />
+                          {ErrorMessage(errors, `experienceLetter`, touched)}
+                          <Image
+                            src={values.experiencePreview}
+                            alt="Image"
+                            width="180"
+                            height="180"
+                          />
+                        </div>
+                        <div className="col-12 md:col-4">
+                          <label
+                            htmlFor={`relievingLetter`}
+                            className="block  font-medium mb-2 custom-file-upload"
+                          >
+                            Upload Relieving Letter
+                          </label>
+                          <input
+                            id={`relievingLetter`}
+                            name={`relievingLetter`}
+                            type="file"
+                            onChange={(e) => {
+                              setFieldValue(
+                                `relievingLetter`,
+                                e.target.files[0]
+                              );
+                              setFieldValue(
+                                `relievingPreview`,
+                                URL.createObjectURL(e.target.files[0])
+                              );
+                            }}
+                          />
+                          {ErrorMessage(errors, `relievingLetter`, touched)}
+                          <Image
+                            src={values.relievingPreview}
+                            alt="Image"
+                            width="180"
+                            height="180"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex pt-4 justify-content-between">
-              <Button
-                label="Back"
-                severity="secondary"
-                icon="pi pi-arrow-left"
-                // eslint-disable-next-line react/prop-types
-                onClick={() => props.back()}
-                type="button"
-              />
-              <div className="flex  justify-content-end gap-2">
-                {props.type === "edit" && (
-                  <Button
-                    label="Next"
-                    icon="pi pi-arrow-right"
-                    iconPos="right"
-                    onClick={() => props.next()}
-                    type="button"
-                  />
-                )}
+              <div className="flex pt-4 justify-content-between">
+                <Button
+                  label="Cancel"
+                  severity="secondary"
+                  // icon="pi pi-arrow-left"
+                  // eslint-disable-next-line react/prop-types
+                  onClick={() => setVisible(false)}
+                  type="button"
+                />
 
                 <Button
-                  label={props.type === "add" ? "Submit & Next" : "Update"}
-                  icon="pi pi-arrow-right"
+                  label={addUserData.type === "add" ? "Submit " : "Update"}
+                  // icon="pi pi-arrow-right"
                   iconPos="right"
                   type="submit"
                 />
               </div>
-            </div>
-          </Form>
-        )}
-      </Formik>
+            </Form>
+          )}
+        </Formik>
+      </Dialog>
     </>
   );
 };
