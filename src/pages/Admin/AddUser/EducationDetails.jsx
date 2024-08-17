@@ -82,6 +82,7 @@ const EducationDetails = (props) => {
           passingYear: "",
           marksPercentage: "",
           resultImage: "",
+          resultImagePre: "",
         }
       : {
           companyName: "",
@@ -95,39 +96,10 @@ const EducationDetails = (props) => {
         };
 
   const handelSubmit = (values) => {
-    // setLoading(true);
-    let formData = new FormData();
-    formData("id", "66bf909de0f4dabdb4df05c6");
-    formData(
-      "education",
-      JSON.stringify(
-        values.education.map((item) => ({
-          boardName: item.boardName,
-          passingYear: item.passingYear,
-          marksPercentage: item.marksPercentage,
-          resultImage: item.resultImage,
-        }))
-      )
-    );
-    formData("fresherOrExperience", values.fresherOrExperience);
-    if (values.fresherOrExperience === fresherOrExperience.EXPERIENCE) {
-      formData(
-        "workDetail",
-        JSON.stringify(
-          values.workDetail.map((item) => ({
-            companyName: item.companyName,
-            position: item.position,
-            startingYear: item.startingYear,
-            endingYear: item.endingYear,
-            experienceLetter: item.experienceLetter,
-            relievingLetter: item.relievingLetter,
-            appointmentLetter: item.appointmentLetter,
-            salarySlip: item.salarySlip,
-          }))
-        )
-      );
+    if (dataType === "education") {
+      console.log("first");
     } else {
-      formData("workDetail", null);
+      console.log("second");
     }
 
     // const reqData = {
@@ -154,25 +126,25 @@ const EducationDetails = (props) => {
     //         })),
     // };
 
-    userEducationUpdate(formData)
-      .then((res) => {
-        dispatch(
-          setAddUser({
-            ...searchKey.addUser.addUser,
-            id: res.data._id,
-            data: res.data,
-          })
-        );
-        setLoading(false);
-        Swal.fire({
-          title: res.message,
-          icon: "success",
-        });
-        props.next();
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    // userEducationUpdate(values)
+    //   .then((res) => {
+    //     dispatch(
+    //       setAddUser({
+    //         ...searchKey.addUser.addUser,
+    //         id: res.data._id,
+    //         data: res.data,
+    //       })
+    //     );
+    //     setLoading(false);
+    //     Swal.fire({
+    //       title: res.message,
+    //       icon: "success",
+    //     });
+    //     props.next();
+    //   })
+    //   .catch(() => {
+    //     setLoading(false);
+    //   });
   };
 
   const header = (data) => {
@@ -259,10 +231,10 @@ const EducationDetails = (props) => {
           )}
 
           <Button
-            label={addUserData.type === "add" ? "Submit & Next" : "Update"}
+            label={"Next"}
             icon="pi pi-arrow-right"
             iconPos="right"
-            type="submit"
+            type="button"
           />
         </div>
       </div>
@@ -311,44 +283,28 @@ const EducationDetails = (props) => {
                             name={`marksPercentage`}
                           />
                         </div>
-
-                        {values.resultImage === "" ? (
-                          <div className="col-12 md:col-12">
-                            <label
-                              htmlFor={"resultImage"}
-                              className="block text-900 font-medium mb-2"
-                            >
-                              Marksheet Image
-                            </label>
-                            <FileUpload
-                              name="resultImage"
-                              customUpload
-                              onUpload={(e) =>
-                                setFieldValue("resultImage", e.files[0])
-                              }
-                              multiple
-                              accept="image/*"
-                              maxFileSize={1000000}
-                              emptyTemplate={
-                                <p className="m-0">
-                                  Drag and drop files to here to upload.
-                                </p>
-                              }
-                            />
-                          </div>
-                        ) : (
-                          <div className="col-12 md:col-3">
-                            <Image
-                              src={URL.createObjectURL(values.resultImage)}
-                              alt="Image"
-                              width="180"
-                              height="180"
-                            />
-                          </div>
-                        )}
-                        <div className="col-12 md:col-3">
+                        <div className="col-12 md:col-4">
+                          <label
+                            htmlFor={`resultImage`}
+                            className="block  font-medium mb-2 custom-file-upload"
+                          >
+                            Upload Markssheet
+                          </label>
+                          <input
+                            id={`resultImage`}
+                            name={`resultImage`}
+                            type="file"
+                            onChange={(e) => {
+                              setFieldValue(`resultImage`, e.target.files[0]);
+                              setFieldValue(
+                                `resultImagePre`,
+                                URL.createObjectURL(e.target.files[0])
+                              );
+                            }}
+                          />
+                          {ErrorMessage(errors, `resultImage `, touched)}
                           <Image
-                            src={values.imagePreview}
+                            src={values.resultImagePre}
                             alt="Image"
                             width="180"
                             height="180"
@@ -385,123 +341,142 @@ const EducationDetails = (props) => {
                             name={`endingYear`}
                           />
                         </div>
-
-                        <div className="col-12 md:col-4">
-                          <label
-                            htmlFor={`appointmentLetter`}
-                            className="block  font-medium mb-2 custom-file-upload"
-                          >
-                            Upload Appointment Letter
-                          </label>
-                          <input
-                            id={`appointmentLetter`}
-                            name={`appointmentLetter`}
-                            type="file"
-                            onChange={(e) => {
-                              setFieldValue(
+                        <div className="col-12 md:col-12">
+                          <div className="grid">
+                            <div className="col-12 md:col-4">
+                              <label
+                                htmlFor={`relievingLetter`}
+                                className="block  font-medium mb-2 custom-file-upload"
+                              >
+                                <i className="pi pi-upload mr-2" /> Relieving
+                                Letter
+                              </label>
+                              <input
+                                id={`relievingLetter`}
+                                name={`relievingLetter`}
+                                type="file"
+                                onChange={(e) => {
+                                  setFieldValue(
+                                    `relievingLetter`,
+                                    e.target.files[0]
+                                  );
+                                  setFieldValue(
+                                    `relievingPreview`,
+                                    URL.createObjectURL(e.target.files[0])
+                                  );
+                                }}
+                              />
+                              {ErrorMessage(errors, `relievingLetter`, touched)}
+                              <Image
+                                src={values.relievingPreview}
+                                alt="Image"
+                                width="180"
+                                height="180"
+                              />
+                            </div>
+                            <div className="col-12 md:col-4">
+                              <label
+                                htmlFor={`salarySlip`}
+                                className="block  font-medium mb-2 custom-file-upload"
+                              >
+                                <i className="pi pi-upload mr-2" /> Latest
+                                Salary Slip
+                              </label>
+                              <input
+                                id={`salarySlip`}
+                                name={`salarySlip`}
+                                type="file"
+                                onChange={(e) => {
+                                  setFieldValue(
+                                    `salarySlip`,
+                                    e.target.files[0]
+                                  );
+                                  setFieldValue(
+                                    `slarySlipPreview`,
+                                    URL.createObjectURL(e.target.files[0])
+                                  );
+                                }}
+                              />
+                              {ErrorMessage(errors, `salarySlip`, touched)}
+                              <Image
+                                src={values.slarySlipPreview}
+                                alt="Image"
+                                width="180"
+                                height="180"
+                              />
+                            </div>
+                            <div className="col-12 md:col-4">
+                              <label
+                                htmlFor={`appointmentLetter`}
+                                className="block  font-medium mb-2 custom-file-upload"
+                              >
+                                <i className="pi pi-upload mr-2" />
+                                Appointment Letter
+                              </label>
+                              <input
+                                id={`appointmentLetter`}
+                                name={`appointmentLetter`}
+                                type="file"
+                                onChange={(e) => {
+                                  setFieldValue(
+                                    `appointmentLetter`,
+                                    e.target.files[0]
+                                  );
+                                  setFieldValue(
+                                    `appointmentPreview`,
+                                    URL.createObjectURL(e.target.files[0])
+                                  );
+                                }}
+                              />
+                              {ErrorMessage(
+                                errors,
                                 `appointmentLetter`,
-                                e.target.files[0]
-                              );
-                              setFieldValue(
-                                `appointmentPreview`,
-                                URL.createObjectURL(e.target.files[0])
-                              );
-                            }}
-                          />
-                          {ErrorMessage(errors, `appointmentLetter`, touched)}
-                          <Image
-                            src={values.appointmentPreview}
-                            alt="Image"
-                            width="180"
-                            height="180"
-                          />
-                        </div>
-                        <div className="col-12 md:col-4">
-                          <label
-                            htmlFor={`salarySlip`}
-                            className="block  font-medium mb-2 custom-file-upload"
-                          >
-                            Latest Salary Slip
-                          </label>
-                          <input
-                            id={`salarySlip`}
-                            name={`salarySlip`}
-                            type="file"
-                            onChange={(e) => {
-                              setFieldValue(`salarySlip`, e.target.files[0]);
-                              setFieldValue(
-                                `slarySlipPreview`,
-                                URL.createObjectURL(e.target.files[0])
-                              );
-                            }}
-                          />
-                          {ErrorMessage(errors, `salarySlip`, touched)}
-                          <Image
-                            src={values.slarySlipPreview}
-                            alt="Image"
-                            width="180"
-                            height="180"
-                          />
-                        </div>
-                        <div className="col-12 md:col-4">
-                          <label
-                            htmlFor={`experienceLetter`}
-                            className="block  font-medium mb-2 custom-file-upload"
-                          >
-                            Upload Experience Letter
-                          </label>
-                          <input
-                            id={`experienceLetter`}
-                            name={`experienceLetter`}
-                            type="file"
-                            onChange={(e) => {
-                              setFieldValue(
+                                touched
+                              )}
+                              <Image
+                                src={values.appointmentPreview}
+                                alt="Image"
+                                width="180"
+                                height="180"
+                              />
+                            </div>
+
+                            <div className="col-12 md:col-4">
+                              <label
+                                htmlFor={`experienceLetter`}
+                                className="block  font-medium mb-2 custom-file-upload"
+                              >
+                                <i className="pi pi-upload mr-2" />
+                                Experience Letter
+                              </label>
+                              <input
+                                id={`experienceLetter`}
+                                name={`experienceLetter`}
+                                type="file"
+                                onChange={(e) => {
+                                  setFieldValue(
+                                    `experienceLetter`,
+                                    e.target.files[0]
+                                  );
+                                  setFieldValue(
+                                    `experiencePreview`,
+                                    URL.createObjectURL(e.target.files[0])
+                                  );
+                                }}
+                              />
+                              {ErrorMessage(
+                                errors,
                                 `experienceLetter`,
-                                e.target.files[0]
-                              );
-                              setFieldValue(
-                                `experiencePreview`,
-                                URL.createObjectURL(e.target.files[0])
-                              );
-                            }}
-                          />
-                          {ErrorMessage(errors, `experienceLetter`, touched)}
-                          <Image
-                            src={values.experiencePreview}
-                            alt="Image"
-                            width="180"
-                            height="180"
-                          />
-                        </div>
-                        <div className="col-12 md:col-4">
-                          <label
-                            htmlFor={`relievingLetter`}
-                            className="block  font-medium mb-2 custom-file-upload"
-                          >
-                            Upload Relieving Letter
-                          </label>
-                          <input
-                            id={`relievingLetter`}
-                            name={`relievingLetter`}
-                            type="file"
-                            onChange={(e) => {
-                              setFieldValue(
-                                `relievingLetter`,
-                                e.target.files[0]
-                              );
-                              setFieldValue(
-                                `relievingPreview`,
-                                URL.createObjectURL(e.target.files[0])
-                              );
-                            }}
-                          />
-                          {ErrorMessage(errors, `relievingLetter`, touched)}
-                          <Image
-                            src={values.relievingPreview}
-                            alt="Image"
-                            width="180"
-                            height="180"
-                          />
+                                touched
+                              )}
+                              <Image
+                                src={values.experiencePreview}
+                                alt="Image"
+                                width="180"
+                                height="180"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </>
                     )}
