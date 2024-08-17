@@ -76,14 +76,17 @@ const EducationDetails = (props) => {
 
   const initialValues =
     dataType === "education"
+      ? actionType === "add"
+        ? {
+            boardName: "",
+            passingYear: "",
+            marksPercentage: "",
+            resultImage: "",
+            resultImagePre: "",
+          }
+        : { ...selectedData }
+      : actionType === "add"
       ? {
-          boardName: "",
-          passingYear: "",
-          marksPercentage: "",
-          resultImage: "",
-          resultImagePre: "",
-        }
-      : {
           companyName: "",
           position: "",
           startingYear: "",
@@ -92,7 +95,8 @@ const EducationDetails = (props) => {
           relievingLetter: "",
           appointmentLetter: "",
           salarySlip: "",
-        };
+        }
+      : { ...selectedData };
   useEffect(() => {
     getUserDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
