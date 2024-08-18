@@ -88,7 +88,7 @@ const EducationDetails = (props) => {
             resultImage: "",
             resultImagePre: "",
           }
-        : { ...selectedData }
+        : { ...selectedData, resultImagePre: selectedData.resultImage }
       : actionType === "add"
       ? {
           companyName: "",
@@ -99,8 +99,18 @@ const EducationDetails = (props) => {
           relievingLetter: "",
           appointmentLetter: "",
           salarySlip: "",
+          experienceLetterPre: "",
+          relievingLetterPre: "",
+          appointmentLetterPre: "",
+          salarySlipPre: "",
         }
-      : { ...selectedData };
+      : {
+          ...selectedData,
+          experienceLetterPre: selectedData.experienceLetter,
+          relievingLetterPre: selectedData.relievingLetter,
+          appointmentLetterPre: selectedData.appointmentLetter,
+          salarySlipPre: selectedData.salarySlip,
+        };
   useEffect(() => {
     getUserDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,9 +118,10 @@ const EducationDetails = (props) => {
 
   const getUserDetails = () => {
     setLoading(true);
-    getDetails(addUserData.id)
+    getDetails("66be1db4de751831d282631d")
       .then((res) => {
         setEmployeeData(res.data);
+        setLoading(false);
       })
       .catch(() => {
         setLoading(false);
@@ -209,6 +220,7 @@ const EducationDetails = (props) => {
       dataType: "educationAndWork",
       profileRatio:
         employeeData.profileRatio <= 60 ? 60 : employeeData.profileRatio,
+      id: employeeData._id,
     })
       .then((res) => {
         setLoading(false);
@@ -225,6 +237,7 @@ const EducationDetails = (props) => {
   return (
     <>
       {loading && <Loader />}
+
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
         <DataTable
           value={employeeData?.education ? employeeData.education : []}
@@ -414,14 +427,14 @@ const EducationDetails = (props) => {
                                     e.target.files[0]
                                   );
                                   setFieldValue(
-                                    `relievingPreview`,
+                                    `relievingLetterPre`,
                                     URL.createObjectURL(e.target.files[0])
                                   );
                                 }}
                               />
                               {ErrorMessage(errors, `relievingLetter`, touched)}
                               <Image
-                                src={values.relievingPreview}
+                                src={values.relievingLetterPre}
                                 alt="Image"
                                 width="180"
                                 height="180"
@@ -445,14 +458,14 @@ const EducationDetails = (props) => {
                                     e.target.files[0]
                                   );
                                   setFieldValue(
-                                    `slarySlipPreview`,
+                                    `salarySlipPre`,
                                     URL.createObjectURL(e.target.files[0])
                                   );
                                 }}
                               />
                               {ErrorMessage(errors, `salarySlip`, touched)}
                               <Image
-                                src={values.slarySlipPreview}
+                                src={values.salarySlipPre}
                                 alt="Image"
                                 width="180"
                                 height="180"
@@ -476,7 +489,7 @@ const EducationDetails = (props) => {
                                     e.target.files[0]
                                   );
                                   setFieldValue(
-                                    `appointmentPreview`,
+                                    `appointmentLetterPre`,
                                     URL.createObjectURL(e.target.files[0])
                                   );
                                 }}
@@ -487,7 +500,7 @@ const EducationDetails = (props) => {
                                 touched
                               )}
                               <Image
-                                src={values.appointmentPreview}
+                                src={values.appointmentLetterPre}
                                 alt="Image"
                                 width="180"
                                 height="180"
@@ -512,7 +525,7 @@ const EducationDetails = (props) => {
                                     e.target.files[0]
                                   );
                                   setFieldValue(
-                                    `experiencePreview`,
+                                    `experienceLetterPre`,
                                     URL.createObjectURL(e.target.files[0])
                                   );
                                 }}
@@ -523,7 +536,7 @@ const EducationDetails = (props) => {
                                 touched
                               )}
                               <Image
-                                src={values.experiencePreview}
+                                src={values.experienceLetterPre}
                                 alt="Image"
                                 width="180"
                                 height="180"

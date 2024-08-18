@@ -33,7 +33,7 @@ export const userEducationDetailsUpdate = async (payload) => {
 
 export const getDetails = async (payload) => {
   const response = await Instance.get(
-    `/user/:${payload}`,
+    `/user/${payload}`,
     payload,
     headerWithToken()
   );
