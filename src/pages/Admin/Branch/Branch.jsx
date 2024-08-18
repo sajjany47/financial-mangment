@@ -10,7 +10,7 @@ import {
 import * as Yup from "yup";
 import { city, countryList, state } from "../AddUser/AddUserService";
 import Loader from "../../../component/Loader";
-import { createBranch } from "./BranchService";
+import { branchDatatable, createBranch } from "./BranchService";
 import Swal from "sweetalert2";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -32,6 +32,7 @@ const Branch = () => {
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
+  const [branchList, setBranchList] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -40,8 +41,25 @@ const Branch = () => {
         setCountryData(res.data);
       })
       .catch(() => {});
+    getEmployeeList();
   }, []);
 
+  const getEmployeeList = () => {
+    setLoading(true);
+    let reqData = {
+      page: 1,
+      limit: 10,
+      isActive: true,
+    };
+    branchDatatable(reqData)
+      .then((res) => {
+        setBranchList(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const stateList = (country) => {
     state({ country: country })
       .then((res) => {
@@ -123,17 +141,18 @@ const Branch = () => {
 
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
         <DataTable
-          value={[]}
+          value={branchList}
           header={header}
           tableStyle={{ minWidth: "60rem" }}
         >
-          <Column field="companyName" header="SlNo." />
-          <Column field="companyName" header="EmployeeId" />
-          <Column field="companyName" header="Name" />
-          <Column field="position" header="Username" />
-          <Column field="startingYear" header="Position" />
-          <Column field="endingYear" header="Status" />
-          <Column field="endingYear" header="Branch" />
+          <Column field="" header="SlNo." />
+          <Column field="code" header="Code" />
+          <Column field="name" header="Name" />
+          <Column field="isActive" header="Status" />
+          <Column field="country" header="Country" />
+          <Column field="state" header="state" />
+          <Column field="city" header="City" />
+          <Column field="phone" header="Phone" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
       </div>

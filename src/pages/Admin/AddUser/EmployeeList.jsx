@@ -4,10 +4,36 @@ import { useNavigate } from "react-router-dom";
 import { setAddUser } from "../../../store/reducer/AddUserReducer";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { useEffect, useState } from "react";
+import { employeeDataTable } from "./AddUserService";
+import Loader from "../../../component/Loader";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [employeeList, setEmployeeList] = useState([]);
+
+  useEffect(() => {
+    getEmployeeList();
+  }, []);
+
+  const getEmployeeList = () => {
+    setLoading(true);
+    let reqData = {
+      page: 1,
+      limit: 10,
+      isActive: true,
+    };
+    employeeDataTable(reqData)
+      .then((res) => {
+        setEmployeeList(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
 
   const header = () => {
     return (
@@ -29,19 +55,20 @@ const EmployeeList = () => {
   };
   return (
     <>
+      {loading && <Loader />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
         <DataTable
-          value={[]}
+          value={employeeList}
           header={header}
           tableStyle={{ minWidth: "60rem" }}
         >
           <Column field="companyName" header="SlNo." />
-          <Column field="companyName" header="EmployeeId" />
-          <Column field="companyName" header="Name" />
-          <Column field="position" header="Username" />
-          <Column field="startingYear" header="Position" />
-          <Column field="endingYear" header="Status" />
-          <Column field="endingYear" header="Branch" />
+          <Column field="employeeId" header="EmployeeId" />
+          <Column field="name" header="Name" />
+          <Column field="username" header="Username" />
+          <Column field="position" header="Position" />
+          <Column field="isActive" header="Status" />
+          <Column field="jobBranchName" header="Branch" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
       </div>

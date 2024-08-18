@@ -36,7 +36,7 @@ export const branchList = async (payload) => {
 };
 
 export const branchDatatable = async (payload) => {
-  const response = await Instance.get(
+  const response = await Instance.post(
     "/branch/datatable",
     payload,
     headerWithToken()

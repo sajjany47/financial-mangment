@@ -40,6 +40,15 @@ export const getDetails = async (payload) => {
   return response.data;
 };
 
+export const employeeDataTable = async (payload) => {
+  const response = await Instance.post(
+    `/user//datatable`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const userEducationUpdate = async (payload) => {
   const response = await Instance.post(
     `/user/update-education`,
