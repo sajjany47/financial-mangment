@@ -263,10 +263,10 @@ const EducationDetails = (props) => {
             header={() => header("work")}
             tableStyle={{ minWidth: "60rem" }}
           >
-            <Column field="name" header="Board Name" />
-            <Column field="year" header="Passing Year" />
-            <Column field="Marks" header="Marks" />
-            <Column header="Image" body={imageBodyTemplate}></Column>
+            <Column field="companyName" header="Institute Name" />
+            <Column field="position" header="Position" />
+            <Column field="startingYear" header="Starting Year" />
+            <Column field="endingYear" header="Ending Year"></Column>
             <Column header="Action" body={actionBodyTemplate}></Column>
           </DataTable>
           {employeeData?.workDetail?.length <= 0 && (

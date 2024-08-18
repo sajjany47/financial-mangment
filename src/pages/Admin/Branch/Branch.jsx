@@ -12,6 +12,8 @@ import { city, countryList, state } from "../AddUser/AddUserService";
 import Loader from "../../../component/Loader";
 import { createBranch } from "./BranchService";
 import Swal from "sweetalert2";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 const createBranchSchema = Yup.object().shape({
   _id: Yup.string(),
@@ -81,6 +83,22 @@ const Branch = () => {
     cityList(value.country.iso2, e.value.iso2);
   };
 
+  const header = () => {
+    return (
+      <div className="flex flex-wrap align-items-center justify-content-between gap-2">
+        <span className="text-xl text-900 font-bold">{"Branch List"}</span>
+        <Button
+          label="Add Branch"
+          icon="pi pi-plus"
+          onClick={() => setVisible(true)}
+        />
+      </div>
+    );
+  };
+  const actionBodyTemplate = () => {
+    return <Button icon="pi pi-pencil" rounded text aria-label="Filter" />;
+  };
+
   const handelSubmit = (values) => {
     setLoading(true);
     const reqData = {
@@ -102,14 +120,23 @@ const Branch = () => {
   return (
     <>
       {loading && <Loader />}
-      <div className="flex justify-content-end">
-        <Button
-          label="Add Branch"
-          icon="pi pi-plus"
-          onClick={() => setVisible(true)}
-        />
-      </div>
 
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+        <DataTable
+          value={[]}
+          header={header}
+          tableStyle={{ minWidth: "60rem" }}
+        >
+          <Column field="companyName" header="SlNo." />
+          <Column field="companyName" header="EmployeeId" />
+          <Column field="companyName" header="Name" />
+          <Column field="position" header="Username" />
+          <Column field="startingYear" header="Position" />
+          <Column field="endingYear" header="Status" />
+          <Column field="endingYear" header="Branch" />
+          <Column header="Action" body={actionBodyTemplate} />
+        </DataTable>
+      </div>
       <Dialog
         header="Add Branch"
         visible={visible}
