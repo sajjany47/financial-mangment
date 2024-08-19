@@ -61,7 +61,7 @@ const Branch = () => {
       });
   };
   const stateList = (country) => {
-    state({ country: country })
+    state(country)
       .then((res) => {
         setStateData(res.data);
       })
@@ -69,7 +69,7 @@ const Branch = () => {
   };
 
   const cityList = (country, state) => {
-    city({ country: country, state: state })
+    city(country, state)
       .then((res) => {
         setCityData(res.data);
       })

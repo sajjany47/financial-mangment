@@ -29,7 +29,7 @@ export const branchList = async (payload) => {
       ? `/branch/?country=${payload.country}&state=${payload.state}`
       : payload.hasOwnProperty("country")
       ? `/branch/?country=${payload.country}`
-      : "/branch/";
+      : "/branch";
 
   const response = await Instance.get(url, headerWithToken());
   return response.data;

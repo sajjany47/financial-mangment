@@ -1,8 +1,10 @@
+import axios from "axios";
 import {
   headerWithFormData,
   headerWithToken,
   Instance,
 } from "../../../shared/constant";
+import Swal from "sweetalert2";
 
 export const userCreate = async (payload) => {
   const response = await Instance.post(
@@ -42,7 +44,7 @@ export const getDetails = async (payload) => {
 
 export const employeeDataTable = async (payload) => {
   const response = await Instance.post(
-    `/user//datatable`,
+    `/user/datatable`,
     payload,
     headerWithToken()
   );
@@ -86,33 +88,65 @@ export const userBasicUpdate = async (payload) => {
 };
 
 export const countryList = async () => {
-  const response = await Instance.get(`/user/country`, headerWithToken());
-  return response.data;
+  try {
+    const countryList = await axios.get(
+      `https://api.countrystatecity.in/v1/countries`,
+      {
+        headers: {
+          "X-CSCAPI-KEY":
+            "OU5ycmZrek91NnpXVjdUTVJoUVZ1N3ZWWWJGM3lnQVB0N0djYngzMA==",
+        },
+      }
+    );
+
+    return countryList;
+  } catch (error) {
+    Swal.fire({ title: "Failed to fetched country list", icon: "error" });
+  }
 };
 
 export const state = async (payload) => {
-  const response = await Instance.post(
-    `/user/state`,
-    payload,
-    headerWithToken()
-  );
-  return response.data;
+  try {
+    const stateList = await axios.get(
+      `https://api.countrystatecity.in/v1/countries/${payload}/states`,
+      {
+        headers: {
+          "X-CSCAPI-KEY":
+            "OU5ycmZrek91NnpXVjdUTVJoUVZ1N3ZWWWJGM3lnQVB0N0djYngzMA==",
+        },
+      }
+    );
+
+    return stateList;
+  } catch (error) {
+    Swal.fire({ title: "Failed to fetched state list", icon: "error" });
+  }
 };
 
-export const city = async (payload) => {
-  const response = await Instance.post(
-    `/user/city`,
-    payload,
-    headerWithToken()
-  );
-  return response.data;
+export const city = async (country, state) => {
+  try {
+    const cityList = await axios.get(
+      `https://api.countrystatecity.in/v1/countries/${country}/states/${state}/cities`,
+      {
+        headers: {
+          "X-CSCAPI-KEY":
+            "OU5ycmZrek91NnpXVjdUTVJoUVZ1N3ZWWWJGM3lnQVB0N0djYngzMA==",
+        },
+      }
+    );
+
+    return cityList;
+  } catch (error) {
+    Swal.fire({ title: "Failed to fetched city list", icon: "error" });
+  }
 };
 
 export const findIFSC = async (payload) => {
-  const response = await Instance.post(
-    `/user/ifsc`,
-    payload,
-    headerWithToken()
-  );
-  return response.data;
+  try {
+    const ifscCode = await axios.get(`https://ifsc.razorpay.com/${payload}`);
+
+    return ifscCode;
+  } catch (error) {
+    Swal.fire({ title: "Failed to fetched IFSC Code", icon: "error" });
+  }
 };

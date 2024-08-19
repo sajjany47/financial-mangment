@@ -135,7 +135,7 @@ const BasicDetails = (props) => {
       });
   };
   const stateList = (country) => {
-    state({ country: country })
+    state(country)
       .then((res) => {
         setStateData(res.data);
       })
@@ -143,7 +143,7 @@ const BasicDetails = (props) => {
   };
 
   const cityList = (country, state) => {
-    city({ country: country, state: state })
+    city(country, state)
       .then((res) => {
         setCityData(res.data);
       })
