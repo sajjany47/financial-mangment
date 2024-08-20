@@ -4,12 +4,8 @@ import {
   Instance,
 } from "../shared/constant";
 
-export const RefreshToken = async (payload) => {
-  const response = await Instance.post(
-    `/user/refresh-token`,
-    payload,
-    headerWithToken()
-  );
+export const RefreshToken = async () => {
+  const response = await Instance.get(`/user/refresh-token`, headerWithToken());
   return response.data;
 };
 export const userLogin = async (payload) => {

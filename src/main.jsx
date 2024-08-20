@@ -37,17 +37,16 @@ export const Root = () => {
   };
 
   useEffect(() => {
-    Instance.interceptors.response.use(
-      (res) => {
-        return res;
+    const privateRequestInterceptor = Instance.interceptors.response.use(
+      (response) => {
+        return response;
       },
       async (error) => {
-        if (error.response.status === 403) {
+        if (error?.response?.status === 403) {
           try {
-            const payload = sessionStorage.getItem(REFRESH_TOKEN_STORAGE_KEY);
-            const result = await RefreshToken(payload);
-            const accessToken = result.data.accessToken;
-            const refreshToken = result.data.refreshToken;
+            const result = await RefreshToken();
+            const accessToken = result.accessToken;
+            const refreshToken = result.refreshToken;
             sessionStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
             sessionStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
             const prevRequest = error.config;
@@ -57,47 +56,57 @@ export const Root = () => {
           } catch (error) {
             setTimeout(() => {
               Swal.fire({
-                title: "Failed to generate Refresh Token",
+                title: "Failed to get Refresh Token",
                 icon: "error",
               });
             }, 350);
-            window.location.href = "/login";
           }
-        } else if (error.response.status === 401) {
-          Swal.fire({
-            title: errorMessage(error),
-            icon: "error",
-          });
-          sessionStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-          sessionStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
-          // window.location.href = `http://localhost:5173/`;
-        } else {
-          Swal.fire({
-            title: errorMessage(error),
-            icon: "error",
-          });
         }
+        Swal.fire({
+          title: error.message,
+          icon: "error",
+        });
 
         return Promise.reject(error);
       }
     );
+    return () => {
+      Instance.interceptors.response.eject(privateRequestInterceptor);
+    };
   }, []);
 
   useEffect(() => {
     // Add a request interceptor
-    Instance.interceptors.request.use(
+    const publicRequestInterceptor = Instance.interceptors.request.use(
       function (config) {
         // Do something before request is sent
         return config;
       },
       function (error) {
         Swal.fire({
-          title: errorMessage(error),
+          title: error.message,
           icon: "error",
         });
         return Promise.reject(error);
       }
     );
+
+    const publicResponseInterceptor = Instance.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        Swal.fire({
+          title: error.message,
+          icon: "error",
+        });
+        return Promise.reject(error);
+      }
+    );
+    return () => {
+      Instance.interceptors.response.eject(publicRequestInterceptor);
+      Instance.interceptors.response.eject(publicResponseInterceptor);
+    };
   }, []);
   return (
     <Provider store={store}>
