@@ -17,59 +17,47 @@ import {
   ACCESS_TOKEN_STORAGE_KEY,
   REFRESH_TOKEN_STORAGE_KEY,
 } from "./shared/Config.js";
+import axios from "axios";
 
 export const Root = () => {
-  const errorMessage = (error) => {
-    switch (error.response.status) {
-      case 400:
-        return error.response.data.message.message
-          ? error.response.data.message.message
-          : error.response.data.message;
-      case 502:
-        return error.response.data.message.message
-          ? error.response.data.message.message
-          : error.message;
-      case 500:
-        return error.message;
-      default:
-        return error.response.data.message;
-    }
-  };
-
   useEffect(() => {
     const privateRequestInterceptor = Instance.interceptors.response.use(
-      (response) => {
-        return response;
+      (resposne) => {
+        return resposne;
       },
       async (error) => {
-        if (error?.response?.status === 403) {
+        if (error?.response?.status === 401) {
           try {
             const result = await RefreshToken();
+
             const accessToken = result.accessToken;
             const refreshToken = result.refreshToken;
-            sessionStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
-            sessionStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+            localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
+            localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+
             const prevRequest = error.config;
-            prevRequest.sent = true;
             prevRequest.headers["Authorization"] = `Bearer ${accessToken}`;
-            return Instance(prevRequest);
-          } catch (error) {
+            return axios(prevRequest);
+          } catch (err) {
             setTimeout(() => {
               Swal.fire({
-                title: "Failed to get Refresh Token",
+                title: error.message,
                 icon: "error",
               });
             }, 350);
+
+            return Promise.reject(err);
           }
         }
+
         Swal.fire({
           title: error.message,
           icon: "error",
         });
-
         return Promise.reject(error);
       }
     );
+
     return () => {
       Instance.interceptors.response.eject(privateRequestInterceptor);
     };

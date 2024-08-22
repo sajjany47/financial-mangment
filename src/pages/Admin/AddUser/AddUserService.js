@@ -51,42 +51,6 @@ export const employeeDataTable = async (payload) => {
   return response.data;
 };
 
-export const userEducationUpdate = async (payload) => {
-  const response = await Instance.post(
-    `/user/update-education`,
-    payload,
-    headerWithFormData()
-  );
-  return response.data;
-};
-
-export const userDocumentUpdate = async (payload) => {
-  const response = await Instance.post(
-    `/user/update-document`,
-    payload,
-    headerWithFormData()
-  );
-  return response.data;
-};
-
-export const userAccountUpdate = async (payload) => {
-  const response = await Instance.post(
-    `/user/update-account`,
-    payload,
-    headerWithFormData()
-  );
-  return response.data;
-};
-
-export const userBasicUpdate = async (payload) => {
-  const response = await Instance.post(
-    `/user/update-basic`,
-    payload,
-    headerWithFormData()
-  );
-  return response.data;
-};
-
 export const countryList = async () => {
   try {
     const countryList = await axios.get(
