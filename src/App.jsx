@@ -22,7 +22,7 @@ function App() {
         return resposne;
       },
       async (error) => {
-        if (error?.response?.status === 401) {
+        if (error?.response?.status === 403) {
           try {
             const result = await RefreshToken();
 
