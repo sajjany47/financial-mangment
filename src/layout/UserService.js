@@ -1,11 +1,18 @@
 import {
+  getRefreshToken,
   headerWithOutToken,
   headerWithToken,
   Instance,
 } from "../shared/constant";
 
 export const RefreshToken = async () => {
-  const response = await Instance.get(`/user/refresh-token`, headerWithToken());
+  const token = getRefreshToken();
+  const response = await Instance.get(`/user/refresh-token`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 export const userLogin = async (payload) => {

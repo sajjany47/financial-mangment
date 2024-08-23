@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ACCESS_TOKEN_STORAGE_KEY } from "./Config";
+import { ACCESS_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from "./Config";
 
 export const apiPath = import.meta.env.VITE_API_BASE_URL;
 export const env_path = import.meta.env.VITE_MODE;
@@ -10,12 +10,16 @@ export const Instance = axios.create({
 // const token = sessionStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
 // console.log(token);
 
-const getToken = () => {
+export const getAccessToken = () => {
   return sessionStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
 };
 
+export const getRefreshToken = () => {
+  return sessionStorage.getItem(REFRESH_TOKEN_STORAGE_KEY);
+};
+
 export const headerWithToken = () => {
-  const token = getToken();
+  const token = getAccessToken();
   return {
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +35,7 @@ export const headerWithOutToken = () => {
   };
 };
 export const headerWithFormData = () => {
-  const token = getToken();
+  const token = getAccessToken();
   return {
     headers: {
       "Content-Type": "multipart/form-data",

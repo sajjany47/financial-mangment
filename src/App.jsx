@@ -22,7 +22,7 @@ function App() {
         return resposne;
       },
       async (error) => {
-        if (error?.response?.status === 403) {
+        if (error?.response?.status === 401) {
           try {
             const result = await RefreshToken();
 
@@ -59,39 +59,39 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
-    // Add a request interceptor
-    const publicRequestInterceptor = Instance.interceptors.request.use(
-      function (config) {
-        // Do something before request is sent
-        return config;
-      },
-      function (error) {
-        Swal.fire({
-          title: error.response.data.message,
-          icon: "error",
-        });
-        return Promise.reject(error);
-      }
-    );
+  // useEffect(() => {
+  //   // Add a request interceptor
+  //   const publicRequestInterceptor = Instance.interceptors.request.use(
+  //     function (config) {
+  //       // Do something before request is sent
+  //       return config;
+  //     },
+  //     function (error) {
+  //       Swal.fire({
+  //         title: error.response.data.message,
+  //         icon: "error",
+  //       });
+  //       return Promise.reject(error);
+  //     }
+  //   );
 
-    const publicResponseInterceptor = Instance.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      (error) => {
-        Swal.fire({
-          title: error.response.data.message,
-          icon: "error",
-        });
-        return Promise.reject(error);
-      }
-    );
-    return () => {
-      Instance.interceptors.response.eject(publicRequestInterceptor);
-      Instance.interceptors.response.eject(publicResponseInterceptor);
-    };
-  }, []);
+  //   const publicResponseInterceptor = Instance.interceptors.response.use(
+  //     (response) => {
+  //       return response;
+  //     },
+  //     (error) => {
+  //       Swal.fire({
+  //         title: error.response.data.message,
+  //         icon: "error",
+  //       });
+  //       return Promise.reject(error);
+  //     }
+  //   );
+  //   return () => {
+  //     Instance.interceptors.response.eject(publicRequestInterceptor);
+  //     Instance.interceptors.response.eject(publicResponseInterceptor);
+  //   };
+  // }, []);
 
   return (
     <>
