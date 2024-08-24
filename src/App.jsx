@@ -18,42 +18,51 @@ import Swal from "sweetalert2";
 function App() {
   useEffect(() => {
     const privateRequestInterceptor = Instance.interceptors.response.use(
-      (resposne) => {
-        return resposne;
+      (response) => {
+        return response;
       },
       async (error) => {
-        if (error?.response?.status === 403) {
+        const originalRequest = error.config;
+
+        if (error?.response?.status === 403 && !originalRequest._retry) {
+          originalRequest._retry = true; // Prevent infinite loop
+
           try {
             const result = await RefreshToken();
 
             const accessToken = result.accessToken;
             const refreshToken = result.refreshToken;
+
+            // Store the new tokens
             localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
             localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
 
-            const prevRequest = error.config;
-            prevRequest.headers["Authorization"] = `Bearer ${accessToken}`;
-            return Instance(prevRequest);
+            // Update the Authorization header with the new access token
+            originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+
+            // Retry the original request with the new token
+            return Instance(originalRequest);
           } catch (err) {
-            setTimeout(() => {
-              Swal.fire({
-                title: error.response.data.message,
-                icon: "error",
-              });
-            }, 350);
+            Swal.fire({
+              title: "Session expired. Please log in again.",
+              icon: "error",
+            });
 
             return Promise.reject(err);
           }
         }
 
+        // If the error is not 403 or retry fails, show the error message
         Swal.fire({
-          title: error.response.data.message,
+          title: error.response?.data?.message || "An error occurred",
           icon: "error",
         });
+
         return Promise.reject(error);
       }
     );
 
+    // Cleanup the interceptor on component unmount
     return () => {
       Instance.interceptors.response.eject(privateRequestInterceptor);
     };
