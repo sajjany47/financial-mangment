@@ -11,6 +11,11 @@ const axiosInstance = axios.create({
   baseURL: apiPath,
 });
 
+// Create a list to hold the request queue
+const refreshAndRetryQueue = [];
+
+// Flag to prevent multiple token refresh requests
+let isRefreshing = false;
 // Add an interceptor to handle 403 errors
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -25,26 +30,48 @@ axiosInstance.interceptors.response.use(
     ) {
       originalRequest._retry = true; // Prevent infinite loop
 
-      try {
-        // Call the RefreshToken function to get a new access token
-        const result = await RefreshToken();
+      if (!isRefreshing) {
+        isRefreshing = true;
 
-        const accessToken = result.accessToken;
-        const refreshToken = result.refreshToken;
+        try {
+          // Call the RefreshToken function to get a new access token
+          const result = await RefreshToken();
 
-        // Store the new tokens in localStorage
-        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
-        localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+          const accessToken = result.accessToken;
+          const refreshToken = result.refreshToken;
 
-        // Update the Authorization header with the new access token
-        originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+          // Store the new tokens in localStorage
+          localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
+          localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
 
-        // Retry the original request with the new token using the axiosInstance
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        // If refreshing the token fails, reject the promise with the refreshError
-        return Promise.reject(refreshError);
+          // Update the Authorization header with the new access token
+          originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+
+          // Retry all requests in the queue with the new token
+          refreshAndRetryQueue.forEach(({ config, resolve, reject }) => {
+            axiosInstance
+              .request(config)
+              .then((response) => resolve(response))
+              .catch((err) => reject(err));
+          });
+
+          // Clear the queue
+          refreshAndRetryQueue.length = 0;
+
+          // Retry the original request
+          return axiosInstance(originalRequest);
+        } catch (refreshError) {
+          // If refreshing the token fails, reject the promise with the refreshError
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
       }
+
+      // Add the original request to the queue
+      return new Promise((resolve, reject) => {
+        refreshAndRetryQueue.push({ config: originalRequest, resolve, reject });
+      });
     }
 
     // If the error is not 403 or retry fails, reject the promise with the original error
