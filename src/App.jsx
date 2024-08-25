@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import PasswordChange from "./layout/PasswordChange";
@@ -16,20 +17,21 @@ import {
 import Swal from "sweetalert2";
 
 function App() {
+  let isRefreshing = false;
+
   useEffect(() => {
-    // Flag to prevent multiple token refresh requests
-    let isRefreshing = false;
     const privateRequestInterceptor = Instance.interceptors.response.use(
-      (response) => {
-        return response;
-      },
+      (response) => response,
       async (error) => {
         const originalRequest = error.config;
 
         if (error?.response?.status === 403 && !originalRequest._retry) {
-          originalRequest._retry = true; // Prevent infinite loop
+          originalRequest._retry = true;
+
           if (!isRefreshing) {
             isRefreshing = true;
+            console.log("Refreshing Token...");
+
             try {
               const result = await RefreshToken();
 
@@ -40,27 +42,28 @@ function App() {
               localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
               localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
 
-              // Update the Authorization header with the new access token
+              // Update the Authorization header
               originalRequest.headers[
                 "Authorization"
               ] = `Bearer ${accessToken}`;
 
-              // Retry the original request with the new token
               return Instance(originalRequest);
             } catch (err) {
+              console.error("Token refresh failed:", err);
               Swal.fire({
                 title: "Session expired. Please log in again.",
                 icon: "error",
               });
-
               return Promise.reject(err);
             } finally {
               isRefreshing = false;
+              console.log("Token refresh complete.");
             }
+          } else {
+            console.log("Token refresh already in progress.");
           }
         }
 
-        // If the error is not 403 or retry fails, show the error message
         Swal.fire({
           title: error.response?.data?.message || "An error occurred",
           icon: "error",
@@ -70,7 +73,6 @@ function App() {
       }
     );
 
-    // Cleanup the interceptor on component unmount
     return () => {
       Instance.interceptors.response.eject(privateRequestInterceptor);
     };
