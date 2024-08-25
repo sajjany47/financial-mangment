@@ -49,7 +49,6 @@ function App() {
 
               return Instance(originalRequest);
             } catch (err) {
-              console.error("Token refresh failed:", err);
               Swal.fire({
                 title: "Session expired. Please log in again.",
                 icon: "error",
@@ -57,10 +56,7 @@ function App() {
               return Promise.reject(err);
             } finally {
               isRefreshing = false;
-              console.log("Token refresh complete.");
             }
-          } else {
-            console.log("Token refresh already in progress.");
           }
         }
 
