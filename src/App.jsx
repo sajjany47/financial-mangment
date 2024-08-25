@@ -30,7 +30,6 @@ function App() {
 
           if (!isRefreshing) {
             isRefreshing = true;
-            console.log("Refreshing Token...");
 
             try {
               const result = await RefreshToken();
