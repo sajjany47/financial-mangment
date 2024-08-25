@@ -17,6 +17,8 @@ import Swal from "sweetalert2";
 
 function App() {
   useEffect(() => {
+    // Flag to prevent multiple token refresh requests
+    let isRefreshing = false;
     const privateRequestInterceptor = Instance.interceptors.response.use(
       (response) => {
         return response;
@@ -26,29 +28,35 @@ function App() {
 
         if (error?.response?.status === 403 && !originalRequest._retry) {
           originalRequest._retry = true; // Prevent infinite loop
+          if (!isRefreshing) {
+            isRefreshing = true;
+            try {
+              const result = await RefreshToken();
 
-          try {
-            const result = await RefreshToken();
+              const accessToken = result.accessToken;
+              const refreshToken = result.refreshToken;
 
-            const accessToken = result.accessToken;
-            const refreshToken = result.refreshToken;
+              // Store the new tokens
+              localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
+              localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
 
-            // Store the new tokens
-            localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
-            localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+              // Update the Authorization header with the new access token
+              originalRequest.headers[
+                "Authorization"
+              ] = `Bearer ${accessToken}`;
 
-            // Update the Authorization header with the new access token
-            originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+              // Retry the original request with the new token
+              return Instance(originalRequest);
+            } catch (err) {
+              Swal.fire({
+                title: "Session expired. Please log in again.",
+                icon: "error",
+              });
 
-            // Retry the original request with the new token
-            return Instance(originalRequest);
-          } catch (err) {
-            Swal.fire({
-              title: "Session expired. Please log in again.",
-              icon: "error",
-            });
-
-            return Promise.reject(err);
+              return Promise.reject(err);
+            } finally {
+              isRefreshing = false;
+            }
           }
         }
 
