@@ -38,8 +38,9 @@ function App() {
               const refreshToken = result.refreshToken;
 
               // Store the new tokens
-              localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
-              localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+
+              sessionStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
+              sessionStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
 
               // Update the Authorization header
               originalRequest.headers[
@@ -58,11 +59,12 @@ function App() {
             }
           }
         }
-
-        Swal.fire({
-          title: error.response?.data?.message || "An error occurred",
-          icon: "error",
-        });
+        if (error.response.status !== 403) {
+          Swal.fire({
+            title: error.response?.data?.message || "An error occurred",
+            icon: "error",
+          });
+        }
 
         return Promise.reject(error);
       }
