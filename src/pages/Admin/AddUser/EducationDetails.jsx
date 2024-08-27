@@ -36,6 +36,53 @@ const EducationDetails = (props) => {
   const [actionType, setActionType] = useState("");
   const [selectedData, setSelectedData] = useState({});
 
+  const finalSubmitValidation = Yup.object().shape({
+    education: Yup.array()
+      .of(
+        Yup.object().shape({
+          boardName: Yup.string().required("Board name is required"),
+          passingYear: Yup.string()
+            .required("Passing year is required")
+            .matches(/^\d{4}$/, "Enter a valid year"),
+          marksPercentage: Yup.string()
+            .required("Marks percentage is required")
+            .matches(
+              /^(100(\.0{1,2})?|(\d{1,2})(\.\d{1,2})?)$/,
+              "Enter a valid percentage"
+            ),
+          resultImage: Yup.string().required("Marksheet is required"),
+        })
+      )
+      .required("Education details are required")
+      .min(1, "At least one education detail is required"),
+
+    workDetail: Yup.array().when("fresherOrExperience", {
+      is: (val) => val === fresherOrExperience.EXPERIENCE,
+      then: Yup.array()
+        .of(
+          Yup.object().shape({
+            companyName: Yup.string().required("Company name is required"),
+            position: Yup.string().required("Position is required"),
+            startingYear: Yup.string().required("Starting year is required"),
+            endingYear: Yup.string().required("Ending year is required"),
+            experienceLetter: Yup.string().required(
+              "Experience Letter is required"
+            ),
+            relievingLetter: Yup.string().required(
+              "Relieving Letter is required"
+            ),
+            appointmentLetter: Yup.string().required(
+              "Appointment Letter is required"
+            ),
+            salarySlip: Yup.string().required("Salary Slip is required"),
+          })
+        )
+        .required("Work details are required")
+        .min(1, "At least one work detail is required"),
+      otherwise: () => Yup.array().notRequired(),
+    }),
+  });
+
   const educationSchema = Yup.object().shape({
     boardName: Yup.string().required("Board name is required"),
     passingYear: Yup.string()
@@ -238,73 +285,82 @@ const EducationDetails = (props) => {
   return (
     <>
       {loading && <Loader />}
+      <Formik
+        onSubmit={finalSubmit}
+        validationSchema={finalSubmitValidation}
+        initialValues={{
+          education: employeeData?.education,
+          workDetail: employeeData.workDetail,
+          fresherOrExperience: employeeData.fresherOrExperience,
+        }}
+      >
+        {({ handleSubmit, values, errors, touched }) => (
+          <Form onSubmit={handleSubmit}>
+            <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
+              <DataTable
+                value={employeeData?.education ? employeeData.education : []}
+                header={() => header("education")}
+                tableStyle={{ minWidth: "60rem" }}
+              >
+                <Column field="name" header="Board Name" />
+                <Column field="year" header="Passing Year" />
+                <Column field="Marks" header="Marks" />
+                <Column header="Image" body={imageBodyTemplate}></Column>
+                <Column header="Action" body={actionBodyTemplate}></Column>
+              </DataTable>
+              {ErrorMessage(errors, `education`, touched)}
+            </div>
+            {values.fresherOrExperience === fresherOrExperience.EXPERIENCE && (
+              <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+                <DataTable
+                  value={
+                    employeeData?.workDetail ? employeeData.workDetail : []
+                  }
+                  header={() => header("work")}
+                  tableStyle={{ minWidth: "60rem" }}
+                >
+                  <Column field="companyName" header="Institute Name" />
+                  <Column field="position" header="Position" />
+                  <Column field="startingYear" header="Starting Year" />
+                  <Column field="endingYear" header="Ending Year"></Column>
+                  <Column header="Action" body={actionBodyTemplate}></Column>
+                </DataTable>
+                {ErrorMessage(errors, `workDetail`, touched)}
+              </div>
+            )}
+            <div className="flex pt-4 justify-content-between">
+              <Button
+                label="Back"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                // eslint-disable-next-line react/prop-types
+                onClick={() => props.back()}
+                type="button"
+              />
+              <div className="flex  justify-content-end gap-2">
+                {addUserData.type === "edit" && (
+                  <Button
+                    label="Next"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    onClick={() => props.next()}
+                    type="button"
+                  />
+                )}
 
-      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
-        <DataTable
-          value={employeeData?.education ? employeeData.education : []}
-          header={() => header("education")}
-          tableStyle={{ minWidth: "60rem" }}
-        >
-          <Column field="name" header="Board Name" />
-          <Column field="year" header="Passing Year" />
-          <Column field="Marks" header="Marks" />
-          <Column header="Image" body={imageBodyTemplate}></Column>
-          <Column header="Action" body={actionBodyTemplate}></Column>
-        </DataTable>
-        {employeeData?.education?.length <= 0 && (
-          <small className="text-red-400 mb-1">
-            Minimum one degree details required
-          </small>
+                <Button
+                  label={
+                    addUserData.type === "add" ? "Submit & Next" : "Update"
+                  }
+                  icon="pi pi-arrow-right"
+                  iconPos="right"
+                  type="submit"
+                />
+              </div>
+            </div>
+          </Form>
         )}
-      </div>
-      {employeeData.fresherOrExperience === fresherOrExperience.EXPERIENCE && (
-        <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
-          <DataTable
-            value={employeeData?.workDetail ? employeeData.workDetail : []}
-            header={() => header("work")}
-            tableStyle={{ minWidth: "60rem" }}
-          >
-            <Column field="companyName" header="Institute Name" />
-            <Column field="position" header="Position" />
-            <Column field="startingYear" header="Starting Year" />
-            <Column field="endingYear" header="Ending Year"></Column>
-            <Column header="Action" body={actionBodyTemplate}></Column>
-          </DataTable>
-          {employeeData?.workDetail?.length <= 0 && (
-            <small className="text-red-400 mb-1">
-              Minimum one institute details required
-            </small>
-          )}
-        </div>
-      )}
-      <div className="flex pt-4 justify-content-between">
-        <Button
-          label="Back"
-          severity="secondary"
-          icon="pi pi-arrow-left"
-          // eslint-disable-next-line react/prop-types
-          onClick={() => props.back()}
-          type="button"
-        />
-        <div className="flex  justify-content-end gap-2">
-          {addUserData.type === "edit" && (
-            <Button
-              label="Next"
-              icon="pi pi-arrow-right"
-              iconPos="right"
-              onClick={() => finalSubmit()}
-              type="button"
-            />
-          )}
-
-          <Button
-            label={"Next"}
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            type="button"
-          />
-        </div>
-      </div>
+      </Formik>
 
       <Dialog
         header={dataType === "education" ? "Education Details" : "Work Details"}
