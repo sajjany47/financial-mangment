@@ -34,7 +34,6 @@ export const userEducationDetailsUpdate = async (payload) => {
 };
 
 export const getDetails = async (payload) => {
-  console.log(headerWithToken());
   const response = await Instance.get(
     `/user/${payload}`,
     payload,

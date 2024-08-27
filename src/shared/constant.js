@@ -20,6 +20,7 @@ export const getRefreshToken = () => {
 
 export const headerWithToken = () => {
   const token = getAccessToken();
+
   return {
     headers: {
       "Content-Type": "application/json",

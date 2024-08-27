@@ -18,9 +18,11 @@ const AddUser = () => {
 
   useEffect(() => {
     if (addUserData.type === "edit") {
+      setLoading(true);
       getDetails(addUserData.id)
         .then((res) => {
           setGetUerData(res.data);
+          setLoading(false);
         })
         .catch(() => {
           setLoading(false);
@@ -36,6 +38,7 @@ const AddUser = () => {
   const back = () => {
     return stepperRef.current.prevCallback();
   };
+
   return (
     <>
       {loading && <Loader />}
@@ -43,7 +46,9 @@ const AddUser = () => {
         <Stepper
           ref={stepperRef}
           style={{ flexBasis: "75rem" }}
-          activeStep={addUserData.type === "edit" ? getUserData?.pageIndex : 0}
+          activeStep={
+            Object.keys(getUserData).length > 0 ? getUserData?.pageIndex : 0
+          }
         >
           <StepperPanel header="Basic">
             <BasicDetails next={next} />

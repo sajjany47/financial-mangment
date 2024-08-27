@@ -86,7 +86,7 @@ const BasicDetails = (props) => {
           username: getUserData.username,
           mobile: getUserData.mobile,
           email: getUserData.email,
-          dob: getUserData.dob,
+          dob: new Date(getUserData.dob),
           position: getUserData.position,
           address: getUserData.address,
           state: getUserData.state,
