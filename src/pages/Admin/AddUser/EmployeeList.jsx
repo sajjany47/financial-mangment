@@ -50,8 +50,21 @@ const EmployeeList = () => {
       </div>
     );
   };
-  const actionBodyTemplate = () => {
-    return <Button icon="pi pi-pencil" rounded text aria-label="Filter" />;
+  const actionBodyTemplate = (item) => {
+    return (
+      <Button
+        icon="pi pi-pencil"
+        rounded
+        text
+        aria-label="Filter"
+        onClick={() => {
+          navigate("/employee/add");
+          dispatch(
+            setAddUser({ type: "edit", role: "employee", id: item._id })
+          );
+        }}
+      />
+    );
   };
   return (
     <>

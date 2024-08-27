@@ -1,13 +1,33 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import BasicDetails from "./BasicDetails";
 import EducationDetails from "./EducationDetails";
 import DocumentDetails from "./DocumentDetails";
 import AccountDetails from "./AccountDetails";
+import { useSelector } from "react-redux";
+import { getDetails } from "./AddUserService";
+import Loader from "../../../component/Loader";
 
 const AddUser = () => {
   const stepperRef = useRef(null);
+  const searchKey = useSelector((state) => state);
+  const addUserData = searchKey.addUser.addUser;
+  const [loading, setLoading] = useState(false);
+  const [getUserData, setGetUerData] = useState({});
+
+  useEffect(() => {
+    if (addUserData.type === "edit") {
+      getDetails(addUserData.id)
+        .then((res) => {
+          setGetUerData(res.data);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const next = () => {
     return stepperRef.current.nextCallback();
@@ -17,23 +37,30 @@ const AddUser = () => {
     return stepperRef.current.prevCallback();
   };
   return (
-    <div className="card flex justify-content-center">
-      <Stepper ref={stepperRef} style={{ flexBasis: "75rem" }} activeStep={0}>
-        <StepperPanel header="Basic">
-          <BasicDetails next={next} />
-        </StepperPanel>
-        <StepperPanel header="Education & Experience">
-          <EducationDetails next={next} back={back} />
-        </StepperPanel>
+    <>
+      {loading && <Loader />}
+      <div className="card flex justify-content-center">
+        <Stepper
+          ref={stepperRef}
+          style={{ flexBasis: "75rem" }}
+          activeStep={addUserData.type === "edit" ? getUserData?.pageIndex : 0}
+        >
+          <StepperPanel header="Basic">
+            <BasicDetails next={next} />
+          </StepperPanel>
+          <StepperPanel header="Education & Experience">
+            <EducationDetails next={next} back={back} />
+          </StepperPanel>
 
-        <StepperPanel header="Document">
-          <DocumentDetails next={next} back={back} />
-        </StepperPanel>
-        <StepperPanel header="Account">
-          <AccountDetails next={next} back={back} />
-        </StepperPanel>
-      </Stepper>
-    </div>
+          <StepperPanel header="Document">
+            <DocumentDetails next={next} back={back} />
+          </StepperPanel>
+          <StepperPanel header="Account">
+            <AccountDetails next={next} back={back} />
+          </StepperPanel>
+        </Stepper>
+      </div>
+    </>
   );
 };
 

@@ -48,9 +48,20 @@ const AccountDetails = (props) => {
           uanPreview: "",
         }
       : {
-          ...employeeData,
-          passbookPreview: employeeData.passbookImage,
-          uanPreview: employeeData.uanPreview,
+          bankName: employeeData.bankName ? employeeData.bankName : "",
+          accountNumber: employeeData.accountNumber
+            ? employeeData.accountNumber
+            : "",
+          branchName: employeeData.branchName ? employeeData.branchName : "",
+          ifsc: employeeData.ifsc ? employeeData.ifsc : "",
+          passbookImage: employeeData.passbookImage
+            ? employeeData.passbookImage
+            : "",
+          uanImage: employeeData.uanImage ? employeeData.uanImage : "",
+          passbookPreview: employeeData.passbookImage
+            ? employeeData.passbookImage
+            : "",
+          uanPreview: employeeData.uanImage ? employeeData.uanImage : "",
         };
 
   useEffect(() => {

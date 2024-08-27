@@ -81,7 +81,23 @@ const BasicDetails = (props) => {
   const [getUserData, setGetUerData] = useState({});
   const initialValues =
     addUserData.type === "edit"
-      ? { ...getUserData }
+      ? {
+          name: getUserData.name,
+          username: getUserData.username,
+          mobile: getUserData.mobile,
+          email: getUserData.email,
+          dob: getUserData.dob,
+          position: getUserData.position,
+          address: getUserData.address,
+          state: getUserData.state,
+          country: getUserData.country,
+          city: getUserData.city,
+          pincode: getUserData.pincode,
+          jobBranchName: getUserData.jobBranchName,
+          fresherOrExperience: getUserData.fresherOrExperience,
+          userImage: getUserData.userImage,
+          userImagePre: getUserData.userImage,
+        }
       : {
           name: "",
           username: "",

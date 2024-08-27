@@ -216,7 +216,8 @@ const EducationDetails = (props) => {
 
   const finalSubmit = () => {
     userUpdate({
-      ...employeeData,
+      education: employeeData.education,
+      workDetail: employeeData.workDetail,
       dataType: "educationAndWork",
       profileRatio:
         employeeData.profileRatio <= 60 ? 60 : employeeData.profileRatio,

@@ -52,11 +52,28 @@ const DocumentDetails = (props) => {
           passportImagePre: "",
         }
       : {
-          ...employeeData,
-          aadharImagePre: employeeData.aadharImage,
-          panImagePre: employeeData.panImage,
-          voterImagePre: employeeData.voterImage,
-          passportImagePre: employeeData.passportImage,
+          aadharNumber: employeeData.aadharNumber
+            ? employeeData.aadharNumber
+            : "",
+          voterNumber: employeeData.voterNumber ? employeeData.voterNumber : "",
+          panNumber: employeeData.panNumber ? employeeData.panNumber : "",
+          passportNumber: employeeData.passportNumber
+            ? employeeData.passportNumber
+            : "",
+          passportImage: employeeData.passportImage
+            ? employeeData.passportImage
+            : "",
+          voterImage: employeeData.voterImage ? employeeData.voterImage : "",
+          panImage: employeeData.panImage ? employeeData.panImage : "",
+          aadharImage: employeeData.aadharImage ? employeeData.aadharImage : "",
+          aadharImagePre: employeeData.aadharImage
+            ? employeeData.aadharImage
+            : "",
+          panImagePre: employeeData.panImage ? employeeData.panImage : "",
+          voterImagePre: employeeData.voterImage ? employeeData.voterImage : "",
+          passportImagePre: employeeData.passportImage
+            ? employeeData.passportImage
+            : "",
         };
 
   useEffect(() => {
