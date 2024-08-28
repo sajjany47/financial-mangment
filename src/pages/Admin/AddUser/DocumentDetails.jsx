@@ -93,6 +93,7 @@ const DocumentDetails = (props) => {
       });
   };
   const handelSubmit = (values) => {
+    setLoading(true);
     const reqData = {
       aadharNumber: values.aadharNumber,
       voterNumber: values.voterNumber,

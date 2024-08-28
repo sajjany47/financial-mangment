@@ -5,7 +5,7 @@ import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import * as Yup from "yup";
 import { ErrorMessage } from "./EducationDetails";
-import { getDetails, userUpdate } from "./AddUserService";
+import { findIFSC, getDetails, userUpdate } from "./AddUserService";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -61,6 +61,7 @@ const AccountDetails = (props) => {
           passbookPreview: employeeData.passbookImage
             ? employeeData.passbookImage
             : "",
+          uan: employeeData.uan,
           uanPreview: employeeData.uanImage ? employeeData.uanImage : "",
         };
 
@@ -81,6 +82,7 @@ const AccountDetails = (props) => {
       });
   };
   const handelSubmit = (values) => {
+    setLoading(true);
     const reqData = {
       accountNumber: values.accountNumber,
       bankName: values.bankName,
@@ -115,6 +117,24 @@ const AccountDetails = (props) => {
         setLoading(false);
       });
   };
+
+  const handelIfsc = (e, setFieldValue) => {
+    setFieldValue("ifsc", e.target.value.toUpperCase());
+    if (e.target.value.length === 11) {
+      setLoading(true);
+      findIFSC(e.target.value)
+        .then((res) => {
+          const data = res.data;
+
+          setFieldValue("bankName", data.BANK);
+          setFieldValue("branchName", data.BRANCH);
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+  };
   return (
     <>
       {loading && <Loader />}
@@ -122,6 +142,7 @@ const AccountDetails = (props) => {
         onSubmit={handelSubmit}
         initialValues={initialValues}
         validationSchema={accountDetailSchema}
+        enableReinitialize
       >
         {({ handleSubmit, setFieldValue, values, touched, errors }) => (
           <Form onSubmit={handleSubmit}>
@@ -133,6 +154,7 @@ const AccountDetails = (props) => {
                       label="IFSC Code"
                       component={InputField}
                       name="ifsc"
+                      onChange={(e) => handelIfsc(e, setFieldValue)}
                     />
                   </div>
                   <div className="col-12 md:col-3">
@@ -144,19 +166,19 @@ const AccountDetails = (props) => {
                   </div>
                   <div className="col-12 md:col-3">
                     <Field
+                      label="Branch Name"
+                      component={InputField}
+                      name="branchName"
+                    />
+                  </div>
+                  <div className="col-12 md:col-3">
+                    <Field
                       label="Account Number"
                       component={InputField}
                       name="accountNumber"
                     />
                   </div>
 
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Branch Name"
-                      component={InputField}
-                      name="branchName"
-                    />
-                  </div>
                   <div className="col-12 md:col-3">
                     <Field
                       label="UAN (EPFO)"

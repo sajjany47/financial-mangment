@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import {
   getDetails,
   userEducationDetailsUpdate,
-  userUpdate,
+  userEducationUpdate,
 } from "./AddUserService";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -53,8 +53,8 @@ const EducationDetails = (props) => {
           resultImage: Yup.string().required("Marksheet is required"),
         })
       )
-      .required("Education details are required")
-      .min(1, "At least one education detail is required"),
+      .min(1, "At least one education detail is required")
+      .required("Education details are required"),
 
     workDetail: Yup.array().when("fresherOrExperience", {
       is: (val) => val === fresherOrExperience.EXPERIENCE,
@@ -165,7 +165,7 @@ const EducationDetails = (props) => {
 
   const getUserDetails = () => {
     setLoading(true);
-    getDetails("66be1db4de751831d282631d")
+    getDetails(addUserData.id)
       .then((res) => {
         setEmployeeData(res.data);
         setLoading(false);
@@ -175,6 +175,7 @@ const EducationDetails = (props) => {
       });
   };
   const handelSubmit = (values) => {
+    setLoading(true);
     const reqData =
       dataType === "education"
         ? {
@@ -210,7 +211,7 @@ const EducationDetails = (props) => {
           title: res.message,
           icon: "success",
         });
-        props.next();
+        // props.next();
       })
       .catch(() => {
         setLoading(false);
@@ -237,35 +238,30 @@ const EducationDetails = (props) => {
     );
   };
 
-  const imageBodyTemplate = (product) => {
-    return (
-      <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-        alt={product.image}
-        className="w-6rem shadow-2 border-round"
-      />
-    );
-  };
-  const actionBodyTemplate = (data) => {
+  const actionBodyTemplate = (data, e) => {
     return (
       <Button
         icon="pi pi-pencil"
         rounded
+        type="button"
         text
         aria-label="Filter"
         onClick={() => {
           setActionType("edit");
           setSelectedData(data);
+          setVisible(true);
+          setDataType(e);
         }}
       />
     );
   };
 
   const finalSubmit = () => {
-    userUpdate({
+    userEducationUpdate({
       education: employeeData.education,
       workDetail: employeeData.workDetail,
       dataType: "educationAndWork",
+      fresherOrExperience: employeeData.fresherOrExperience,
       profileRatio:
         employeeData.profileRatio <= 60 ? 60 : employeeData.profileRatio,
       id: employeeData._id,
@@ -282,6 +278,7 @@ const EducationDetails = (props) => {
         setLoading(false);
       });
   };
+
   return (
     <>
       {loading && <Loader />}
@@ -289,33 +286,34 @@ const EducationDetails = (props) => {
         onSubmit={finalSubmit}
         validationSchema={finalSubmitValidation}
         initialValues={{
-          education: employeeData?.education,
-          workDetail: employeeData.workDetail,
+          education: employeeData?.education ? employeeData.education : [],
+          workDetail: employeeData?.workDetail ? employeeData.workDetail : [],
           fresherOrExperience: employeeData.fresherOrExperience,
         }}
+        enableReinitialize
       >
         {({ handleSubmit, values, errors, touched }) => (
           <Form onSubmit={handleSubmit}>
             <div className="border-2 border-dashed surface-border border-round surface-ground font-medium">
               <DataTable
-                value={employeeData?.education ? employeeData.education : []}
+                value={values?.education}
                 header={() => header("education")}
                 tableStyle={{ minWidth: "60rem" }}
               >
-                <Column field="name" header="Board Name" />
-                <Column field="year" header="Passing Year" />
-                <Column field="Marks" header="Marks" />
-                <Column header="Image" body={imageBodyTemplate}></Column>
-                <Column header="Action" body={actionBodyTemplate}></Column>
+                <Column field="boardName" header="Board Name" />
+                <Column field="passingYear" header="Passing Year" />
+                <Column field="marksPercentage" header="Marks" />
+                <Column
+                  header="Action"
+                  body={(e) => actionBodyTemplate(e, "education")}
+                ></Column>
               </DataTable>
               {ErrorMessage(errors, `education`, touched)}
             </div>
             {values.fresherOrExperience === fresherOrExperience.EXPERIENCE && (
               <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
                 <DataTable
-                  value={
-                    employeeData?.workDetail ? employeeData.workDetail : []
-                  }
+                  value={values.workDetail}
                   header={() => header("work")}
                   tableStyle={{ minWidth: "60rem" }}
                 >
@@ -323,11 +321,15 @@ const EducationDetails = (props) => {
                   <Column field="position" header="Position" />
                   <Column field="startingYear" header="Starting Year" />
                   <Column field="endingYear" header="Ending Year"></Column>
-                  <Column header="Action" body={actionBodyTemplate}></Column>
+                  <Column
+                    header="Action"
+                    body={(e) => actionBodyTemplate(e, "work")}
+                  ></Column>
                 </DataTable>
                 {ErrorMessage(errors, `workDetail`, touched)}
               </div>
             )}
+
             <div className="flex pt-4 justify-content-between">
               <Button
                 label="Back"
@@ -392,6 +394,7 @@ const EducationDetails = (props) => {
                             name={`boardName`}
                           />
                         </div>
+
                         <div className="col-12 md:col-4">
                           <Field
                             label="Passing Year"
@@ -406,6 +409,7 @@ const EducationDetails = (props) => {
                             name={`marksPercentage`}
                           />
                         </div>
+
                         <div className="col-12 md:col-4">
                           <label
                             htmlFor={`resultImage`}
@@ -426,10 +430,11 @@ const EducationDetails = (props) => {
                             }}
                           />
                           {ErrorMessage(errors, `resultImage `, touched)}
+
                           <Image
                             src={values.resultImagePre}
                             alt="Image"
-                            width="180"
+                            width="210"
                             height="180"
                           />
                         </div>
@@ -464,6 +469,7 @@ const EducationDetails = (props) => {
                             name={`endingYear`}
                           />
                         </div>
+
                         <div className="col-12 md:col-12">
                           <div className="grid">
                             <div className="col-12 md:col-4">
@@ -606,6 +612,7 @@ const EducationDetails = (props) => {
                   </div>
                 </div>
               </div>
+
               <div className="flex pt-4 justify-content-between">
                 <Button
                   label="Cancel"

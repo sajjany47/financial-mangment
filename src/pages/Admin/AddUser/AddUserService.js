@@ -24,9 +24,18 @@ export const userUpdate = async (payload) => {
   return response.data;
 };
 
+export const userEducationUpdate = async (payload) => {
+  const response = await Instance.post(
+    `/user/update`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const userEducationDetailsUpdate = async (payload) => {
   const response = await Instance.post(
-    `/user/update-education`,
+    `/user/education-update`,
     payload,
     headerWithFormData()
   );
