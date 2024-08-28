@@ -191,8 +191,9 @@ const BasicDetails = (props) => {
     // eslint-disable-next-line react/prop-types
     if (addUserData.type === "edit") {
       userUpdate({
-        ...values,
+        ...reqData,
         dataType: "basic",
+        id: getUserData._id,
         profileRatio:
           getUserData.profileRatio <= 30 ? 30 : getUserData.profileRatio,
       })
