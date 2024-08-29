@@ -70,8 +70,7 @@ const adminSignUpSchema30 = Yup.object().shape({
 });
 const BasicDetails = (props) => {
   const dispatch = useDispatch();
-  const searchKey = useSelector((state) => state);
-  const addUserData = searchKey.addUser.addUser;
+  const addUserData = useSelector((state) => state.addUser.addUser);
   const [loading, setLoading] = useState(false);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
@@ -429,7 +428,7 @@ const BasicDetails = (props) => {
               </div>
             </div>
             <div className="flex pt-4 justify-content-end gap-2">
-              {searchKey.addUser.addUser.type === "edit" && (
+              {addUserData.type === "edit" && (
                 <Button
                   type="button"
                   label={"Next"}
@@ -440,11 +439,7 @@ const BasicDetails = (props) => {
               )}
               <Button
                 type="submit"
-                label={
-                  searchKey.addUser.addUser.type === "add"
-                    ? "Submit & Next"
-                    : "Update"
-                }
+                label={addUserData.type === "add" ? "Submit & Next" : "Update"}
                 icon="pi pi-arrow-right"
                 iconPos="right"
               />

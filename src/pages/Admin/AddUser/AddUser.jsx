@@ -11,8 +11,8 @@ import Loader from "../../../component/Loader";
 
 const AddUser = () => {
   const stepperRef = useRef(null);
-  const searchKey = useSelector((state) => state);
-  const addUserData = searchKey.addUser.addUser;
+  const addUserData = useSelector((state) => state.addUser.addUser);
+  // const addUserData = searchKey.addUser.addUser;
   const [loading, setLoading] = useState(false);
   const [getUserData, setGetUerData] = useState({});
   const [countryData, setCountryData] = useState([]);

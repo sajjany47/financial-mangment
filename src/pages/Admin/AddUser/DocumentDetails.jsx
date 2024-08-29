@@ -12,10 +12,9 @@ import { useEffect, useState } from "react";
 import Loader from "../../../component/Loader";
 
 const DocumentDetails = (props) => {
-  const searchKey = useSelector((state) => state);
+  const addUserData = useSelector((state) => state.addUser.addUser);
   const [loading, setLoading] = useState(false);
   const [employeeData, setEmployeeData] = useState({});
-  const addUserData = searchKey.addUser.addUser;
   const documentsSchema = Yup.object().shape({
     aadharNumber: Yup.string().required("Aadhar number is required"),
     // .matches("^d{12}$", "Enter valid Aadhar number"),

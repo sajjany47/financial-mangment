@@ -16,10 +16,9 @@ import { useNavigate } from "react-router-dom";
 const AccountDetails = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const searchKey = useSelector((state) => state);
+  const addUserData = useSelector((state) => state.addUser.addUser);
   const [loading, setLoading] = useState(false);
   const [employeeData, setEmployeeData] = useState({});
-  const addUserData = searchKey.addUser.addUser;
   const accountDetailSchema = Yup.object().shape({
     bankName: Yup.string().required("Bank name is required"),
     accountNumber: Yup.string().required("Account number is required"),
@@ -45,7 +44,7 @@ const AccountDetails = (props) => {
           passbookImage: "",
           uanImage: "",
           passbookPreview: "",
-          uanPreview: "",
+          uanImagePreviw: "",
         }
       : {
           bankName: employeeData.bankName ? employeeData.bankName : "",
@@ -62,7 +61,7 @@ const AccountDetails = (props) => {
             ? employeeData.passbookImage
             : "",
           uan: employeeData.uan,
-          uanPreview: employeeData.uanImage ? employeeData.uanImage : "",
+          uanImagePreviw: employeeData.uanImage ? employeeData.uanImage : "",
         };
 
   useEffect(() => {

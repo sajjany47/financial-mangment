@@ -27,8 +27,8 @@ export const ErrorMessage = (errors, name, touched) => {
   );
 };
 const EducationDetails = (props) => {
-  const searchKey = useSelector((state) => state);
-  const addUserData = searchKey.addUser.addUser;
+  const addUserData = useSelector((state) => state.addUser.addUser);
+
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [dataType, setDataType] = useState("");
