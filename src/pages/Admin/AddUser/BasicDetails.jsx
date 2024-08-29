@@ -18,7 +18,6 @@ import { ErrorMessage } from "./EducationDetails";
 import { Image } from "primereact/image";
 import {
   city,
-  countryList,
   getDetails,
   state,
   userCreate,
@@ -62,9 +61,9 @@ const adminSignUpSchema30 = Yup.object().shape({
   jobBranchName: Yup.string().required("Branch is required"),
 
   address: Yup.string().required("Address is required"),
-  state: Yup.object().required("State is required"),
-  country: Yup.object().required("Country is required"),
-  city: Yup.object().required("City is required"),
+  state: Yup.string().required("State is required"),
+  country: Yup.string().required("Country is required"),
+  city: Yup.string().required("City is required"),
   pincode: Yup.string()
     .matches(/^\d{6}$/, "Enter valid pincode")
     .required("Pincode is required"),
@@ -74,7 +73,6 @@ const BasicDetails = (props) => {
   const searchKey = useSelector((state) => state);
   const addUserData = searchKey.addUser.addUser;
   const [loading, setLoading] = useState(false);
-  const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
   const [branch, setBranch] = useState([]);
@@ -82,19 +80,38 @@ const BasicDetails = (props) => {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([countryList(), getBranchList({})])
-      .then((res) => {
-        setCountryData(res[0].data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    getBranchList({});
 
     if (addUserData.type === "edit") {
       getDetails(addUserData.id)
         .then((res) => {
           setGetUerData(res.data);
+
+          if (res) {
+            const filterCountry = props.countryData.find(
+              (item) => item.id === Number(res.data.country)
+            );
+            state(filterCountry.iso2)
+              .then((item) => {
+                setStateData(item.data);
+                if (res) {
+                  const filterState = item.data.find(
+                    (item) => item.id === Number(res.data.state)
+                  );
+                  city(filterCountry.iso2, filterState.iso2)
+                    .then((elm) => {
+                      setCityData(elm.data);
+                      setLoading(false);
+                    })
+                    .catch(() => {
+                      setLoading(false);
+                    });
+                }
+              })
+              .catch(() => {
+                setLoading(false);
+              });
+          }
         })
         .catch(() => {
           setLoading(false);
@@ -112,9 +129,9 @@ const BasicDetails = (props) => {
           dob: new Date(getUserData.dob),
           position: getUserData.position,
           address: getUserData.address,
-          state: getUserData.state,
-          country: getUserData.country,
-          city: getUserData.city,
+          state: Number(getUserData.state),
+          country: Number(getUserData.country),
+          city: Number(getUserData.city),
           pincode: getUserData.pincode,
           jobBranchName: getUserData.jobBranchName,
           fresherOrExperience: getUserData.fresherOrExperience,
@@ -167,31 +184,27 @@ const BasicDetails = (props) => {
   };
 
   const handelSate = (setFieldValue, e) => {
+    const filterCountry = props.countryData.find((item) => item.id === e.value);
     setFieldValue("state", "");
     setFieldValue("city", "");
     setFieldValue("country", e.value);
-    stateList(e.value.iso2);
+    stateList(filterCountry.iso2);
   };
 
   const handelCityList = (setFieldValue, e, value) => {
+    const filterState = stateData.find((item) => item.id === e.value);
+    const filterCountry = props.countryData.find((item) => item.id === value);
     setFieldValue("city", "");
     setFieldValue("state", e.value);
-    cityList(value.country.iso2, e.value.iso2);
+    cityList(filterState.iso2, filterCountry.iso2);
   };
   const handelSubmit = (values) => {
     setLoading(true);
-    const reqData = {
-      ...values,
-      city: values.city.id,
-      country: values.country.id,
-      state: values.state.id,
-      jobBranchName: values.jobBranchName._id,
-    };
 
     // eslint-disable-next-line react/prop-types
     if (addUserData.type === "edit") {
       userUpdate({
-        ...reqData,
+        ...values,
         dataType: "basic",
         id: getUserData._id,
         profileRatio:
@@ -209,7 +222,7 @@ const BasicDetails = (props) => {
           setLoading(false);
         });
     } else {
-      userCreate({ ...reqData, userImage: values.userImage.name })
+      userCreate({ ...values, userImage: values.userImage.name })
         .then((res) => {
           dispatch(
             setAddUser({
@@ -298,13 +311,13 @@ const BasicDetails = (props) => {
                       component={DropdownField}
                       name="country"
                       optionLabel="name"
-                      optionValue="iso2"
-                      options={countryData}
+                      optionValue="id"
+                      options={props.countryData}
                       filter
                       onChange={(e) => {
                         setFieldValue("jobBranchName", "");
                         handelSate(setFieldValue, e);
-                        getBranchList({ country: e.value.id });
+                        getBranchList({ country: e.value });
                       }}
                     />
                   </div>
@@ -315,14 +328,14 @@ const BasicDetails = (props) => {
                       component={DropdownField}
                       name="state"
                       optionLabel="name"
-                      optionValue="iso2"
+                      optionValue="id"
                       options={stateData}
                       onChange={(e) => {
                         setFieldValue("jobBranchName", "");
                         handelCityList(setFieldValue, e, values);
                         getBranchList({
-                          country: values.country.id,
-                          state: e.value.id,
+                          country: values.country,
+                          state: e.value,
                         });
                       }}
                     />
@@ -340,9 +353,9 @@ const BasicDetails = (props) => {
                         setFieldValue("jobBranchName", "");
                         setFieldValue("city", e.value);
                         getBranchList({
-                          country: values.country.id,
-                          state: values.state.id,
-                          city: e.value.id,
+                          country: values.country,
+                          state: values.state,
+                          city: e.value,
                         });
                       }}
                     />

@@ -6,7 +6,7 @@ import EducationDetails from "./EducationDetails";
 import DocumentDetails from "./DocumentDetails";
 import AccountDetails from "./AccountDetails";
 import { useSelector } from "react-redux";
-import { getDetails } from "./AddUserService";
+import { countryList, getDetails } from "./AddUserService";
 import Loader from "../../../component/Loader";
 
 const AddUser = () => {
@@ -15,6 +15,7 @@ const AddUser = () => {
   const addUserData = searchKey.addUser.addUser;
   const [loading, setLoading] = useState(false);
   const [getUserData, setGetUerData] = useState({});
+  const [countryData, setCountryData] = useState([]);
 
   useEffect(() => {
     if (addUserData.type === "edit") {
@@ -29,6 +30,12 @@ const AddUser = () => {
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    countryList().then((res) => {
+      setCountryData(res.data);
+    });
   }, []);
 
   const next = () => {
@@ -51,7 +58,7 @@ const AddUser = () => {
           }
         >
           <StepperPanel header="Basic">
-            <BasicDetails next={next} />
+            <BasicDetails next={next} countryData={countryData} />
           </StepperPanel>
           <StepperPanel header="Education & Experience">
             <EducationDetails next={next} back={back} />
