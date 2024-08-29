@@ -59,7 +59,7 @@ const adminSignUpSchema30 = Yup.object().shape({
     ])
     .required("Position is required"),
 
-  jobBranchName: Yup.object().required("Branch is required"),
+  jobBranchName: Yup.string().required("Branch is required"),
 
   address: Yup.string().required("Address is required"),
   state: Yup.object().required("State is required"),
@@ -79,6 +79,29 @@ const BasicDetails = (props) => {
   const [cityData, setCityData] = useState([]);
   const [branch, setBranch] = useState([]);
   const [getUserData, setGetUerData] = useState({});
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([countryList(), getBranchList({})])
+      .then((res) => {
+        setCountryData(res[0].data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+
+    if (addUserData.type === "edit") {
+      getDetails(addUserData.id)
+        .then((res) => {
+          setGetUerData(res.data);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const initialValues =
     addUserData.type === "edit"
       ? {
@@ -115,29 +138,6 @@ const BasicDetails = (props) => {
           userImagePre: "",
           fresherOrExperience: "",
         };
-
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([countryList(), getBranchList({})])
-      .then((res) => {
-        setCountryData(res[0].data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-
-    if (addUserData.type === "edit") {
-      getDetails(addUserData.id)
-        .then((res) => {
-          setGetUerData(res.data);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const getBranchList = (payload) => {
     setLoading(true);

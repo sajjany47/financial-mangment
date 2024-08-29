@@ -13,17 +13,20 @@ export const Position = {
 };
 
 export const DropdownPosition = [
-  { label: "ADMIN", value: "admin" },
-  { label: "BM", value: "branch-manager" },
-  { label: "SM", value: "state-manager" },
-  { label: "LM", value: "loan-manager" },
-  { label: "PM", value: "product-manager" },
-  { label: "CDM", value: "collection-department-head" },
-  { label: "CD", value: "collection-department" },
-  { label: "LD", value: "loan-department" },
-  { label: "VD", value: "verification-department" },
-  { label: "FM", value: "financial-manager" },
-  { label: "CUSTOMER", value: "customer" },
+  { label: "Admin", value: "admin" },
+  { label: "Branch Manager", value: "branch-manager" },
+  { label: "State Manager", value: "state-manager" },
+  { label: "Loan Manager", value: "loan-manager" },
+  { label: "Product Manager", value: "product-manager" },
+  {
+    label: "Collection Department Manager",
+    value: "collection-department-head",
+  },
+  { label: "Collection Department", value: "collection-department" },
+  { label: "Loan Department", value: "loan-department" },
+  { label: "Verification Department", value: "verification-department" },
+  { label: "Financial Manager", value: "financial-manager" },
+  { label: "Customer", value: "customer" },
 ];
 
 export const Status = {
