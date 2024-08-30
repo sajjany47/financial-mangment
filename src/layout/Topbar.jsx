@@ -28,7 +28,7 @@ export default function Topbar() {
   //   { label: "Computer" },
   //   { label: "Accessories" },
   // ];
-  const home = { icon: "pi pi-home", url: "https://primereact.org" };
+  const home = { icon: "pi pi-home", url: "http://localhost:5173/" };
   const start = <BreadCrumb model={items} home={home} />;
   const end = (
     <div className="flex align-items-center gap-2">
