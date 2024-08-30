@@ -11,6 +11,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import AddUserReducer from "./reducer/AddUserReducer";
+import searchReducer from "./reducer/searchReducer";
 
 const persistConfig = {
   key: "root",
@@ -19,11 +20,13 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, UserReducer);
 const addUserPersistedReducer = persistReducer(persistConfig, AddUserReducer);
+const searchRedu = persistReducer(persistConfig, searchReducer);
 
 export const store = configureStore({
   reducer: {
     user: persistedReducer,
     addUser: addUserPersistedReducer,
+    search: searchRedu,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

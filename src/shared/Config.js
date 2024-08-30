@@ -43,6 +43,15 @@ export const fresherOrExperience = {
 export const ACCESS_TOKEN_STORAGE_KEY = "accessToken";
 export const REFRESH_TOKEN_STORAGE_KEY = "refreshToken";
 
+export const PAGINATOR_DROPDOWN_OPTIONS = [
+  { label: 5, value: 5 },
+  { label: 10, value: 10 },
+  { label: 20, value: 20 },
+  { label: 50, value: 50 },
+];
+
+export const PAGE_ROW = [10, 15, 25];
+
 export const RoleSeverityColor = (role) => {
   switch (role) {
     case "admin":
