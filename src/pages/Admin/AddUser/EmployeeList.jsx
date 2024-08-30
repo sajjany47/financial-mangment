@@ -63,7 +63,6 @@ const EmployeeList = () => {
         searchKey.hasOwnProperty("sortOrder")
           ? { [searchKey.sortField]: searchKey.sortOrder }
           : { name: 1 },
-      isActive: true,
     };
 
     if (Object.keys(filters).length > 0) {
