@@ -42,3 +42,32 @@ export const fresherOrExperience = {
 
 export const ACCESS_TOKEN_STORAGE_KEY = "accessToken";
 export const REFRESH_TOKEN_STORAGE_KEY = "refreshToken";
+
+export const RoleSeverityColor = (role) => {
+  switch (role) {
+    case "admin":
+      return { label: "Admin", severity: "info" };
+    case "branch-manager":
+      return { label: "Branch Manager", severity: "success" };
+    case "state-manager":
+      return { label: "State Manager", severity: "success" };
+    case "loan-manager":
+      return { label: "Loan Manager", severity: "warning" };
+    case "product-manager":
+      return { label: "Product Manager", severity: "info" };
+    case "collection-department-head":
+      return { label: "Collection Department Manager", severity: "warning" };
+    case "collection-department":
+      return { label: "Collection Department", severity: "danger" };
+    case "loan-department":
+      return { label: "Loan Department", severity: "warning" };
+    case "verification-department":
+      return { label: "Verification Department", severity: "info" };
+    case "financial-manager":
+      return { label: "Financial Manager", severity: "info" };
+    case "customer":
+      return { label: "Customer", severity: "help" };
+    default:
+      return { label: "Unknown", severity: "secondary" }; // Fallback case
+  }
+};

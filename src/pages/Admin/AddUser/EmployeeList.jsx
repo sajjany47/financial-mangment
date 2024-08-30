@@ -7,6 +7,8 @@ import { Column } from "primereact/column";
 import { useEffect, useState } from "react";
 import { employeeDataTable } from "./AddUserService";
 import Loader from "../../../component/Loader";
+import { Tag } from "primereact/tag";
+import { RoleSeverityColor } from "../../../shared/Config";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -52,20 +54,40 @@ const EmployeeList = () => {
   };
   const actionBodyTemplate = (item) => {
     return (
-      <Button
-        icon="pi pi-pencil"
-        rounded
-        text
-        aria-label="Filter"
-        onClick={() => {
-          navigate("/employee/add");
-          dispatch(
-            setAddUser({ type: "edit", role: "employee", id: item._id })
-          );
-        }}
-      />
+      <>
+        <Button
+          icon="pi pi-pencil"
+          rounded
+          text
+          aria-label="Filter"
+          onClick={() => {
+            navigate("/employee/add");
+            dispatch(
+              setAddUser({ type: "edit", role: "employee", id: item._id })
+            );
+          }}
+        />
+      </>
     );
   };
+
+  const positionTemplate = (item) => {
+    const { label, severity } = RoleSeverityColor(item.position);
+    return <Tag severity={severity} value={label} rounded />;
+  };
+
+  const statusTemplate = (item) => {
+    return (
+      <>
+        {item.isActive ? (
+          <Tag severity="success" value="Active" rounded />
+        ) : (
+          <Tag severity="danger" value="Inactive" rounded />
+        )}
+      </>
+    );
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -79,8 +101,8 @@ const EmployeeList = () => {
           <Column field="employeeId" header="EmployeeId" />
           <Column field="name" header="Name" />
           <Column field="username" header="Username" />
-          <Column field="position" header="Position" />
-          <Column field="isActive" header="Status" />
+          <Column field="position" header="Position" body={positionTemplate} />
+          <Column field="isActive" header="Status" body={statusTemplate} />
           <Column field="branch" header="Branch" />
           <Column field="branchCode" header="Branch Code" />
           <Column header="Action" body={actionBodyTemplate} />
