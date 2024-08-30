@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Menubar } from "primereact/menubar";
 import { Avatar } from "primereact/avatar";
 import { BreadCrumb } from "primereact/breadcrumb";
@@ -14,7 +15,7 @@ import {
 } from "../shared/Config";
 import { capitalizeFirstLetter } from "../shared/constant";
 
-export default function Topbar() {
+export default function Topbar(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname.split("/");
@@ -95,7 +96,11 @@ export default function Topbar() {
 
   return (
     <div className="card mb-3">
-      <Menubar start={start} end={end} />
+      <Menubar
+        start={start}
+        end={end}
+        style={{ marginLeft: props.marginValue }}
+      />
       <Menu
         model={menuTemplate}
         popup

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Position } from "../shared/Config";
 import { NavLink } from "react-router-dom";
 
-const SidebarLayout = () => {
+const SidebarLayout = (props) => {
   const user = useSelector((state) => state.user?.user);
   const [userMenu, setUserMenu] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
@@ -39,11 +39,18 @@ const SidebarLayout = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <>
-      <Sidebar style={{ height: "100vh" }} collapsed={collapsed}>
+    <div style={{ height: "100vh", display: "flex" }}>
+      <Sidebar
+        style={{ position: "fixed", height: "100%" }}
+        collapsed={collapsed}
+      >
         <Menu>
           <MenuItem
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => {
+              setCollapsed(!collapsed);
+              // eslint-disable-next-line react/prop-types
+              props.getCollapased(!collapsed);
+            }}
             icon={<i className={"pi pi-bars"}></i>}
             style={{ marginTop: "5px" }}
           >
@@ -82,7 +89,7 @@ const SidebarLayout = () => {
           })}
         </Menu>
       </Sidebar>
-    </>
+    </div>
   );
 };
 

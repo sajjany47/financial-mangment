@@ -4,7 +4,7 @@ import Topbar from "./Topbar";
 import { useDispatch, useSelector } from "react-redux";
 import Login from "./Login";
 import { Dialog } from "primereact/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PasswordChange from "./PasswordChange";
 import { setUser } from "../store/reducer/UserReducer";
 
@@ -12,6 +12,11 @@ const Layout = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user?.user);
   const [visible, setVisible] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    setCollapsed(window.innerWidth > 540 ? false : true);
+  }, []);
   const dislogeClose = () => {
     setVisible(false);
     dispatch(
@@ -21,6 +26,10 @@ const Layout = () => {
         refreshToken: user.refreshToken,
       })
     );
+  };
+
+  const getCollapased = (e) => {
+    setCollapsed(e);
   };
   return (
     <>
@@ -42,11 +51,17 @@ const Layout = () => {
             </Dialog>
           ) : (
             <div className="App">
-              <SidebarLayout />
-              <div className="main-content">
-                <Topbar />
+              <SidebarLayout getCollapased={getCollapased} />
+
+              <div
+                className="main-content"
+                style={{ flex: 1, marginLeft: collapsed ? "50px" : "250px" }}
+              >
+                <Topbar marginValue={collapsed ? "15px" : "1px"} />
                 {/* Add your main content here */}
-                <Outlet />
+                <div style={{ marginLeft: collapsed ? "15px" : "1px" }}>
+                  <Outlet />
+                </div>
               </div>
             </div>
           )}
