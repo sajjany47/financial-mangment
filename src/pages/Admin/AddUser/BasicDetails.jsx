@@ -58,7 +58,7 @@ const adminSignUpSchema30 = Yup.object().shape({
     ])
     .required("Position is required"),
 
-  jobBranchName: Yup.string().required("Branch is required"),
+  branch: Yup.string().required("Branch is required"),
 
   address: Yup.string().required("Address is required"),
   state: Yup.string().required("State is required"),
@@ -132,7 +132,7 @@ const BasicDetails = (props) => {
           country: Number(getUserData.country),
           city: Number(getUserData.city),
           pincode: getUserData.pincode,
-          jobBranchName: getUserData.jobBranchName,
+          branch: getUserData.branch,
           fresherOrExperience: getUserData.fresherOrExperience,
           userImage: getUserData.userImage,
           userImagePre: getUserData.userImage,
@@ -149,7 +149,7 @@ const BasicDetails = (props) => {
           country: "",
           city: "",
           pincode: "",
-          jobBranchName: "",
+          branch: "",
           userImage: "",
           userImagePre: "",
           fresherOrExperience: "",
@@ -314,7 +314,7 @@ const BasicDetails = (props) => {
                       options={props.countryData}
                       filter
                       onChange={(e) => {
-                        setFieldValue("jobBranchName", "");
+                        setFieldValue("branch", "");
                         handelSate(setFieldValue, e);
                         getBranchList({ country: e.value });
                       }}
@@ -330,7 +330,7 @@ const BasicDetails = (props) => {
                       optionValue="id"
                       options={stateData}
                       onChange={(e) => {
-                        setFieldValue("jobBranchName", "");
+                        setFieldValue("branch", "");
                         handelCityList(setFieldValue, e, values);
                         getBranchList({
                           country: values.country,
@@ -349,7 +349,7 @@ const BasicDetails = (props) => {
                       optionLabel="name"
                       optionValue="id"
                       onChange={(e) => {
-                        setFieldValue("jobBranchName", "");
+                        setFieldValue("branch", "");
                         setFieldValue("city", e.value);
                         getBranchList({
                           country: values.country,
@@ -370,7 +370,7 @@ const BasicDetails = (props) => {
                     <Field
                       label="Branch Name"
                       component={DropdownField}
-                      name="jobBranchName"
+                      name="branch"
                       filter
                       options={branch}
                       optionLabel={"name"}

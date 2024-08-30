@@ -23,7 +23,7 @@ const AccountDetails = (props) => {
     bankName: Yup.string().required("Bank name is required"),
     accountNumber: Yup.string().required("Account number is required"),
     // .matches("/^d{9,18}$/", "Enter valid Account number"),
-    branchName: Yup.string().required("Branch name is required"),
+    bankBranchName: Yup.string().required("Branch name is required"),
     ifsc: Yup.string().required("IFSC code is required"),
     passbookImage: Yup.string().required(
       "Passbook Front Page image is required"
@@ -38,7 +38,7 @@ const AccountDetails = (props) => {
       ? {
           accountNumber: "",
           bankName: "",
-          branchName: "",
+          bankBranchName: "",
           ifsc: "",
           uan: "",
           passbookImage: "",
@@ -51,7 +51,9 @@ const AccountDetails = (props) => {
           accountNumber: employeeData.accountNumber
             ? employeeData.accountNumber
             : "",
-          branchName: employeeData.branchName ? employeeData.branchName : "",
+          bankBranchName: employeeData.bankBranchName
+            ? employeeData.bankBranchName
+            : "",
           ifsc: employeeData.ifsc ? employeeData.ifsc : "",
           passbookImage: employeeData.passbookImage
             ? employeeData.passbookImage
@@ -85,7 +87,7 @@ const AccountDetails = (props) => {
     const reqData = {
       accountNumber: values.accountNumber,
       bankName: values.bankName,
-      branchName: values.branchName,
+      bankBranchName: values.bankBranchName,
       ifsc: values.ifsc,
       uan: values.uan,
       passbookImage: values.passbookImage,
@@ -126,7 +128,7 @@ const AccountDetails = (props) => {
           const data = res.data;
 
           setFieldValue("bankName", data.BANK);
-          setFieldValue("branchName", data.BRANCH);
+          setFieldValue("bankBranchName", data.BRANCH);
           setLoading(false);
         })
         .catch(() => {
@@ -167,7 +169,7 @@ const AccountDetails = (props) => {
                     <Field
                       label="Branch Name"
                       component={InputField}
-                      name="branchName"
+                      name="bankBranchName"
                     />
                   </div>
                   <div className="col-12 md:col-3">
