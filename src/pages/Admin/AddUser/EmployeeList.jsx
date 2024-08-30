@@ -81,7 +81,8 @@ const EmployeeList = () => {
           <Column field="username" header="Username" />
           <Column field="position" header="Position" />
           <Column field="isActive" header="Status" />
-          <Column field="jobBranchName" header="Branch" />
+          <Column field="branch" header="Branch" />
+          <Column field="branchCode" header="Branch Code" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
       </div>
