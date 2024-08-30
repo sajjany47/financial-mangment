@@ -383,7 +383,7 @@ const BasicDetails = (props) => {
                       htmlFor="userImage"
                       className="block  font-medium mb-2 custom-file-upload"
                     >
-                      Upload User Profile Picture
+                      <i className="pi pi-upload mr-2" /> User Profile Picture
                     </label>
                     <input
                       id="userImage"

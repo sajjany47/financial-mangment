@@ -194,7 +194,8 @@ const AccountDetails = (props) => {
                           htmlFor="passbookImage"
                           className="block  font-medium mb-2 custom-file-upload"
                         >
-                          Bank Passbook or statement{" "}
+                          <i className="pi pi-upload mr-2" /> Bank Passbook
+                          Image
                         </label>
                         <input
                           id="passbookImage"
@@ -221,7 +222,7 @@ const AccountDetails = (props) => {
                           htmlFor="uan-upload"
                           className="block  font-medium mb-2 custom-file-upload"
                         >
-                          Upload UAN (EPFO) Image{" "}
+                          <i className="pi pi-upload mr-2" /> UAN (EPFO) Image{" "}
                         </label>
                         <input
                           id="uan-upload"

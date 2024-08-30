@@ -227,6 +227,7 @@ const EducationDetails = (props) => {
         <Button
           icon="pi pi-plus"
           rounded
+          type="button"
           raised
           onClick={() => {
             setDataType(data);
@@ -415,7 +416,8 @@ const EducationDetails = (props) => {
                             htmlFor={`resultImage`}
                             className="block  font-medium mb-2 custom-file-upload"
                           >
-                            Upload Markssheet
+                            <i className="pi pi-upload mr-2" />
+                            Markssheet
                           </label>
                           <input
                             id={`resultImage`}
