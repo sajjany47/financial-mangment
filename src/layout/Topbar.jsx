@@ -4,7 +4,7 @@ import { Avatar } from "primereact/avatar";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Menu } from "primereact/menu";
 import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/UserReducer";
 import { logout } from "./UserService";
 import Swal from "sweetalert2";
@@ -18,6 +18,7 @@ import { capitalizeFirstLetter } from "../shared/constant";
 export default function Topbar(props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useSelector((state) => state.user.user);
   const path = location.pathname.split("/");
   const filterPath = path.filter((item) => item !== "");
 
@@ -33,7 +34,7 @@ export default function Topbar(props) {
   const start = <BreadCrumb model={items} home={home} />;
   const end = (
     <div className="flex align-items-center gap-2">
-      <h4> Sajjan Yadav</h4>
+      <h4> {user.data.name}</h4>
       <Avatar
         size="large"
         style={{

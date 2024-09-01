@@ -15,6 +15,7 @@ import {
   REFRESH_TOKEN_STORAGE_KEY,
 } from "./shared/Config";
 import Swal from "sweetalert2";
+import EditEmployee from "./pages/Admin/AddUser/EditEmployee";
 
 function App() {
   let isRefreshing = false;
@@ -119,6 +120,7 @@ function App() {
             <Route path="/branch/list" element={<Branch />} />
             <Route path="/employee/list" element={<EmployeeList />} />
             <Route path="/employee/add" element={<AddEmployee />} />
+            <Route path="/employee/edit" element={<EditEmployee />} />
           </Route>
         </Routes>
       </BrowserRouter>

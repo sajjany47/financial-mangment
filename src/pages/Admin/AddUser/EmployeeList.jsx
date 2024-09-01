@@ -128,7 +128,7 @@ const EmployeeList = () => {
           text
           aria-label="Filter"
           onClick={() => {
-            navigate("/employee/add");
+            navigate("/employee/edit");
             dispatch(
               setAddUser({ type: "edit", role: "employee", id: item._id })
             );
