@@ -139,7 +139,7 @@ const BasicDetails = (props) => {
               );
 
               if (filterState) {
-                const elm = await city(filterState.iso2, filterCountry.iso2);
+                const elm = await city(filterCountry.iso2, filterState.iso2);
                 setCityData(
                   elm.data.map((item) => ({ label: item.name, value: item.id }))
                 );

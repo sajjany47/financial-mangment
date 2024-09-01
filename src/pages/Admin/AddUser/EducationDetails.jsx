@@ -214,6 +214,7 @@ const EducationDetails = (props) => {
           title: res.message,
           icon: "success",
         });
+        setVisible(false);
         // props.next();
       })
       .catch(() => {
