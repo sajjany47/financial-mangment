@@ -77,47 +77,87 @@ const BasicDetails = (props) => {
   const [branch, setBranch] = useState([]);
   const [getUserData, setGetUerData] = useState({});
 
-  useEffect(() => {
-    setLoading(true);
-    getBranchList({});
+  // useEffect(() => {
+  //   setLoading(true);
+  //   getBranchList({});
 
-    if (addUserData.type === "edit") {
-      getDetails(addUserData.id)
-        .then((res) => {
+  //   if (addUserData.type === "edit") {
+  //     getDetails(addUserData.id)
+  //       .then((res) => {
+  //         setGetUerData(res.data);
+
+  //         const filterCountry = props.countryData.find(
+  //           (item) => item.id === Number(res.data.country)
+  //         );
+  //         if (filterCountry) {
+  //           stateList(filterCountry.iso2).then(() => {
+  //             const filterState = stateData.find(
+  //               (item) => item.id === Number(res.data.state)
+  //             );
+  //             if (filterState) {
+  //               cityList(filterCountry.iso2, filterState.iso2).finally(() => {
+  //                 setLoading(false);
+  //               });
+  //             } else {
+  //               setLoading(false);
+  //             }
+  //           });
+  //         } else {
+  //           setLoading(false);
+  //         }
+  //       })
+  //       .catch(() => {
+  //         setLoading(false);
+  //       });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await getBranchList({});
+
+        if (addUserData.type === "edit") {
+          const res = await getDetails(addUserData.id);
           setGetUerData(res.data);
 
           if (res) {
             const filterCountry = props.countryData.find(
               (item) => item.id === Number(res.data.country)
             );
-            state(filterCountry.iso2)
-              .then((item) => {
-                setStateData(item.data);
-                if (res) {
-                  const filterState = item.data.find(
-                    (item) => item.id === Number(res.data.state)
-                  );
-                  city(filterCountry.iso2, filterState.iso2)
-                    .then((elm) => {
-                      setCityData(elm.data);
-                      setLoading(false);
-                    })
-                    .catch(() => {
-                      setLoading(false);
-                    });
-                }
-              })
-              .catch(() => {
-                setLoading(false);
-              });
+
+            if (filterCountry) {
+              const item = await state(filterCountry.iso2);
+              setStateData(
+                item.data.map((item) => ({ label: item.name, value: item.id }))
+              );
+
+              const filterState = item.data.find(
+                (stateItem) => stateItem.id === Number(res.data.state)
+              );
+
+              if (filterState) {
+                const elm = await city(filterState.iso2, filterCountry.iso2);
+                setCityData(
+                  elm.data.map((item) => ({ label: item.name, value: item.id }))
+                );
+              }
+            }
           }
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+    // Include dependencies to avoid missing updates
+  }, [addUserData, props.countryData]);
+
   const initialValues =
     addUserData.type === "edit"
       ? {
@@ -159,7 +199,12 @@ const BasicDetails = (props) => {
     setLoading(true);
     branchList(payload)
       .then((res) => {
-        setBranch(res.data);
+        setBranch(
+          res.data.map((item) => ({
+            label: `${item.name} (${item.code})`,
+            value: item._id,
+          }))
+        );
         setLoading(false);
       })
       .catch(() => {
@@ -169,7 +214,9 @@ const BasicDetails = (props) => {
   const stateList = (country) => {
     state(country)
       .then((res) => {
-        setStateData(res.data);
+        setStateData(
+          res.data.map((item) => ({ label: item.name, value: item.id }))
+        );
       })
       .catch(() => {});
   };
@@ -177,24 +224,28 @@ const BasicDetails = (props) => {
   const cityList = (country, state) => {
     city(country, state)
       .then((res) => {
-        setCityData(res.data);
+        setCityData(
+          res.datares.data.map((item) => ({ label: item.name, value: item.id }))
+        );
       })
       .catch(() => {});
   };
 
   const handelSate = (setFieldValue, e) => {
-    const filterCountry = props.countryData.find((item) => item.id === e.value);
+    const filterCountry = props.countryData.find((item) => item.id === e);
     setFieldValue("state", "");
     setFieldValue("city", "");
-    setFieldValue("country", e.value);
+    setFieldValue("country", e);
     stateList(filterCountry.iso2);
   };
 
   const handelCityList = (setFieldValue, e, value) => {
-    const filterState = stateData.find((item) => item.id === e.value);
-    const filterCountry = props.countryData.find((item) => item.id === value);
+    const filterState = stateData.find((item) => item.id === e);
+    const filterCountry = props.countryData.find(
+      (item) => item.id === value.country
+    );
     setFieldValue("city", "");
-    setFieldValue("state", e.value);
+    setFieldValue("state", e);
     cityList(filterState.iso2, filterCountry.iso2);
   };
   const handelSubmit = (values) => {
@@ -309,14 +360,15 @@ const BasicDetails = (props) => {
                       label="Country"
                       component={DropdownField}
                       name="country"
-                      optionLabel="name"
-                      optionValue="id"
-                      options={props.countryData}
+                      options={props.countryData.map((item) => ({
+                        label: item.name,
+                        value: item.id,
+                      }))}
                       filter
                       onChange={(e) => {
                         setFieldValue("branch", "");
-                        handelSate(setFieldValue, e);
-                        getBranchList({ country: e.value });
+                        handelSate(setFieldValue, e.target.value);
+                        getBranchList({ country: e.target.value });
                       }}
                     />
                   </div>
@@ -326,15 +378,15 @@ const BasicDetails = (props) => {
                       filter
                       component={DropdownField}
                       name="state"
-                      optionLabel="name"
-                      optionValue="id"
+                      // optionLabel="name"
+                      // optionValue="id"
                       options={stateData}
                       onChange={(e) => {
                         setFieldValue("branch", "");
-                        handelCityList(setFieldValue, e, values);
+                        handelCityList(setFieldValue, e.target.value, values);
                         getBranchList({
                           country: values.country,
-                          state: e.value,
+                          state: e.target.value,
                         });
                       }}
                     />
@@ -346,15 +398,13 @@ const BasicDetails = (props) => {
                       name="city"
                       filter
                       options={cityData}
-                      optionLabel="name"
-                      optionValue="id"
                       onChange={(e) => {
                         setFieldValue("branch", "");
-                        setFieldValue("city", e.value);
+                        setFieldValue("city", e.target.value);
                         getBranchList({
                           country: values.country,
                           state: values.state,
-                          city: e.value,
+                          city: e.targte.value,
                         });
                       }}
                     />
@@ -373,8 +423,8 @@ const BasicDetails = (props) => {
                       name="branch"
                       filter
                       options={branch}
-                      optionLabel={"name"}
-                      optionValue={"_id"}
+                      // optionLabel={"name"}
+                      // optionValue={"_id"}
                     />
                   </div>
 
