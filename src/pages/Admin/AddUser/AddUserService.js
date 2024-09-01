@@ -81,7 +81,7 @@ export const city = async (state, country) => {
 
 export const findIFSC = async (payload) => {
   const response = await Instance.get(
-    `user/ifsc/:${payload}`,
+    `user/ifsc/${payload}`,
     headerWithToken()
   );
   return response.data;

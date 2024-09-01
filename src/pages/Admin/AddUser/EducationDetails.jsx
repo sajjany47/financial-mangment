@@ -17,6 +17,7 @@ import Loader from "../../../component/Loader";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Dialog } from "primereact/dialog";
+import moment from "moment";
 
 export const ErrorMessage = (errors, name, touched) => {
   return (
@@ -153,6 +154,8 @@ const EducationDetails = (props) => {
         }
       : {
           ...selectedData,
+          startingYear: new Date(selectedData.startingYear),
+          endingYear: new Date(selectedData.endingYear),
           experienceLetterPre: selectedData.experienceLetter,
           relievingLetterPre: selectedData.relievingLetter,
           appointmentLetterPre: selectedData.appointmentLetter,
@@ -280,6 +283,14 @@ const EducationDetails = (props) => {
       });
   };
 
+  const startYearTemplate = (value) => {
+    return moment(value.startingYear).format("DD MMM, YYYY");
+  };
+
+  const endYearTemplate = (value) => {
+    return moment(value.endingYear).format("DD MMM, YYYY");
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -320,12 +331,20 @@ const EducationDetails = (props) => {
                 >
                   <Column field="companyName" header="Institute Name" />
                   <Column field="position" header="Position" />
-                  <Column field="startingYear" header="Starting Year" />
-                  <Column field="endingYear" header="Ending Year"></Column>
+                  <Column
+                    field="startingYear"
+                    header="Starting Year"
+                    body={startYearTemplate}
+                  />
+                  <Column
+                    field="endingYear"
+                    header="Ending Year"
+                    body={endYearTemplate}
+                  />
                   <Column
                     header="Action"
                     body={(e) => actionBodyTemplate(e, "work")}
-                  ></Column>
+                  />
                 </DataTable>
                 {ErrorMessage(errors, `workDetail`, touched)}
               </div>
