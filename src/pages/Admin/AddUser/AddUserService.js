@@ -41,11 +41,7 @@ export const userEducationDetailsUpdate = async (payload) => {
 };
 
 export const getDetails = async (payload) => {
-  const response = await Instance.get(
-    `/user/${payload}`,
-    payload,
-    headerWithToken()
-  );
+  const response = await Instance.get(`/user/${payload}`, headerWithToken());
   return response.data;
 };
 
