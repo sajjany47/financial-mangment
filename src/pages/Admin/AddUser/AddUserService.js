@@ -71,7 +71,7 @@ export const state = async (payload) => {
   return response.data;
 };
 
-export const city = async (state, country) => {
+export const city = async (country, state) => {
   const response = await Instance.get(
     `user/city?country=${country}&state=${state}`,
     headerWithToken()

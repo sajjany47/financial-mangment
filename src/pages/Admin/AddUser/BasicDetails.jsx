@@ -215,7 +215,11 @@ const BasicDetails = (props) => {
     state(country)
       .then((res) => {
         setStateData(
-          res.data.map((item) => ({ label: item.name, value: item.id }))
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }))
         );
       })
       .catch(() => {});
@@ -225,7 +229,7 @@ const BasicDetails = (props) => {
     city(country, state)
       .then((res) => {
         setCityData(
-          res.datares.data.map((item) => ({ label: item.name, value: item.id }))
+          res.data.map((item) => ({ label: item.name, value: item.id }))
         );
       })
       .catch(() => {});
@@ -241,12 +245,13 @@ const BasicDetails = (props) => {
 
   const handelCityList = (setFieldValue, e, value) => {
     const filterState = stateData.find((item) => item.id === e);
+    console.log(filterState);
     const filterCountry = props.countryData.find(
       (item) => item.id === value.country
     );
     setFieldValue("city", "");
     setFieldValue("state", e);
-    cityList(filterState.iso2, filterCountry.iso2);
+    cityList(filterCountry.iso2, filterState.iso2);
   };
   const handelSubmit = (values) => {
     setLoading(true);
