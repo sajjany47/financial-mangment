@@ -72,8 +72,8 @@ const EmployeeList = () => {
       if (filters.hasOwnProperty("position") && filters.position !== "") {
         reqData.position = filters.position;
       }
-      if (filters.hasOwnProperty("branch") && filters.position !== "") {
-        reqData.branch = filters.position;
+      if (filters.hasOwnProperty("branchCode") && filters.position !== "") {
+        reqData.branchCode = filters.branchCode;
       }
       if (filters.hasOwnProperty("employeeId") && filters.employeeId !== "") {
         reqData.employeeId = filters.employeeId;
@@ -366,6 +366,7 @@ const EmployeeList = () => {
             filter
             filterPlaceholder="Search"
             showFilterMenu={false}
+            filterElement={inputFilterTemplate}
           />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
