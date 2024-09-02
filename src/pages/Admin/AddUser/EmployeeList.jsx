@@ -72,7 +72,7 @@ const EmployeeList = () => {
       if (filters.hasOwnProperty("position") && filters.position !== "") {
         reqData.position = filters.position;
       }
-      if (filters.hasOwnProperty("branchCode") && filters.position !== "") {
+      if (filters.hasOwnProperty("branchCode") && filters.branchCode !== "") {
         reqData.branchCode = filters.branchCode;
       }
       if (filters.hasOwnProperty("employeeId") && filters.employeeId !== "") {

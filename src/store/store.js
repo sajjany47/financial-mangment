@@ -13,14 +13,28 @@ import {
 import AddUserReducer from "./reducer/AddUserReducer";
 import searchReducer from "./reducer/searchReducer";
 
-const persistConfig = {
-  key: "root",
+// Create persistConfig for each reducer
+const userPersistConfig = {
+  key: "user",
   storage: storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, UserReducer);
-const addUserPersistedReducer = persistReducer(persistConfig, AddUserReducer);
-const searchRedu = persistReducer(persistConfig, searchReducer);
+const addUserPersistConfig = {
+  key: "addUser",
+  storage: storage,
+};
+
+const searchPersistConfig = {
+  key: "search",
+  storage: storage,
+};
+
+const persistedReducer = persistReducer(userPersistConfig, UserReducer);
+const addUserPersistedReducer = persistReducer(
+  addUserPersistConfig,
+  AddUserReducer
+);
+const searchRedu = persistReducer(searchPersistConfig, searchReducer);
 
 export const store = configureStore({
   reducer: {
@@ -33,5 +47,5 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(),
+    }),
 });
