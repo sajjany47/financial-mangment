@@ -10,6 +10,8 @@ import { employeeDataTable } from "./AddUserService";
 import Loader from "../../../component/Loader";
 import { Tag } from "primereact/tag";
 import {
+  ActiveStatus,
+  DropdownPosition,
   PAGE_ROW,
   PAGINATOR_DROPDOWN_OPTIONS,
   RoleSeverityColor,
@@ -83,7 +85,7 @@ const EmployeeList = () => {
         filters.isActive !== "" &&
         filters.isActive !== undefined
       ) {
-        reqData.isActive = filters.isActive === "ACTIVE" ? true : false;
+        reqData.isActive = filters.isActive === "active" ? true : false;
       }
       if (
         filters.hasOwnProperty("username") &&
@@ -155,44 +157,60 @@ const EmployeeList = () => {
     );
   };
 
-  // const dropdownFilterTemplate = (options) => {
-  //   const filters = searchKey?.filterOptions;
+  const statusItemTemplate = (rowData, type) => {
+    return (
+      <>
+        {type === "isActive" ? (
+          <>
+            {rowData.value === "active" ? (
+              <Tag severity="success" value="Active" rounded />
+            ) : (
+              <Tag severity="danger" value="Inactive" rounded />
+            )}
+          </>
+        ) : type === "position" ? (
+          <Tag
+            severity={RoleSeverityColor(rowData.value).severity}
+            value={RoleSeverityColor(rowData.value).label}
+            rounded
+          />
+        ) : (
+          ""
+        )}
+      </>
+    );
+  };
 
-  //   return (
-  //     <>
-  //       <Dropdown
-  //         value={filters[options.field] || ""}
-  //         onChange={(e) => onFilter(e, options.field)}
-  //         options={
-  //           options.field === "isActive"
-  //             ? Config.IS_ACTIVE_TYPE
-  //             : options.field === "category"
-  //             ? categoryList.map((item) => ({
-  //                 ...item,
-  //                 label: item.name,
-  //                 value: item.slug,
-  //               }))
-  //             : options.field === "isApproved"
-  //             ? Config.IS_APPROVED
-  //             : []
-  //         }
-  //         // showFilterClear={true}
+  const dropdownFilterTemplate = (options) => {
+    const filters = searchKey?.filterOptions;
 
-  //         showClear={filters[options?.field] !== undefined ? true : false}
-  //         itemTemplate={(e) => statusItemTemplate(e, options.field)}
-  //         placeholder={
-  //           options.field === "isActive"
-  //             ? "Status"
-  //             : options.field === "category"
-  //             ? "Category"
-  //             : options.field === "isApproved"
-  //             ? "Approved"
-  //             : []
-  //         }
-  //       />
-  //     </>
-  //   );
-  // };
+    return (
+      <>
+        <Dropdown
+          value={filters[options.field] || ""}
+          onChange={(e) => onFilter(e, options.field)}
+          options={
+            options.field === "isActive"
+              ? ActiveStatus
+              : options.field === "position"
+              ? DropdownPosition
+              : []
+          }
+          // showFilterClear={true}
+
+          showClear={filters[options?.field] !== undefined ? true : false}
+          itemTemplate={(e) => statusItemTemplate(e, options.field)}
+          placeholder={
+            options.field === "isActive"
+              ? "Status"
+              : options.field === "position"
+              ? "Position"
+              : ""
+          }
+        />
+      </>
+    );
+  };
 
   const inputFilterTemplate = (options) => {
     const filters = searchKey?.filterOptions;
@@ -339,7 +357,9 @@ const EmployeeList = () => {
             filter
             filterPlaceholder="Search"
             showFilterMenu={false}
-            filterElement={inputFilterTemplate}
+            filterElement={dropdownFilterTemplate}
+            // headerClassName="text-center"
+            // bodyClassName="text-center"
           />
           <Column
             field="isActive"
@@ -349,7 +369,9 @@ const EmployeeList = () => {
             filter
             filterPlaceholder="Search"
             showFilterMenu={false}
-            filterElement={inputFilterTemplate}
+            filterElement={dropdownFilterTemplate}
+            // headerClassName="text-center"
+            // bodyClassName="text-center"
           />
           {/* <Column
             field="branch"
@@ -367,6 +389,8 @@ const EmployeeList = () => {
             filterPlaceholder="Search"
             showFilterMenu={false}
             filterElement={inputFilterTemplate}
+            // headerClassName="text-center"
+            // bodyClassName="text-center"
           />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>

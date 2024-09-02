@@ -50,6 +50,11 @@ export const PAGINATOR_DROPDOWN_OPTIONS = [
   { label: 50, value: 50 },
 ];
 
+export const ActiveStatus = [
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" },
+];
+
 export const PAGE_ROW = [10, 15, 25];
 
 export const RoleSeverityColor = (role) => {
@@ -57,26 +62,26 @@ export const RoleSeverityColor = (role) => {
     case "admin":
       return { label: "Admin", severity: "info" };
     case "branch-manager":
-      return { label: "Branch Manager", severity: "success" };
+      return { label: "Branch Manager", severity: "warning" };
     case "state-manager":
       return { label: "State Manager", severity: "success" };
     case "loan-manager":
-      return { label: "Loan Manager", severity: "warning" };
+      return { label: "Loan Manager", severity: "help" };
     case "product-manager":
-      return { label: "Product Manager", severity: "info" };
+      return { label: "Product Manager", severity: "warning" };
     case "collection-department-head":
-      return { label: "Collection Department Manager", severity: "warning" };
+      return { label: "Collection Department Manager", severity: "danger" };
     case "collection-department":
-      return { label: "Collection Department", severity: "danger" };
+      return { label: "Collection Department", severity: "success" };
     case "loan-department":
-      return { label: "Loan Department", severity: "warning" };
+      return { label: "Loan Department", severity: "secondary" };
     case "verification-department":
-      return { label: "Verification Department", severity: "info" };
+      return { label: "Verification Department", severity: "warning" };
     case "financial-manager":
-      return { label: "Financial Manager", severity: "info" };
+      return { label: "Financial Manager", severity: "help" };
     case "customer":
-      return { label: "Customer", severity: "help" };
+      return { label: "Customer", severity: "danger" };
     default:
-      return { label: "Unknown", severity: "secondary" }; // Fallback case
+      return { label: "Unknown", severity: "contrast" }; // Fallback case
   }
 };
