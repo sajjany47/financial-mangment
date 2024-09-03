@@ -96,7 +96,7 @@ export default function Topbar(props) {
   ];
 
   return (
-    <div className="card mb-3 topbar-sticky">
+    <div className="card mb-3">
       <Menubar
         start={start}
         end={end}

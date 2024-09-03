@@ -67,6 +67,11 @@ input[type="file"] {
 .p-menubar-button{
   display: none;
 }
+.layout-container {
+  display: flex;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent content overflow */
+}
 .sidebar.collapsed {
   flex: 0 0 80px; /* Set width when collapsed */
 }
@@ -75,6 +80,10 @@ input[type="file"] {
   height: 100vh; /* Ensure it covers the full height */
   flex: 0 0 250px; /* Sidebar width is fixed */
   overflow: auto; /* Allow scrolling for overflowing content */
+  position: fixed;
+  transition: width 0.3s; /* Smooth transition for collapse */
+  z-index: 1000; /* Ensure it is above the main content */
+
 }
 
 .main-content {

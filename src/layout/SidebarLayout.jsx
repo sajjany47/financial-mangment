@@ -41,61 +41,61 @@ const SidebarLayout = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div>
-      <div style={{ display: "flex" }}>
-        <Sidebar
-          style={{ height: "100%" }}
-          className={` ${collapsed ? "sidebar collapsed" : "sidebar"}`}
-          collapsed={collapsed}
-        >
-          <Menu>
-            <MenuItem
-              onClick={() => {
-                setCollapsed(!collapsed);
-              }}
-              icon={<i className={"pi pi-bars"}></i>}
-              style={{ marginTop: "5px" }}
-            >
-              <h4>{capitalizeFirstLetter(user.data.position)}</h4>
-            </MenuItem>
-            {userMenu.map((item, index) => {
-              return item.submenu ? (
-                <SubMenu
-                  label={item.title}
-                  key={index}
-                  icon={<i className={item.icon}></i>}
-                  style={{ marginTop: "1px" }}
-                >
-                  {item.submenu.map((res, ind) => {
-                    return (
-                      <MenuItem
-                        key={ind}
-                        icon={<i className={res.icon}></i>}
-                        component={<NavLink to={res.route} />}
-                      >
-                        {res.title}{" "}
-                      </MenuItem>
-                    );
-                  })}
-                </SubMenu>
-              ) : (
-                <MenuItem
-                  key={index}
-                  icon={<i className={item.icon}></i>}
-                  style={{ marginTop: "5px" }}
-                  component={<NavLink to={item.route} />}
-                >
-                  {item.title}
-                </MenuItem>
-              );
-            })}
-          </Menu>
-        </Sidebar>
+    <div className="layout-container">
+      <Sidebar
+        style={{ height: "100%" }}
+        className={` ${collapsed ? "sidebar collapsed" : "sidebar"}`}
+        collapsed={collapsed}
+      >
+        <Menu>
+          <MenuItem
+            onClick={() => {
+              setCollapsed(!collapsed);
+            }}
+            icon={<i className={"pi pi-bars"}></i>}
+            style={{ marginTop: "5px" }}
+          >
+            <h4>{capitalizeFirstLetter(user.data.position)}</h4>
+          </MenuItem>
+          {userMenu.map((item, index) => {
+            return item.submenu ? (
+              <SubMenu
+                label={item.title}
+                key={index}
+                icon={<i className={item.icon}></i>}
+                style={{ marginTop: "1px" }}
+              >
+                {item.submenu.map((res, ind) => {
+                  return (
+                    <MenuItem
+                      key={ind}
+                      icon={<i className={res.icon}></i>}
+                      component={<NavLink to={res.route} />}
+                    >
+                      {res.title}{" "}
+                    </MenuItem>
+                  );
+                })}
+              </SubMenu>
+            ) : (
+              <MenuItem
+                key={index}
+                icon={<i className={item.icon}></i>}
+                style={{ marginTop: "5px" }}
+                component={<NavLink to={item.route} />}
+              >
+                {item.title}
+              </MenuItem>
+            );
+          })}
+        </Menu>
+      </Sidebar>
 
-        <main className="main-content">
-          <Topbar />
+      <div className="main-content">
+        <Topbar />
+        <div className="content-wrapper">
           <Outlet />
-        </main>
+        </div>
       </div>
     </div>
   );
