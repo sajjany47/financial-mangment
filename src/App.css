@@ -86,10 +86,24 @@ input[type="file"] {
 
 }
 
+.topbar {
+  position: sticky;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.content-wrapper {
+  margin-top: 10px; /* Offset for the topbar height */
+  padding: 20px; /* Content padding */
+  height: calc(100vh - 60px); /* Available height for content */
+  overflow-y: auto; /* Scrollable content */
+}
+
 .main-content {
   flex: 1; /* Take up the remaining space */
   padding: 10px; /* Add some padding */
-  overflow: auto; /* Enable scrolling */
+  overflow: hidden; /* Enable scrolling */
 }
 
 @media (max-width: 540px) {

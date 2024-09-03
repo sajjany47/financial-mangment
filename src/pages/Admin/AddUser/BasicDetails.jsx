@@ -482,7 +482,7 @@ const BasicDetails = (props) => {
                 </div>
               </div>
             </div>
-            <div className="flex pt-4 justify-content-end gap-2">
+            <div className="flex pt-4 justify-content-end gap-2 mb-3">
               {addUserData.type === "edit" && (
                 <Button
                   type="button"
