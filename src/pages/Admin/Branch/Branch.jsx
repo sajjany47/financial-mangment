@@ -215,7 +215,7 @@ const Branch = () => {
             )}
           </>
         ) : type === "country" ? (
-          rowData.name
+          rowData.label
         ) : (
           ""
         )}
@@ -235,7 +235,10 @@ const Branch = () => {
             options.field === "isActive"
               ? ActiveStatus
               : options.field === "country"
-              ? countryData
+              ? countryData.map((item) => ({
+                  label: item.name,
+                  value: item.id,
+                }))
               : []
           }
           // showFilterClear={true}
