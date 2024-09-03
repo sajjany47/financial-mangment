@@ -20,6 +20,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import { Paginator } from "primereact/paginator";
+import { capitalizeFirstLetter } from "../../../shared/constant";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -200,13 +201,7 @@ const EmployeeList = () => {
 
           showClear={filters[options?.field] !== undefined ? true : false}
           itemTemplate={(e) => statusItemTemplate(e, options.field)}
-          placeholder={
-            options.field === "isActive"
-              ? "Status"
-              : options.field === "position"
-              ? "Position"
-              : ""
-          }
+          placeholder={`${capitalizeFirstLetter(options.field)}`}
         />
       </>
     );
@@ -220,7 +215,7 @@ const EmployeeList = () => {
         <InputText
           value={filters[options.field] || ""}
           onChange={(e) => onFilter(e, options.field)}
-          placeholder={"Search"}
+          placeholder={`${capitalizeFirstLetter(options.field)}`}
         />
       </>
     );
@@ -313,7 +308,7 @@ const EmployeeList = () => {
         <DataTable
           value={employeeList}
           header={header}
-          tableStyle={{ minWidth: "60rem" }}
+          // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
           filterDisplay="row"
@@ -324,10 +319,9 @@ const EmployeeList = () => {
           <Column field="" header="SLNo." body={rowNumberTemplate} />
           <Column
             field="employeeId"
-            header="EmployeeId"
+            header="Employe Id"
             sortable
             filter
-            filterPlaceholder="Search"
             showFilterMenu={false}
             filterElement={inputFilterTemplate}
           />
@@ -336,7 +330,6 @@ const EmployeeList = () => {
             header="Name"
             sortable
             filter
-            filterPlaceholder="Search"
             showFilterMenu={false}
             filterElement={inputFilterTemplate}
           />
@@ -345,7 +338,6 @@ const EmployeeList = () => {
             header="Username"
             sortable
             filter
-            filterPlaceholder="Search"
             showFilterMenu={false}
             filterElement={inputFilterTemplate}
           />
@@ -355,11 +347,12 @@ const EmployeeList = () => {
             body={positionTemplate}
             sortable
             filter
-            filterPlaceholder="Search"
             showFilterMenu={false}
             filterElement={dropdownFilterTemplate}
             // headerClassName="text-center"
             // bodyClassName="text-center"
+            // alignHeader={"center"}
+            // align={"center"}
           />
           <Column
             field="isActive"
@@ -367,7 +360,6 @@ const EmployeeList = () => {
             body={statusTemplate}
             sortable
             filter
-            filterPlaceholder="Search"
             showFilterMenu={false}
             filterElement={dropdownFilterTemplate}
             // headerClassName="text-center"
@@ -378,7 +370,6 @@ const EmployeeList = () => {
             header="Branch"
             sortable
             filter
-            filterPlaceholder="Search"
             showFilterMenu={false}
           /> */}
           <Column
@@ -386,7 +377,6 @@ const EmployeeList = () => {
             header="Branch Code"
             sortable
             filter
-            filterPlaceholder="Search"
             showFilterMenu={false}
             filterElement={inputFilterTemplate}
             // headerClassName="text-center"
