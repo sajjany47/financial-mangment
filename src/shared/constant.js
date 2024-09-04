@@ -55,6 +55,15 @@ export const capitalizeFirstLetter = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+export const cleanObject = (obj) => {
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] === "" || obj[key] === null || obj[key] === undefined) {
+      delete obj[key];
+    }
+  });
+  return obj;
+};
+
 export const fetchCountryStateCityData = async (data) => {
   try {
     const countryData = await countryList();
