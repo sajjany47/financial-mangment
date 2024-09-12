@@ -293,6 +293,10 @@ const Branch = () => {
               ? ActiveStatus
               : options.field === "country"
               ? countryData
+              : options.field === "state"
+              ? stateData
+              : options.field === "city"
+              ? cityData
               : []
           }
           // showFilterClear={true}
@@ -300,7 +304,7 @@ const Branch = () => {
           showClear={filters[options?.field] !== undefined ? true : false}
           // itemTemplate={(e) => statusItemTemplate(e, options.field)}
           placeholder={`${capitalizeFirstLetter(options.field)}`}
-          style={{ width: "7rem" }}
+          style={{ width: "8rem" }}
         />
       </>
     );
@@ -315,7 +319,7 @@ const Branch = () => {
           value={filters[options.field] || ""}
           onChange={(e) => onFilter(e, options.field)}
           placeholder={`${capitalizeFirstLetter(options.field)}`}
-          style={{ width: "7rem" }}
+          style={{ width: "8rem" }}
         />
       </>
     );
@@ -323,6 +327,12 @@ const Branch = () => {
 
   const onFilter = (event, field) => {
     let updatedFilters = { ...searchKey?.filterOptions };
+    if (field === "state") {
+      stateList(updatedFilters.country);
+    }
+    if (field === "city") {
+      cityList(updatedFilters.country, updatedFilters.state);
+    }
     updatedFilters[field] = event.target.value;
     dispatch(
       setSearch({
@@ -459,6 +469,8 @@ const Branch = () => {
             sortable
             filter
             showFilterMenu={false}
+            filterField="country"
+            sortField="countryName"
             filterElement={dropdownFilterTemplate}
           />
           <Column
@@ -468,6 +480,8 @@ const Branch = () => {
             filter
             showFilterMenu={false}
             filterElement={dropdownFilterTemplate}
+            filterField="state"
+            sortField="stateName"
           />
           <Column
             field="cityName"
@@ -476,6 +490,8 @@ const Branch = () => {
             filter
             showFilterMenu={false}
             filterElement={dropdownFilterTemplate}
+            filterField="city"
+            sortField="cityName"
           />
           <Column
             field="pincode"
