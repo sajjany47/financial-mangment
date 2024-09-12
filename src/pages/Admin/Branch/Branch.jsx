@@ -10,7 +10,7 @@ import {
 import * as Yup from "yup";
 import { city, countryList, state } from "../AddUser/AddUserService";
 import Loader from "../../../component/Loader";
-import { branchDatatable, createBranch } from "./BranchService";
+import { branchDatatable, createBranch, updateBranch } from "./BranchService";
 import Swal from "sweetalert2";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -30,9 +30,9 @@ import { Tag } from "primereact/tag";
 const createBranchSchema = Yup.object().shape({
   _id: Yup.string(),
   name: Yup.string().required("Name is required"),
-  country: Yup.object().required("Country is required"),
-  state: Yup.object().required("State is required"),
-  city: Yup.object().required("City is required"),
+  country: Yup.string().required("Country is required"),
+  state: Yup.string().required("State is required"),
+  city: Yup.string().required("City is required"),
   email: Yup.string().required("Email is required"),
   phone: Yup.string().required("Phone is required"),
   address: Yup.string().required("Address is required"),
@@ -49,6 +49,8 @@ const Branch = () => {
   const [branchList, setBranchList] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [actionType, setActionType] = useState("add");
+  const [selectData, setSelectData] = useState({});
 
   useEffect(() => {
     if (searchKey?.page === "branch") {
@@ -73,7 +75,13 @@ const Branch = () => {
   useEffect(() => {
     countryList()
       .then((res) => {
-        setCountryData(res.data);
+        setCountryData(
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }))
+        );
       })
       .catch(() => {});
 
@@ -128,44 +136,69 @@ const Branch = () => {
       });
   };
   const stateList = (country) => {
-    state(country)
+    state(Number(country))
       .then((res) => {
-        setStateData(res.data);
+        setStateData(
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }))
+        );
       })
       .catch(() => {});
   };
 
   const cityList = (country, state) => {
-    city(country, state)
+    city(Number(country), Number(state))
       .then((res) => {
-        setCityData(res.data);
+        setCityData(
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }))
+        );
       })
       .catch(() => {});
   };
 
-  const initialValues = {
-    name: "",
-    phone: "",
-    email: "",
-    code: "",
-    address: "",
-    state: "",
-    country: "",
-    city: "",
-    pincode: "",
-  };
+  const initialValues =
+    actionType === "add"
+      ? {
+          name: "",
+          phone: "",
+          email: "",
+          code: "",
+          address: "",
+          state: "",
+          country: "",
+          city: "",
+          pincode: "",
+        }
+      : {
+          name: selectData.name,
+          phone: selectData.phone,
+          email: selectData.email,
+          code: selectData.code,
+          address: selectData.address,
+          state: selectData.state,
+          country: selectData.country,
+          city: selectData.city,
+          pincode: selectData.pincode,
+        };
 
   const handelSate = (setFieldValue, e) => {
     setFieldValue("state", "");
     setFieldValue("city", "");
-    setFieldValue("country", e.value);
-    stateList(e.value.iso2);
+    setFieldValue("country", e);
+    stateList(e);
   };
 
   const handelCityList = (setFieldValue, e, value) => {
     setFieldValue("city", "");
-    setFieldValue("state", e.value);
-    cityList(value.country.iso2, e.value.iso2);
+    setFieldValue("state", e);
+    cityList(value.country, e);
   };
 
   const header = () => {
@@ -175,53 +208,77 @@ const Branch = () => {
         <Button
           label="Add Branch"
           icon="pi pi-plus"
-          onClick={() => setVisible(true)}
+          onClick={() => {
+            setVisible(true);
+            setActionType("add");
+          }}
         />
       </div>
     );
   };
-  const actionBodyTemplate = () => {
-    return <Button icon="pi pi-pencil" rounded text aria-label="Filter" />;
+  const actionBodyTemplate = (item) => {
+    return (
+      <Button
+        icon="pi pi-pencil"
+        rounded
+        text
+        aria-label="Filter"
+        onClick={() => {
+          setVisible(true);
+          setSelectData(item);
+          setActionType("edit");
+          stateList(item.country);
+          cityList(item.country, item.state);
+        }}
+      />
+    );
   };
 
   const handelSubmit = (values) => {
     setLoading(true);
-    const reqData = {
-      ...values,
-      country: values.country.id,
-      state: values.state.id,
-      city: values.city.id,
-    };
-    createBranch(reqData)
-      .then((res) => {
-        Swal.fire({ title: res.message, icon: "success" });
-        setLoading(false);
-        setVisible(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+
+    if (actionType === "add") {
+      createBranch(values)
+        .then((res) => {
+          Swal.fire({ title: res.message, icon: "success" });
+          setLoading(false);
+          setVisible(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } else {
+      updateBranch({ ...values, _id: selectData._id })
+        .then((res) => {
+          Swal.fire({ title: res.message, icon: "success" });
+          setLoading(false);
+          setVisible(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
 
-  const statusItemTemplate = (rowData, type) => {
-    return (
-      <>
-        {type === "isActive" ? (
-          <>
-            {rowData.value === "active" ? (
-              <Tag severity="success" value="Active" rounded />
-            ) : (
-              <Tag severity="danger" value="Inactive" rounded />
-            )}
-          </>
-        ) : type === "country" ? (
-          rowData.label
-        ) : (
-          ""
-        )}
-      </>
-    );
-  };
+  // const statusItemTemplate = (rowData, type) => {
+  //   return (
+  //     <>
+  //       {type === "isActive" ? (
+  //         <>
+  //           {rowData.value === "active" ? (
+  //             <Tag severity="success" value="Active" rounded />
+  //           ) : (
+  //             <Tag severity="danger" value="Inactive" rounded />
+  //           )}
+  //         </>
+  //       ) : type === "country" ? (
+  //         rowData.name
+  //       ) : (
+  //         ""
+  //       )}
+  //     </>
+  //   );
+  // };
 
   const dropdownFilterTemplate = (options) => {
     const filters = searchKey?.filterOptions;
@@ -235,17 +292,15 @@ const Branch = () => {
             options.field === "isActive"
               ? ActiveStatus
               : options.field === "country"
-              ? countryData.map((item) => ({
-                  label: item.name,
-                  value: item.id,
-                }))
+              ? countryData
               : []
           }
           // showFilterClear={true}
 
           showClear={filters[options?.field] !== undefined ? true : false}
-          itemTemplate={(e) => statusItemTemplate(e, options.field)}
+          // itemTemplate={(e) => statusItemTemplate(e, options.field)}
           placeholder={`${capitalizeFirstLetter(options.field)}`}
+          style={{ width: "7rem" }}
         />
       </>
     );
@@ -260,6 +315,7 @@ const Branch = () => {
           value={filters[options.field] || ""}
           onChange={(e) => onFilter(e, options.field)}
           placeholder={`${capitalizeFirstLetter(options.field)}`}
+          style={{ width: "7rem" }}
         />
       </>
     );
@@ -344,6 +400,18 @@ const Branch = () => {
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
   };
+
+  const statusTemplate = (item) => {
+    return (
+      <>
+        {item.isActive ? (
+          <Tag severity="success" value="Active" rounded />
+        ) : (
+          <Tag severity="danger" value="Inactive" rounded />
+        )}
+      </>
+    );
+  };
   return (
     <>
       {loading && <Loader />}
@@ -383,9 +451,10 @@ const Branch = () => {
             filter
             showFilterMenu={false}
             filterElement={dropdownFilterTemplate}
+            body={statusTemplate}
           />
           <Column
-            field="country"
+            field="countryName"
             header="Country"
             sortable
             filter
@@ -393,20 +462,28 @@ const Branch = () => {
             filterElement={dropdownFilterTemplate}
           />
           <Column
-            field="state"
-            header="state"
+            field="stateName"
+            header="State"
             sortable
             filter
             showFilterMenu={false}
             filterElement={dropdownFilterTemplate}
           />
           <Column
-            field="city"
+            field="cityName"
             header="City"
             sortable
             filter
             showFilterMenu={false}
             filterElement={dropdownFilterTemplate}
+          />
+          <Column
+            field="pincode"
+            header="Pincode"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterElement={inputFilterTemplate}
           />
           <Column
             field="phone"
@@ -428,11 +505,12 @@ const Branch = () => {
         />
       </div>
       <Dialog
-        header="Add Branch"
+        header={actionType === "add" ? "Add Branch" : "Edit Branch"}
         visible={visible}
         style={{ width: "50vw" }}
         onHide={() => {
           setVisible(false);
+          getEmployeeList();
         }}
       >
         <Formik
@@ -478,11 +556,11 @@ const Branch = () => {
                         label="Country"
                         component={DropdownField}
                         name="country"
-                        optionLabel="name"
-                        optionValue="iso2"
                         options={countryData}
                         filter
-                        onChange={(e) => handelSate(setFieldValue, e)}
+                        onChange={(e) =>
+                          handelSate(setFieldValue, e.target.value)
+                        }
                       />
                     </div>
                     <div className="col-12 md:col-4">
@@ -491,11 +569,9 @@ const Branch = () => {
                         filter
                         component={DropdownField}
                         name="state"
-                        optionLabel="name"
-                        optionValue="iso2"
                         options={stateData}
                         onChange={(e) =>
-                          handelCityList(setFieldValue, e, values)
+                          handelCityList(setFieldValue, e.target.value, values)
                         }
                       />
                     </div>
@@ -506,8 +582,6 @@ const Branch = () => {
                         name="city"
                         filter
                         options={cityData}
-                        optionLabel="name"
-                        optionValue="id"
                       />
                     </div>
                     <div className="col-12 md:col-4">

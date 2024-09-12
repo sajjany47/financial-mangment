@@ -77,86 +77,27 @@ const BasicDetails = (props) => {
   const [branch, setBranch] = useState([]);
   const [getUserData, setGetUerData] = useState({});
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   getBranchList({});
-
-  //   if (addUserData.type === "edit") {
-  //     getDetails(addUserData.id)
-  //       .then((res) => {
-  //         setGetUerData(res.data);
-
-  //         const filterCountry = props.countryData.find(
-  //           (item) => item.id === Number(res.data.country)
-  //         );
-  //         if (filterCountry) {
-  //           stateList(filterCountry.iso2).then(() => {
-  //             const filterState = stateData.find(
-  //               (item) => item.id === Number(res.data.state)
-  //             );
-  //             if (filterState) {
-  //               cityList(filterCountry.iso2, filterState.iso2).finally(() => {
-  //                 setLoading(false);
-  //               });
-  //             } else {
-  //               setLoading(false);
-  //             }
-  //           });
-  //         } else {
-  //           setLoading(false);
-  //         }
-  //       })
-  //       .catch(() => {
-  //         setLoading(false);
-  //       });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        await getBranchList({});
-
-        if (addUserData.type === "edit") {
-          const res = await getDetails(addUserData.id);
+    getBranchList({});
+    if (addUserData.type === "edit") {
+      getDetails(addUserData.id)
+        .then((res) => {
           setGetUerData(res.data);
-
-          if (res) {
-            const filterCountry = props.countryData.find(
-              (item) => item.id === Number(res.data.country)
-            );
-
-            if (filterCountry) {
-              const item = await state(filterCountry.iso2);
-              setStateData(
-                item.data.map((item) => ({ label: item.name, value: item.id }))
-              );
-
-              const filterState = item.data.find(
-                (stateItem) => stateItem.id === Number(res.data.state)
-              );
-
-              if (filterState) {
-                const elm = await city(filterCountry.iso2, filterState.iso2);
-                setCityData(
-                  elm.data.map((item) => ({ label: item.name, value: item.id }))
-                );
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.error("An error occurred:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-    // Include dependencies to avoid missing updates
-  }, [addUserData, props.countryData]);
+          stateList(Number(res.data.country));
+          cityList(Number(res.data.country), Number(res.data.state));
+          getBranchList({
+            country: Number(res.data.country),
+            state: Number(res.data.state),
+            city: Number(res.data.city),
+          });
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialValues =
     addUserData.type === "edit"
@@ -212,7 +153,7 @@ const BasicDetails = (props) => {
       });
   };
   const stateList = (country) => {
-    state(country)
+    state(Number(country))
       .then((res) => {
         setStateData(
           res.data.map((item) => ({
@@ -226,7 +167,7 @@ const BasicDetails = (props) => {
   };
 
   const cityList = (country, state) => {
-    city(country, state)
+    city(Number(country), Number(state))
       .then((res) => {
         setCityData(
           res.data.map((item) => ({ label: item.name, value: item.id }))
@@ -236,22 +177,16 @@ const BasicDetails = (props) => {
   };
 
   const handelSate = (setFieldValue, e) => {
-    const filterCountry = props.countryData.find((item) => item.id === e);
     setFieldValue("state", "");
     setFieldValue("city", "");
     setFieldValue("country", e);
-    stateList(filterCountry.iso2);
+    stateList(e);
   };
 
   const handelCityList = (setFieldValue, e, value) => {
-    const filterState = stateData.find((item) => item.id === e);
-    console.log(filterState);
-    const filterCountry = props.countryData.find(
-      (item) => item.id === value.country
-    );
     setFieldValue("city", "");
     setFieldValue("state", e);
-    cityList(filterCountry.iso2, filterState.iso2);
+    cityList(value.country, e);
   };
   const handelSubmit = (values) => {
     setLoading(true);
@@ -383,15 +318,13 @@ const BasicDetails = (props) => {
                       filter
                       component={DropdownField}
                       name="state"
-                      // optionLabel="name"
-                      // optionValue="id"
                       options={stateData}
                       onChange={(e) => {
                         setFieldValue("branch", "");
                         handelCityList(setFieldValue, e.target.value, values);
                         getBranchList({
-                          country: values.country,
-                          state: e.target.value,
+                          country: Number(values.country),
+                          state: Number(e.target.value),
                         });
                       }}
                     />
@@ -407,9 +340,9 @@ const BasicDetails = (props) => {
                         setFieldValue("branch", "");
                         setFieldValue("city", e.target.value);
                         getBranchList({
-                          country: values.country,
-                          state: values.state,
-                          city: e.targte.value,
+                          country: Number(values.country),
+                          state: Number(values.state),
+                          city: Number(e.targte.value),
                         });
                       }}
                     />

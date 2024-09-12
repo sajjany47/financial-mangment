@@ -33,9 +33,15 @@ const AddUser = () => {
   }, []);
 
   useEffect(() => {
-    countryList().then((res) => {
-      setCountryData(res.data);
-    });
+    setLoading(true);
+    countryList()
+      .then((res) => {
+        setCountryData(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   }, []);
 
   const next = () => {
