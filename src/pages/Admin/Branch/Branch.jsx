@@ -300,7 +300,7 @@ const Branch = () => {
               : []
           }
           // showFilterClear={true}
-
+          filter
           showClear={filters[options?.field] !== undefined ? true : false}
           // itemTemplate={(e) => statusItemTemplate(e, options.field)}
           placeholder={`${capitalizeFirstLetter(options.field)}`}
@@ -327,11 +327,18 @@ const Branch = () => {
 
   const onFilter = (event, field) => {
     let updatedFilters = { ...searchKey?.filterOptions };
-    if (field === "state") {
-      stateList(updatedFilters.country);
+
+    if (field === "country") {
+      setStateData([]);
+      if (event.target.value) {
+        stateList(event.target.value);
+      }
     }
-    if (field === "city") {
-      cityList(updatedFilters.country, updatedFilters.state);
+    if (field === "state") {
+      setCityData([]);
+      if (event.target.value) {
+        cityList(updatedFilters.country, event.target.value);
+      }
     }
     updatedFilters[field] = event.target.value;
     dispatch(
