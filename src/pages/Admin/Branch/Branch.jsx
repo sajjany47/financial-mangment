@@ -189,6 +189,8 @@ const Branch = () => {
         };
 
   const handelSate = (setFieldValue, e) => {
+    setStateData([]);
+    setCityData([]);
     setFieldValue("state", "");
     setFieldValue("city", "");
     setFieldValue("country", e);
@@ -196,6 +198,7 @@ const Branch = () => {
   };
 
   const handelCityList = (setFieldValue, e, value) => {
+    setCityData([]);
     setFieldValue("city", "");
     setFieldValue("state", e);
     cityList(value.country, e);
@@ -243,6 +246,7 @@ const Branch = () => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
           setVisible(false);
+          getEmployeeList();
         })
         .catch(() => {
           setLoading(false);

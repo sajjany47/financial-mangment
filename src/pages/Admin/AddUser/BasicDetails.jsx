@@ -177,6 +177,8 @@ const BasicDetails = (props) => {
   };
 
   const handelSate = (setFieldValue, e) => {
+    setStateData([]);
+    setCityData([]);
     setFieldValue("state", "");
     setFieldValue("city", "");
     setFieldValue("country", e);
@@ -184,6 +186,7 @@ const BasicDetails = (props) => {
   };
 
   const handelCityList = (setFieldValue, e, value) => {
+    setCityData([]);
     setFieldValue("city", "");
     setFieldValue("state", e);
     cityList(value.country, e);
