@@ -118,6 +118,9 @@ const Branch = () => {
       if (filters.state !== "" && filters.state !== undefined) {
         reqData.state = filters.state;
       }
+      if (filters.pincode !== "" && filters.pincode !== undefined) {
+        reqData.pincode = filters.pincode;
+      }
       if (filters.city !== "" && filters.city !== undefined) {
         reqData.city = filters.city;
       }
@@ -307,7 +310,11 @@ const Branch = () => {
           filter
           showClear={filters[options?.field] !== undefined ? true : false}
           // itemTemplate={(e) => statusItemTemplate(e, options.field)}
-          placeholder={`${capitalizeFirstLetter(options.field)}`}
+          placeholder={`${
+            options.field === "isActive"
+              ? "Status"
+              : capitalizeFirstLetter(options.field)
+          }`}
           style={{ width: "8rem" }}
         />
       </>
@@ -509,17 +516,12 @@ const Branch = () => {
             header="Pincode"
             sortable
             filter
+            filterField="pincode"
+            sortField="pincode"
             showFilterMenu={false}
             filterElement={inputFilterTemplate}
           />
-          <Column
-            field="phone"
-            header="Phone"
-            sortable
-            filter
-            showFilterMenu={false}
-            filterElement={inputFilterTemplate}
-          />
+          <Column field="phone" header="Phone" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <Paginator
