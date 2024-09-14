@@ -85,3 +85,38 @@ export const RoleSeverityColor = (role) => {
       return { label: "Unknown", severity: "contrast" }; // Fallback case
   }
 };
+
+export const EmployeeTypes = [
+  { label: "Salaried", value: "salaried" },
+  { label: "Self-Employed", value: "self_employed" },
+  { label: "Business", value: "business" },
+];
+
+export const LoanApplicationSteps = [
+  {
+    label: "Application Number Generated",
+    value: "application_number_generated",
+  },
+  { label: "Loan Amount Generated", value: "loan_amount_generated" },
+  {
+    label: "Document & Address Verification Processing",
+    value: "document_address_verification",
+  },
+  {
+    label: "Business or Company Address Verification Processing",
+    value: "business_address_verification",
+  },
+  { label: "Document Verification Processing", value: "document_verification" },
+  {
+    label: "Loan Amount Approved Processing",
+    value: "loan_amount_approved_processing",
+  },
+  { label: "Loan Approved", value: "loan_approved" },
+  { label: "Loan Rejected", value: "rejected" },
+];
+
+export const ResidenceTypes = [
+  { label: "Rented", value: "rented" },
+  { label: "Owned", value: "owned" },
+  { label: "Parent", value: "parent" },
+];

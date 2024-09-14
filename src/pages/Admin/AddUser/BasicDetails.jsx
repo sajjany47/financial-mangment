@@ -83,13 +83,11 @@ const BasicDetails = (props) => {
       getDetails(addUserData.id)
         .then((res) => {
           setGetUerData(res.data);
-          stateList(Number(res.data.country));
-          cityList(Number(res.data.country), Number(res.data.state));
-          getBranchList({
-            country: Number(res.data.country),
-            state: Number(res.data.state),
-            city: Number(res.data.city),
-          });
+          Promise.all([
+            stateList(Number(res.data.country)),
+            cityList(Number(res.data.country), Number(res.data.state)),
+          ]);
+
           setLoading(false);
         })
         .catch(() => {
@@ -236,7 +234,7 @@ const BasicDetails = (props) => {
         });
     }
   };
-
+  console.log(branch);
   return (
     <>
       {loading && <Loader />}{" "}
