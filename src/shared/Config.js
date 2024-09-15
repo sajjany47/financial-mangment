@@ -120,3 +120,16 @@ export const ResidenceTypes = [
   { label: "Owned", value: "owned" },
   { label: "Parent", value: "parent" },
 ];
+
+export const LoanTypes = [
+  { value: "personal_loan", label: "Personal Loan" },
+  { value: "home_loan", label: "Home Loan" },
+  { value: "car_loan", label: "Car Loan" },
+  { value: "education_loan", label: "Education Loan" },
+  { value: "business_loan", label: "Business Loan" },
+  { value: "payday_loan", label: "Payday Loan" },
+  { value: "gold_loan", label: "Gold Loan" },
+  { value: "mortgage_loan", label: "Mortgage Loan" },
+  { value: "credit_card_loan", label: "Credit Card Loan" },
+  { value: "agriculture_loan", label: "Agriculture Loan" },
+];

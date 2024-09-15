@@ -16,6 +16,7 @@ import {
 } from "./shared/Config";
 import Swal from "sweetalert2";
 import EditEmployee from "./pages/Admin/AddUser/EditEmployee";
+import Lead from "./pages/Admin/Loan/Lead";
 
 function App() {
   let isRefreshing = false;
@@ -121,6 +122,7 @@ function App() {
             <Route path="/employee/list" element={<EmployeeList />} />
             <Route path="/employee/add" element={<AddEmployee />} />
             <Route path="/employee/edit" element={<EditEmployee />} />
+            <Route path="/lead/list" element={<Lead />} />
           </Route>
         </Routes>
       </BrowserRouter>

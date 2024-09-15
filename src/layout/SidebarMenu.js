@@ -18,6 +18,7 @@ const sidebarMenu = {
       title: "Loan",
       icon: "pi pi-file",
       submenu: [
+        { title: "Lead", route: "/lead/list" },
         { title: "New Applications", route: "/loan-applications/new" },
         { title: "In Progress", route: "/loan-applications/in-progress" },
         { title: "Approved", route: "/loan-applications/approved" },
