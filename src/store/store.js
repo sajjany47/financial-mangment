@@ -12,6 +12,7 @@ import {
 } from "redux-persist";
 import AddUserReducer from "./reducer/AddUserReducer";
 import searchReducer from "./reducer/searchReducer";
+import AddLoanReducer from "./reducer/AddLoanReducer";
 
 // Create persistConfig for each reducer
 const userPersistConfig = {
@@ -41,6 +42,7 @@ export const store = configureStore({
     user: persistedReducer,
     addUser: addUserPersistedReducer,
     search: searchRedu,
+    loan: persistReducer({ key: "loan", storage: storage }, AddLoanReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

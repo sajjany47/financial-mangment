@@ -269,17 +269,13 @@ export const PasswordFiled = ({
   </div>
 );
 
-export const CheckField = ({
-  field,
-  form: { touched, errors, setFieldValue },
-  ...props
-}) => (
-  <div className="flex align-items-start justify-content-center flex-column">
+export const CheckField = ({ field, form: { touched, errors }, ...props }) => (
+  <div className="flex align-items-start justify-content-start flex-row gap-2">
     <Checkbox
       inputId={field.name}
       {...field}
       {...props}
-      onChange={(e) => setFieldValue(field.name, e.checked)}
+      // onChange={(e) => setFieldValue(field.name, e.checked)}
       checked={field.value}
     />
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">

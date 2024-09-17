@@ -12,12 +12,12 @@ import { city, countryList, state } from "../AddUser/AddUserService";
 import { Button } from "primereact/button";
 
 const LoanBasic = (props) => {
-  const addUserData = useSelector((state) => state.addUser.addUser);
+  const loanDetails = useSelector((state) => state.loan.addLoan);
   const [loading, setLoading] = useState(false);
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
-  const [getUserData, setGetUerData] = useState({});
+  const [getLoanData, setLoanData] = useState({});
 
   useEffect(() => {
     setLoading(true);
@@ -26,7 +26,7 @@ const LoanBasic = (props) => {
         setCountryData(
           res.data.map((item) => ({ label: item.name, value: item.id }))
         );
-        setGetUerData({});
+        setLoanData({});
         setLoading(false);
       })
       .catch(() => {
@@ -34,17 +34,17 @@ const LoanBasic = (props) => {
       });
   }, []);
   const initialValues =
-    addUserData.type === "edit"
+    loanDetails.type === "edit"
       ? {
-          loanAmount: getUserData.loanAmount,
-          loanTenure: getUserData.loanTenure,
-          name: getUserData.name,
-          mobile: getUserData.mobile,
-          email: getUserData.email,
-          dob: new Date(getUserData.dob),
-          state: Number(getUserData.state),
-          country: Number(getUserData.country),
-          city: Number(getUserData.city),
+          loanAmount: getLoanData.loanAmount,
+          loanTenure: getLoanData.loanTenure,
+          name: getLoanData.name,
+          mobile: getLoanData.mobile,
+          email: getLoanData.email,
+          dob: new Date(getLoanData.dob),
+          state: Number(getLoanData.state),
+          country: Number(getLoanData.country),
+          city: Number(getLoanData.city),
         }
       : {
           loanAmount: "",
@@ -98,6 +98,7 @@ const LoanBasic = (props) => {
     cityList(value.country, e);
   };
   const handelSubmit = (values) => {
+    props.next();
     console.log(values);
   };
   return (
@@ -193,7 +194,7 @@ const LoanBasic = (props) => {
               </div>
             </div>
             <div className="flex pt-4 justify-content-end gap-2 mb-3">
-              {addUserData.type === "edit" && (
+              {loanDetails.type === "edit" && (
                 <Button
                   type="button"
                   label={"Next"}
@@ -204,7 +205,7 @@ const LoanBasic = (props) => {
               )}
               <Button
                 type="submit"
-                label={addUserData.type === "add" ? "Submit & Next" : "Update"}
+                label={loanDetails.type === "add" ? "Submit & Next" : "Update"}
                 icon="pi pi-arrow-right"
                 iconPos="right"
               />

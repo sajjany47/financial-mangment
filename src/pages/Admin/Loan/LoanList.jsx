@@ -6,8 +6,11 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useState } from "react";
 import Loader from "../../../component/Loader";
+import { useDispatch } from "react-redux";
+import { setAddLoan } from "../../../store/reducer/AddLoanReducer";
 
 const LoanList = (props) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
@@ -22,6 +25,7 @@ const LoanList = (props) => {
             icon="pi pi-plus"
             onClick={() => {
               navigate("/application/add");
+              dispatch(setAddLoan({ type: "add" }));
             }}
           />
         )}
