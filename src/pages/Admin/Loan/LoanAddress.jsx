@@ -201,7 +201,7 @@ const LoanAddress = (props) => {
               <div className="flex flex-column ">
                 <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
                   <div className="grid p-3">
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Country"
                         component={DropdownField}
@@ -213,7 +213,7 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="State"
                         filter
@@ -229,7 +229,7 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="City"
                         component={DropdownField}
@@ -241,14 +241,14 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="House/Building/Block Number"
                         component={InputField}
                         name="permanentHouseOrBuildingNumber"
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Street/Road/Village Name"
                         component={InputField}
@@ -256,7 +256,7 @@ const LoanAddress = (props) => {
                       />
                     </div>
 
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Landmark"
                         component={InputField}
@@ -264,7 +264,7 @@ const LoanAddress = (props) => {
                       />
                     </div>
 
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Pincode"
                         component={InputField}
@@ -287,9 +287,12 @@ const LoanAddress = (props) => {
                         name="addressSame"
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Country"
+                        value={
+                          values.addressSame ? values.permanentCountry : ""
+                        }
                         component={DropdownField}
                         name="residenceCountry"
                         options={countryData}
@@ -302,13 +305,16 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="State"
                         filter
+                        value={values.addressSame ? values.permanentState : ""}
                         component={DropdownField}
                         name="residenceState"
-                        options={resisdenceStateData}
+                        options={
+                          values.addressSame ? stateData : resisdenceStateData
+                        }
                         onChange={(e) => {
                           handelResisdenceState(
                             setFieldValue,
@@ -318,43 +324,58 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="City"
+                        value={values.addressSame ? values.permanentCity : ""}
                         component={DropdownField}
                         name="residenceCity"
                         filter
-                        options={resisdenceCityData}
+                        options={
+                          values.addressSame ? cityData : resisdenceCityData
+                        }
                         onChange={(e) => {
                           setFieldValue("residenceCity", e.target.value);
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
+                        value={
+                          values.addressSame
+                            ? values.permanentHouseOrBuildingNumber
+                            : ""
+                        }
                         label="House/Building/Block Number"
                         component={InputField}
                         name="residenceHouseOrBuildingNumber"
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
+                        value={values.addressSame ? values.permanentStreet : ""}
                         label="Street/Road/Village Name"
                         component={InputField}
                         name="residenceStreet"
                       />
                     </div>
 
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
+                        value={
+                          values.addressSame ? values.permanentLandmark : ""
+                        }
                         label="Landmark"
                         component={InputField}
                         name="residenceLandmark"
                       />
                     </div>
 
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
+                        value={
+                          values.addressSame ? values.permanentPincode : ""
+                        }
                         label="Pincode"
                         component={InputField}
                         name="residencePincode"
@@ -369,7 +390,7 @@ const LoanAddress = (props) => {
               <div className="flex flex-column ">
                 <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
                   <div className="grid p-3">
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Country"
                         component={DropdownField}
@@ -381,7 +402,7 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="State"
                         filter
@@ -397,7 +418,7 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="City"
                         component={DropdownField}
@@ -409,14 +430,14 @@ const LoanAddress = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="House/Building/Block Number"
                         component={InputField}
                         name="shopOrBuildingNumber"
                       />
                     </div>
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Street/Road/Village Name"
                         component={InputField}
@@ -424,7 +445,7 @@ const LoanAddress = (props) => {
                       />
                     </div>
 
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Landmark"
                         component={InputField}
@@ -432,7 +453,7 @@ const LoanAddress = (props) => {
                       />
                     </div>
 
-                    <div className="col-12 md:col-3">
+                    <div className="col-12 md:col-4">
                       <Field
                         label="Pincode"
                         component={InputField}

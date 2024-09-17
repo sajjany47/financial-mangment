@@ -24,7 +24,7 @@ export const InputField = ({ field, form: { touched, errors }, ...props }) => {
         id={field.name}
         {...field}
         {...props}
-        value={field.value ? field.value : ""}
+        // value={field.value ? field.value : ""}
         placeholder={`Enter ${props.label}`}
         className={`w-full mb-1 ${props.customStyle}  ${
           Boolean(getIn(errors, field.name)) &&
