@@ -4,16 +4,31 @@ import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../../../component/Loader";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAddLoan } from "../../../store/reducer/AddLoanReducer";
+import { Dialog } from "primereact/dialog";
 
 const LoanList = (props) => {
   const dispatch = useDispatch();
+  const loanDetails = useSelector((state) => state.loan.addLoan);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
+  const [visible, setVisible] = useState(false);
+
+  const loanType = [
+    { name: "Personal Loan", icon: "pi-user", value: "personal_loan" },
+    { name: "Home Loan", icon: "pi-home", value: "home_loan" },
+    { name: "Gold Loan", icon: "pi-eject", value: "gold_loan" },
+    { name: "Business Loan", icon: "pi-briefcase", value: "business_loan" },
+  ];
+
+  useEffect(() => {
+    setLoading(false);
+    setList([]);
+  }, []);
 
   const header = () => {
     return (
@@ -24,8 +39,9 @@ const LoanList = (props) => {
             label="Add Application"
             icon="pi pi-plus"
             onClick={() => {
-              navigate("/application/add");
+              // navigate("/application/add");
               dispatch(setAddLoan({ type: "add" }));
+              setVisible(true);
             }}
           />
         )}
@@ -45,6 +61,13 @@ const LoanList = (props) => {
           }}
         />
       </>
+    );
+  };
+
+  const handelLoanNavigation = (item) => {
+    dispatch(setAddLoan({ ...loanDetails, loanType: item }));
+    navigate(
+      item.value === "personal_loan" ? "/application/personal-loan/add" : ""
     );
   };
 
@@ -70,6 +93,42 @@ const LoanList = (props) => {
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
       </div>
+
+      <Dialog
+        header={"Select Loan Type"}
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <div className="surface-0 text-center">
+          <div className="grid">
+            {loanType.map((item, index) => {
+              return (
+                <div
+                  className="col-12 md:col-3 mb-2 px-3"
+                  key={index}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    handelLoanNavigation(item);
+                  }}
+                >
+                  <span
+                    className="p-3 shadow-2 mb-3 inline-block"
+                    style={{ borderRadius: "10px" }}
+                  >
+                    <i className={`pi ${item.icon} text-4xl text-blue-500`}></i>
+                  </span>
+                  <div className="text-900 text-xl mb-3 font-medium">
+                    {item.name}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };

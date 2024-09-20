@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  addLoan: { type: "", loanId: "", data: {} },
+  addLoan: { type: "", loanType: {}, loanId: "", data: {} },
 };
 
 export const addLoanSlice = createSlice({
