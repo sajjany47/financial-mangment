@@ -234,7 +234,7 @@ const BasicDetails = (props) => {
         });
     }
   };
-  console.log(branch);
+
   return (
     <>
       {loading && <Loader />}{" "}

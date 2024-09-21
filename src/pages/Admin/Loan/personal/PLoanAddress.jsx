@@ -12,7 +12,31 @@ import {
   InputField,
 } from "../../../../component/FieldType";
 import { ResidenceTypes } from "../../../../shared/Config";
+import { applicationUpdate, getLoanDetails } from "../LoanService";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
 
+const addressValidationSchema = Yup.object().shape({
+  permanentHouseOrBuildingNumber: Yup.string().required(
+    "House or Building or Block number is required"
+  ),
+  permanentStreet: Yup.string().required("Street or Village name is required"),
+  permanentLandmark: Yup.string().required("Land mark is required"),
+  permanentPincode: Yup.string().required("Pincode is required"),
+  residenceType: Yup.string().required("Residence Type is required"),
+  permanentState: Yup.string().required("State is required"),
+  permanentCountry: Yup.string().required("Country is required"),
+  permanentCity: Yup.string().required("City is required"),
+  residenceHouseOrBuildingNumber: Yup.string().required(
+    "House or Building or Block number is required"
+  ),
+  residenceStreet: Yup.string().required("Street or Village name is required"),
+  residenceLandmark: Yup.string().required("Land mark is required"),
+  residencePincode: Yup.string().required("Pincode is required"),
+  residenceState: Yup.string().required("State is required"),
+  residenceCountry: Yup.string().required("Country is required"),
+  residenceCity: Yup.string().required("City is required"),
+});
 const PLoanAddress = (props) => {
   const loanDetails = useSelector((state) => state.loan.addLoan);
   const [loading, setLoading] = useState(false);
@@ -36,6 +60,22 @@ const PLoanAddress = (props) => {
       .catch(() => {
         setLoading(false);
       });
+    if (loanDetails.type === "edit") {
+      getLoanDetails(loanDetails.loanId)
+        .then((res) => {
+          setLoanData(res.data);
+          Promise.all([
+            stateList(Number(res.data.country)),
+            cityList(Number(res.data.country), Number(res.data.state)),
+          ]);
+
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initialValues =
@@ -149,8 +189,22 @@ const PLoanAddress = (props) => {
   };
 
   const handelSubmit = (values) => {
-    props.next();
-    console.log(values);
+    applicationUpdate({
+      ...values,
+      dataType: "address",
+      id: getLoanData._id,
+    })
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        props.next();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
   return (
     <>
@@ -158,6 +212,7 @@ const PLoanAddress = (props) => {
       <Formik
         onSubmit={handelSubmit}
         initialValues={initialValues}
+        validationSchema={addressValidationSchema}
         enableReinitialize
       >
         {({ handleSubmit, setFieldValue, values }) => (

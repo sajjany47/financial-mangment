@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { city, countryList, state } from "../../AddUser/AddUserService";
@@ -10,13 +10,38 @@ import {
   DropdownField,
   InputField,
 } from "../../../../component/FieldType";
+import {
+  applicationCreate,
+  applicationUpdate,
+  getLoanDetails,
+} from "../LoanService";
+import { branchList } from "../../Branch/BranchService";
+import Swal from "sweetalert2";
+import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
+import * as Yup from "yup";
 
+const basicValidationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  loanAmount: Yup.string().required("Loan amount is required"),
+  loanTenure: Yup.string().required("Loan tenure is required"),
+  mobile: Yup.string().required("Mobile number is required"),
+  email: Yup.string().required("Email is required"),
+  dob: Yup.date()
+    .required("Date of birth is required")
+    .max(new Date(Date.now() - 567648000000), "You must be at least 18 years"),
+  branch: Yup.string().required("Branch is required"),
+  state: Yup.string().required("State is required"),
+  country: Yup.string().required("Country is required"),
+  city: Yup.string().required("City is required"),
+});
 const PLoanBasic = (props) => {
+  const dispatch = useDispatch();
   const loanDetails = useSelector((state) => state.loan.addLoan);
   const [loading, setLoading] = useState(false);
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
+  const [branch, setBranch] = useState([]);
   const [getLoanData, setLoanData] = useState({});
 
   useEffect(() => {
@@ -32,7 +57,40 @@ const PLoanBasic = (props) => {
       .catch(() => {
         setLoading(false);
       });
+    getBranchList({});
+    if (loanDetails.type === "edit") {
+      getLoanDetails(loanDetails.loanId)
+        .then((res) => {
+          setLoanData(res.data);
+          Promise.all([
+            stateList(Number(res.data.country)),
+            cityList(Number(res.data.country), Number(res.data.state)),
+          ]);
+
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const getBranchList = (payload) => {
+    setLoading(true);
+    branchList(payload)
+      .then((res) => {
+        setBranch(
+          res.data.map((item) => ({
+            label: `${item.name} (${item.code})`,
+            value: item._id,
+          }))
+        );
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const initialValues =
     loanDetails.type === "edit"
       ? {
@@ -45,6 +103,7 @@ const PLoanBasic = (props) => {
           state: Number(getLoanData.state),
           country: Number(getLoanData.country),
           city: Number(getLoanData.city),
+          branch: getLoanData.branch,
         }
       : {
           loanAmount: "",
@@ -56,6 +115,7 @@ const PLoanBasic = (props) => {
           state: "",
           country: "",
           city: "",
+          branch: "",
         };
 
   const stateList = (country) => {
@@ -98,8 +158,47 @@ const PLoanBasic = (props) => {
     cityList(value.country, e);
   };
   const handelSubmit = (values) => {
-    props.next();
-    console.log(values);
+    setLoading(true);
+
+    // eslint-disable-next-line react/prop-types
+    if (loanDetails.type === "edit") {
+      applicationUpdate({
+        ...values,
+        dataType: "basic",
+        id: getLoanData._id,
+      })
+        .then((res) => {
+          setLoading(false);
+          Swal.fire({
+            title: res.message,
+            icon: "success",
+          });
+          props.next();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } else {
+      applicationCreate({ ...values, userImage: values.userImage.name })
+        .then((res) => {
+          dispatch(
+            setAddLoan({
+              ...loanDetails,
+              loanId: res.data._id,
+              data: res.data,
+            })
+          );
+          setLoading(false);
+          Swal.fire({
+            title: res.message,
+            icon: "success",
+          });
+          props.next();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
   return (
     <>
@@ -107,6 +206,7 @@ const PLoanBasic = (props) => {
       <Formik
         onSubmit={handelSubmit}
         initialValues={initialValues}
+        validationSchema={basicValidationSchema}
         enableReinitialize
       >
         {({ handleSubmit, setFieldValue, values }) => (
@@ -119,6 +219,7 @@ const PLoanBasic = (props) => {
                       label="Loan Amount"
                       component={InputField}
                       name="loanAmount"
+                      keyfilter="money"
                     />
                   </div>
                   <div className="col-12 md:col-3">
@@ -126,11 +227,17 @@ const PLoanBasic = (props) => {
                       label="Tenure (In months)"
                       component={InputField}
                       name="loanTenure"
+                      keyfilter="num"
                     />
                   </div>
 
                   <div className="col-12 md:col-3">
-                    <Field label="Name" component={InputField} name="name" />
+                    <Field
+                      label="Name"
+                      component={InputField}
+                      name="name"
+                      keyfilter="alpha"
+                    />
                   </div>
 
                   <div className="col-12 md:col-3">
@@ -138,10 +245,16 @@ const PLoanBasic = (props) => {
                       label="Mobile"
                       component={InputField}
                       name="mobile"
+                      keyfilter="num"
                     />
                   </div>
                   <div className="col-12 md:col-3">
-                    <Field label="Email" component={InputField} name="email" />
+                    <Field
+                      label="Email"
+                      component={InputField}
+                      name="email"
+                      keyfilter="email"
+                    />
                   </div>
                   <div className="col-12 md:col-3">
                     <Field
@@ -161,6 +274,7 @@ const PLoanBasic = (props) => {
                       onChange={(e) => {
                         setFieldValue("branch", "");
                         handelCountry(setFieldValue, e.target.value);
+                        getBranchList({ country: e.target.value });
                       }}
                     />
                   </div>
@@ -174,6 +288,10 @@ const PLoanBasic = (props) => {
                       onChange={(e) => {
                         setFieldValue("branch", "");
                         handelState(setFieldValue, e.target.value, values);
+                        getBranchList({
+                          country: Number(values.country),
+                          state: Number(e.target.value),
+                        });
                       }}
                     />
                   </div>
@@ -187,7 +305,21 @@ const PLoanBasic = (props) => {
                       onChange={(e) => {
                         setFieldValue("branch", "");
                         setFieldValue("city", e.target.value);
+                        getBranchList({
+                          country: Number(values.country),
+                          state: Number(values.state),
+                          city: Number(e.targte.value),
+                        });
                       }}
+                    />
+                  </div>
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Branch Name"
+                      component={DropdownField}
+                      name="branch"
+                      filter
+                      options={branch}
                     />
                   </div>
                 </div>
