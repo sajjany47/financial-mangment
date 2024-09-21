@@ -7,6 +7,7 @@ import Loader from "../../../../component/Loader";
 import { DropdownField, InputField } from "../../../../component/FieldType";
 import { Panel } from "primereact/panel";
 import { city, countryList, state } from "../../AddUser/AddUserService";
+import { EmployeeTypes } from "../../../../shared/Config";
 
 const PLoanWork = (props) => {
   const loanDetails = useSelector((state) => state.loan.addLoan);
@@ -140,7 +141,7 @@ const PLoanWork = (props) => {
                         label="Type"
                         component={DropdownField}
                         name="employmentType"
-                        options={[]}
+                        options={EmployeeTypes}
                       />
                     </div>
 

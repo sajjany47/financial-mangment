@@ -18,7 +18,6 @@ import Swal from "sweetalert2";
 import EditEmployee from "./pages/Admin/AddUser/EditEmployee";
 import Lead from "./pages/Admin/Loan/Lead";
 import NewApplication from "./pages/Admin/Loan/NewApplication";
-import AddApplication from "./pages/Admin/Loan/AddApplication";
 import PLoanAdd from "./pages/Admin/Loan/personal/PLoanAdd";
 
 function App() {
@@ -126,8 +125,7 @@ function App() {
             <Route path="/employee/add" element={<AddEmployee />} />
             <Route path="/employee/edit" element={<EditEmployee />} />
             <Route path="/lead/list" element={<Lead />} />
-            <Route path="/new-applications/list" element={<NewApplication />} />
-            <Route path="/application/add" element={<AddApplication />} />
+            <Route path="/applications/list" element={<NewApplication />} />
             <Route
               path="/application/personal-loan/add"
               element={<PLoanAdd />}

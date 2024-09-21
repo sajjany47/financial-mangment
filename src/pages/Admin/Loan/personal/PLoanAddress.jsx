@@ -11,6 +11,7 @@ import {
   DropdownField,
   InputField,
 } from "../../../../component/FieldType";
+import { ResidenceTypes } from "../../../../shared/Config";
 
 const PLoanAddress = (props) => {
   const loanDetails = useSelector((state) => state.loan.addLoan);
@@ -57,6 +58,7 @@ const PLoanAddress = (props) => {
           residenceCountry: Number(getLoanData.residenceCountry),
           residenceCity: Number(getLoanData.residenceCity),
           addressSame: getLoanData.addressSame,
+          residenceType: getLoanData.residenceType,
         }
       : {
           permanentHouseOrBuildingNumber: "",
@@ -73,7 +75,7 @@ const PLoanAddress = (props) => {
           residenceState: "",
           residenceCountry: "",
           residenceCity: "",
-
+          residenceType: "",
           addressSame: false,
         };
 
@@ -232,6 +234,14 @@ const PLoanAddress = (props) => {
                         label="Pincode"
                         component={InputField}
                         name="permanentPincode"
+                      />
+                    </div>
+                    <div className="col-12 md:col-4">
+                      <Field
+                        label="Residence Type"
+                        component={DropdownField}
+                        name="residenceType"
+                        options={ResidenceTypes}
                       />
                     </div>
                   </div>

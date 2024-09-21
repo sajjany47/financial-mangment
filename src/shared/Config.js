@@ -133,3 +133,60 @@ export const LoanTypes = [
   { value: "credit_card_loan", label: "Credit Card Loan" },
   { value: "agriculture_loan", label: "Agriculture Loan" },
 ];
+
+export const personalLoanDocuments = [
+  {
+    documentType: "ID Proof",
+    documentNameList: [
+      { label: "Passport", value: "passport" },
+      { label: "Driver’s License", value: "drivers_license" },
+      { label: "Aadhaar Card", value: "aadhaar_card" },
+      { label: "Voter ID", value: "voter_id" },
+      { label: "PAN Card", value: "pan_card" },
+    ],
+    description: "A valid government-issued ID",
+    required: true,
+  },
+  {
+    documentType: "Address Proof",
+    documentNameList: [
+      { label: "Utility Bill", value: "utility_bill" },
+      { label: "Rental Agreement", value: "rental_agreement" },
+      { label: "Bank Statement", value: "bank_statement" },
+      { label: "Aadhaar Card", value: "aadhaar_card" },
+    ],
+    description: "Proof of your current residential address",
+    required: true,
+  },
+  {
+    documentType: "Income Proof",
+    documentNameList: [
+      { label: "Salary Slips", value: "salary_slips" },
+      { label: "Bank Statements", value: "bank_statements" },
+      { label: "Income Tax Returns", value: "income_tax_returns" },
+    ],
+    description: "Documents showing your recent income",
+    required: true,
+  },
+  {
+    documentType: "Bank Statements",
+    documentNameList: [
+      { label: "Bank Account Statements", value: "bank_account_statements" },
+    ],
+    description: "Latest 6 months' bank account statements",
+    required: true,
+  },
+  {
+    documentType: "Employment Proof",
+    documentNameList: [
+      {
+        label: "Employment Verification Letter",
+        value: "employment_verification_letter",
+      },
+      { label: "Offer Letter", value: "offer_letter" },
+      { label: "Employment Contract", value: "employment_contract" },
+    ],
+    description: "Proof of your employment",
+    required: false,
+  },
+];

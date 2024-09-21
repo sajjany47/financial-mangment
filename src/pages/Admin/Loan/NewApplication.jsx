@@ -3,7 +3,7 @@ import LoanList from "./LoanList";
 const NewApplication = () => {
   return (
     <div>
-      <LoanList show={true} labelName={"New Application List"} />
+      <LoanList show={true} labelName={"Application List"} />
     </div>
   );
 };
