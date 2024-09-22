@@ -23,7 +23,7 @@ const PLoanAccount = (props) => {
     accountNumber: Yup.string().required("Account number is required"),
     bankBranchName: Yup.string().required("Branch name is required"),
     ifsc: Yup.string().required("IFSC code is required"),
-    accountName: Yup.string().required("IFSC code is required"),
+    accountName: Yup.string().required("Account name is required"),
   });
 
   useEffect(() => {
