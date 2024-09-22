@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAddLoan } from "../../../store/reducer/AddLoanReducer";
 import { Dialog } from "primereact/dialog";
 import { LoanTypes } from "../../../shared/Config";
+import { applicationList } from "./LoanService";
 
 const LoanList = (props) => {
   const dispatch = useDispatch();
@@ -20,10 +21,22 @@ const LoanList = (props) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setLoading(false);
-    setList([]);
+    getApplicationList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const getApplicationList = () => {
+    setLoading(true);
 
+    applicationList({ type: props.type })
+      .then((res) => {
+        setList(res.data);
+
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">

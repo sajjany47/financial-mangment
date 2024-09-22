@@ -20,9 +20,9 @@ const sidebarMenu = {
       submenu: [
         { title: "Lead", route: "/lead/list" },
         { title: "Application", route: "/applications/list" },
-        { title: "In Progress", route: "/loan-applications/in-progress" },
-        { title: "Approved", route: "/loan-applications/approved" },
-        { title: "Rejected", route: "/loan-applications/rejected" },
+        { title: "In Progress", route: "/applications/progress" },
+        { title: "Approved", route: "/applications/approved" },
+        { title: "Rejected", route: "/applications/rejected" },
       ],
     },
     {

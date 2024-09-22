@@ -19,6 +19,9 @@ import EditEmployee from "./pages/Admin/AddUser/EditEmployee";
 import Lead from "./pages/Admin/Loan/Lead";
 import NewApplication from "./pages/Admin/Loan/NewApplication";
 import PLoanAdd from "./pages/Admin/Loan/personal/PLoanAdd";
+import RejectedApplication from "./pages/Admin/Loan/RejectedApplication";
+import ProgressApplication from "./pages/Admin/Loan/ProgressApplication";
+import ApprovedApplication from "./pages/Admin/Loan/ApprovedApplication";
 
 function App() {
   let isRefreshing = false;
@@ -79,40 +82,6 @@ function App() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   // Add a request interceptor
-  //   const publicRequestInterceptor = Instance.interceptors.request.use(
-  //     function (config) {
-  //       // Do something before request is sent
-  //       return config;
-  //     },
-  //     function (error) {
-  //       Swal.fire({
-  //         title: error.response.data.message,
-  //         icon: "error",
-  //       });
-  //       return Promise.reject(error);
-  //     }
-  //   );
-
-  //   const publicResponseInterceptor = Instance.interceptors.response.use(
-  //     (response) => {
-  //       return response;
-  //     },
-  //     (error) => {
-  //       Swal.fire({
-  //         title: error.response.data.message,
-  //         icon: "error",
-  //       });
-  //       return Promise.reject(error);
-  //     }
-  //   );
-  //   return () => {
-  //     Instance.interceptors.response.eject(publicRequestInterceptor);
-  //     Instance.interceptors.response.eject(publicResponseInterceptor);
-  //   };
-  // }, []);
-
   return (
     <>
       <BrowserRouter>
@@ -126,6 +95,18 @@ function App() {
             <Route path="/employee/edit" element={<EditEmployee />} />
             <Route path="/lead/list" element={<Lead />} />
             <Route path="/applications/list" element={<NewApplication />} />
+            <Route
+              path="/applications/rejected"
+              element={<RejectedApplication />}
+            />
+            <Route
+              path="/applications/approved"
+              element={<ApprovedApplication />}
+            />
+            <Route
+              path="/applications/progress"
+              element={<ProgressApplication />}
+            />
             <Route
               path="/application/personal-loan/add"
               element={<PLoanAdd />}
