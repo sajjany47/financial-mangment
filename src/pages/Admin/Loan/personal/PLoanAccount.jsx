@@ -10,6 +10,7 @@ import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import Loader from "../../../../component/Loader";
 import { InputField } from "../../../../component/FieldType";
 import { findIFSC } from "../../AddUser/AddUserService";
+import { applicationUpdate, getLoanDetails } from "../LoanService";
 
 const PLoanAccount = (props) => {
   const navigate = useNavigate();
@@ -17,14 +18,28 @@ const PLoanAccount = (props) => {
   const loanDetails = useSelector((state) => state.loan.addLoan);
   const [loading, setLoading] = useState(false);
   const [getLoanData, setLoanData] = useState({});
-  const accountDetailSchema = Yup.object().shape({
+  const accountValidationSchema = Yup.object().shape({
     bankName: Yup.string().required("Bank name is required"),
     accountNumber: Yup.string().required("Account number is required"),
-    // .matches("/^d{9,18}$/", "Enter valid Account number"),
     bankBranchName: Yup.string().required("Branch name is required"),
     ifsc: Yup.string().required("IFSC code is required"),
     accountName: Yup.string().required("IFSC code is required"),
   });
+
+  useEffect(() => {
+    if (loanDetails.type === "edit") {
+      setLoading(true);
+      getLoanDetails(loanDetails.loanId)
+        .then((res) => {
+          setLoanData(res.data);
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const initialValues =
     loanDetails.type === "add"
       ? {
@@ -46,47 +61,26 @@ const PLoanAccount = (props) => {
           accountName: getLoanData.accountName ? getLoanData.accountName : "",
         };
 
-  useEffect(() => {
-    getUserDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getUserDetails = () => {
-    // setLoading(true);
-    // getDetails(addUserData.id)
-    //   .then((res) => {
-    //     setEmployeeData(res.data);
-    //     setLoading(false);
-    //   })
-    //   .catch(() => {
-    //     setLoading(false);
-    //   });
-  };
   const handelSubmit = (values) => {
-    // setLoading(true);
-    const reqData = {
-      accountNumber: values.accountNumber,
-      bankName: values.bankName,
-      bankBranchName: values.bankBranchName,
-      ifsc: values.ifsc,
+    setLoading(true);
+
+    applicationUpdate({
+      ...values,
+      dataType: "account",
       id: getLoanData._id,
-    };
-    console.log(reqData);
-    // userUpdate(reqData)
-    //   .then((res) => {
-    //     setLoading(false);
-    //     Swal.fire({
-    //       title: res.message,
-    //       icon: "success",
-    //     });
-    //     dispatch(
-    //       setAddLoan({ type: "", loanType: {}, loanId: "", data: {} })
-    //     );
-    //     navigate("/applications/list");
-    //   })
-    //   .catch(() => {
-    //     setLoading(false);
-    //   });
+    })
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        dispatch(setAddLoan({ type: "", loanType: {}, loanId: "", data: {} }));
+        navigate("/applications/list");
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const handelIfsc = (e, setFieldValue) => {
@@ -112,7 +106,7 @@ const PLoanAccount = (props) => {
       <Formik
         onSubmit={handelSubmit}
         initialValues={initialValues}
-        validationSchema={accountDetailSchema}
+        validationSchema={accountValidationSchema}
         enableReinitialize
       >
         {({ handleSubmit, setFieldValue }) => (

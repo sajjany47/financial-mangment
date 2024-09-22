@@ -8,6 +8,28 @@ import { DropdownField, InputField } from "../../../../component/FieldType";
 import { Panel } from "primereact/panel";
 import { city, countryList, state } from "../../AddUser/AddUserService";
 import { EmployeeTypes } from "../../../../shared/Config";
+import { applicationUpdate, getLoanDetails } from "../LoanService";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
+
+const workValidationSchema = Yup.object().shape({
+  companyOrBussinessName: Yup.string().required(
+    "Company or Business is required"
+  ),
+  jobTitle: Yup.string().required("Job title is required"),
+  employmentType: Yup.string().required("Employment type is required"),
+  yearsOfExperience: Yup.string().required("Year of experience is required"),
+  monthlyIncome: Yup.string().required("Monthly income is required"),
+  shopOrBuildingNumber: Yup.string().required(
+    "Shop or Building or Block number is required"
+  ),
+  workStreet: Yup.string().required("Street or Village name is required"),
+  workLandmark: Yup.string().required("Land mark is required"),
+  workPincode: Yup.string().required("Pincode is required"),
+  workState: Yup.string().required("State is required"),
+  workCountry: Yup.string().required("Country is required"),
+  workCity: Yup.string().required("City is required"),
+});
 
 const PLoanWork = (props) => {
   const loanDetails = useSelector((state) => state.loan.addLoan);
@@ -30,6 +52,23 @@ const PLoanWork = (props) => {
       .catch(() => {
         setLoading(false);
       });
+    if (loanDetails.type === "edit") {
+      setLoading(true);
+      getLoanDetails(loanDetails.loanId)
+        .then((res) => {
+          setLoanData(res.data);
+          Promise.all([
+            stateList(Number(res.data.country)),
+            cityList(Number(res.data.country), Number(res.data.state)),
+          ]);
+
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const stateList = (country) => {
@@ -104,8 +143,22 @@ const PLoanWork = (props) => {
   };
 
   const handelSubmit = (values) => {
-    props.next();
-    console.log(values);
+    applicationUpdate({
+      ...values,
+      dataType: "work",
+      id: getLoanData._id,
+    })
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        props.next();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
   return (
     <>
@@ -113,6 +166,7 @@ const PLoanWork = (props) => {
       <Formik
         onSubmit={handelSubmit}
         initialValues={initialValues}
+        validationSchema={workValidationSchema}
         enableReinitialize
       >
         {({ handleSubmit, setFieldValue, values }) => (
@@ -147,9 +201,10 @@ const PLoanWork = (props) => {
 
                     <div className="col-12 md:col-4">
                       <Field
-                        label="Year of Experience"
+                        label="Year of Experience (In months)"
                         component={InputField}
                         name="yearsOfExperience"
+                        keyfilter="num"
                       />
                     </div>
                     <div className="col-12 md:col-4">
@@ -157,6 +212,7 @@ const PLoanWork = (props) => {
                         label="Monthly Income"
                         component={InputField}
                         name="monthlyIncome"
+                        keyfilter="money"
                       />
                     </div>
                   </div>
@@ -236,6 +292,7 @@ const PLoanWork = (props) => {
                         label="Pincode"
                         component={InputField}
                         name="workPincode"
+                        keyfilter="num"
                       />
                     </div>
                   </div>

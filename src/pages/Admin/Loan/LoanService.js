@@ -22,3 +22,12 @@ export const applicationUpdate = async (payload) => {
   );
   return response.data;
 };
+
+export const applicationUpdateWithImage = async (payload) => {
+  const response = await Instance.post(
+    `/loan/update`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};

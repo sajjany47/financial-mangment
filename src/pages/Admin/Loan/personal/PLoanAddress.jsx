@@ -61,6 +61,7 @@ const PLoanAddress = (props) => {
         setLoading(false);
       });
     if (loanDetails.type === "edit") {
+      setLoading(true);
       getLoanDetails(loanDetails.loanId)
         .then((res) => {
           setLoanData(res.data);
@@ -289,6 +290,7 @@ const PLoanAddress = (props) => {
                         label="Pincode"
                         component={InputField}
                         name="permanentPincode"
+                        keyfilter="num"
                       />
                     </div>
                     <div className="col-12 md:col-4">
@@ -407,6 +409,7 @@ const PLoanAddress = (props) => {
                         label="Pincode"
                         component={InputField}
                         name="residencePincode"
+                        keyfilter="num"
                       />
                     </div>
                   </div>
