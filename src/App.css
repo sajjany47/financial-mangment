@@ -64,7 +64,7 @@ input[type="file"] {
   right: 0;
   z-index: 1;
 }
-.p-menubar-button{
+.p-menubar-button {
   display: none;
 }
 .layout-container {
@@ -83,7 +83,6 @@ input[type="file"] {
   position: fixed;
   transition: width 0.3s; /* Smooth transition for collapse */
   z-index: 1000; /* Ensure it is above the main content */
-
 }
 
 .topbar {

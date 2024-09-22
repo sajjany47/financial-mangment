@@ -154,6 +154,12 @@ const PLoanDocument = (props) => {
         setLoading(false);
       });
   };
+
+  const onTemplateSelect = (e) => {
+    let files = e.files;
+
+    console.log(files);
+  };
   return (
     <>
       {loading && <Loader />}
@@ -210,6 +216,7 @@ const PLoanDocument = (props) => {
                               / /g,
                               "_"
                             )}_documentImage`}
+                            onSelect={onTemplateSelect}
                           />
                         </div>
 
