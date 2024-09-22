@@ -9,6 +9,7 @@ import Loader from "../../../component/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddLoan } from "../../../store/reducer/AddLoanReducer";
 import { Dialog } from "primereact/dialog";
+import { LoanTypes } from "../../../shared/Config";
 
 const LoanList = (props) => {
   const dispatch = useDispatch();
@@ -17,13 +18,6 @@ const LoanList = (props) => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
-
-  const loanType = [
-    { name: "Personal Loan", icon: "pi-user", value: "personal_loan" },
-    { name: "Home Loan", icon: "pi-home", value: "home_loan" },
-    { name: "Gold Loan", icon: "pi-eject", value: "gold_loan" },
-    { name: "Business Loan", icon: "pi-briefcase", value: "business_loan" },
-  ];
 
   useEffect(() => {
     setLoading(false);
@@ -83,13 +77,13 @@ const LoanList = (props) => {
           emptyMessage="No data found."
           filterDisplay="row"
         >
-          <Column field="employeeId" header="Employe Id" />
+          <Column field="applicationNumber" header="Application Number" />
           <Column field="name" header="Name" />
-          <Column field="username" header="Username" />
-          <Column field="position" header="Position" />
-          <Column field="isActive" header="Status" />
-
-          <Column field="branchCode" header="Branch Code" />
+          <Column field="mobile" header="Mobile" />
+          <Column field="loanType" header="Type" />
+          <Column field="loanAmount" header="Amount" />
+          <Column field="loanStatus" header="Status" />
+          <Column field="branch" header="Branch" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
       </div>
@@ -104,7 +98,7 @@ const LoanList = (props) => {
       >
         <div className="surface-0 text-center">
           <div className="grid">
-            {loanType.map((item, index) => {
+            {LoanTypes.map((item, index) => {
               return (
                 <div
                   className="col-12 md:col-3 mb-2 px-3"
@@ -121,7 +115,7 @@ const LoanList = (props) => {
                     <i className={`pi ${item.icon} text-4xl text-blue-500`}></i>
                   </span>
                   <div className="text-900 text-xl mb-3 font-medium">
-                    {item.name}
+                    {item.label}
                   </div>
                 </div>
               );

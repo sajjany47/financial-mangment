@@ -22,10 +22,27 @@ export const applicationUpdate = async (payload) => {
   );
   return response.data;
 };
+export const applicationStatusChange = async (payload) => {
+  const response = await Instance.post(
+    `/loan/status-change`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
 
 export const applicationUpdateWithImage = async (payload) => {
   const response = await Instance.post(
     `/loan/update`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
+export const applicationList = async (payload) => {
+  const response = await Instance.post(
+    `/loan/list`,
     payload,
     headerWithToken()
   );

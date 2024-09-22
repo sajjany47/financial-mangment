@@ -209,7 +209,7 @@ const PLoanWork = (props) => {
                     </div>
                     <div className="col-12 md:col-4">
                       <Field
-                        label="Monthly Income"
+                        label="Net Monthly Income"
                         component={InputField}
                         name="monthlyIncome"
                         keyfilter="money"

@@ -122,16 +122,20 @@ export const ResidenceTypes = [
 ];
 
 export const LoanTypes = [
-  { value: "personal_loan", label: "Personal Loan" },
-  { value: "home_loan", label: "Home Loan" },
-  { value: "car_loan", label: "Car Loan" },
-  { value: "education_loan", label: "Education Loan" },
-  { value: "business_loan", label: "Business Loan" },
-  { value: "payday_loan", label: "Payday Loan" },
-  { value: "gold_loan", label: "Gold Loan" },
-  { value: "mortgage_loan", label: "Mortgage Loan" },
-  { value: "credit_card_loan", label: "Credit Card Loan" },
-  { value: "agriculture_loan", label: "Agriculture Loan" },
+  { value: "personal_loan", label: "Personal Loan", icon: "pi-user" },
+  { value: "home_loan", label: "Home Loan", icon: "pi-home" },
+  { value: "car_loan", label: "Car Loan", icon: "pi-car" },
+  { value: "education_loan", label: "Education Loan", icon: "pi-book" },
+  { value: "business_loan", label: "Business Loan", icon: "pi-briefcase" },
+  { value: "payday_loan", label: "Payday Loan", icon: "pi-dollar" },
+  { value: "gold_loan", label: "Gold Loan", icon: "pi-eject" },
+  { value: "mortgage_loan", label: "Mortgage Loan", icon: "pi-building" },
+  {
+    value: "credit_card_loan",
+    label: "Credit Card Loan",
+    icon: "pi-credit-card",
+  },
+  { value: "agriculture_loan", label: "Agriculture Loan", icon: "pi-globe" },
 ];
 
 export const personalLoanDocuments = [

@@ -89,11 +89,11 @@ const Branch = () => {
   }, []);
 
   useEffect(() => {
-    getEmployeeList();
+    getBranchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchKey]);
 
-  const getEmployeeList = () => {
+  const getBranchList = () => {
     const filters = searchKey?.filterOptions;
     setLoading(true);
     let reqData = {
@@ -249,7 +249,7 @@ const Branch = () => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
           setVisible(false);
-          getEmployeeList();
+          getBranchList();
         })
         .catch(() => {
           setLoading(false);
@@ -539,7 +539,7 @@ const Branch = () => {
         style={{ width: "50vw" }}
         onHide={() => {
           setVisible(false);
-          getEmployeeList();
+          getBranchList();
         }}
       >
         <Formik

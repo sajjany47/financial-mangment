@@ -19,6 +19,7 @@ import { branchList } from "../../Branch/BranchService";
 import Swal from "sweetalert2";
 import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import * as Yup from "yup";
+import { LoanTypes } from "../../../../shared/Config";
 
 const basicValidationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -33,6 +34,7 @@ const basicValidationSchema = Yup.object().shape({
   state: Yup.string().required("State is required"),
   country: Yup.string().required("Country is required"),
   city: Yup.string().required("City is required"),
+  loanType: Yup.string().required("Loan type is required"),
 });
 const PLoanBasic = (props) => {
   const dispatch = useDispatch();
@@ -104,6 +106,7 @@ const PLoanBasic = (props) => {
           country: Number(getLoanData.country),
           city: Number(getLoanData.city),
           branch: getLoanData.branch,
+          loanType: getLoanData.loanType,
         }
       : {
           loanAmount: "",
@@ -116,6 +119,7 @@ const PLoanBasic = (props) => {
           country: "",
           city: "",
           branch: "",
+          loanType: loanDetails.loanType.value,
         };
 
   const stateList = (country) => {
@@ -214,6 +218,15 @@ const PLoanBasic = (props) => {
             <div className="flex flex-column ">
               <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
                 <div className="grid p-3">
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Loan Type"
+                      component={DropdownField}
+                      name="loanType"
+                      options={LoanTypes}
+                      disabled
+                    />
+                  </div>
                   <div className="col-12 md:col-3">
                     <Field
                       label="Loan Amount"
