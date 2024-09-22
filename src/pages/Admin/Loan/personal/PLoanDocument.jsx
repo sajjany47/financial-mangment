@@ -14,7 +14,7 @@ import {
 import { applicationUpdateWithImage, getLoanDetails } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
-import { Image } from "primereact/image";
+// import { Image } from "primereact/image";
 
 const documentValidationSchema = Yup.object().shape({
   ID_Proof_documentType: Yup.string().required(
@@ -213,14 +213,14 @@ const PLoanDocument = (props) => {
                           />
                         </div>
 
-                        <div className="col-12 md:col-4 mt-4">
+                        {/* <div className="col-12 md:col-4 mt-4">
                           <Image
                             src="https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg"
                             alt="Image"
                             width="250"
                             height="170"
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
