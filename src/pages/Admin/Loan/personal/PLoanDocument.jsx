@@ -207,7 +207,7 @@ const PLoanDocument = (props) => {
                               />
                             </div>
                           )}
-                        <div className="col-12 md:col-8">
+                        <div className="col-12 md:col-12">
                           <Field
                             label="Document (Image or pdf)"
                             component={UploadField}
