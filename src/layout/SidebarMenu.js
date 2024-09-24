@@ -67,9 +67,9 @@ const sidebarMenu = {
       icon: "pi pi-cog",
       submenu: [
         { title: "General Settings", route: "/settings/general" },
-        { title: "User Management", route: "/settings/users" },
-        { title: "Roles & Permissions", route: "/settings/roles" },
-        { title: "Security Settings", route: "/settings/security" },
+        { title: "Documents", route: "/settings/document" },
+        { title: "Document Type", route: "/settings/document-type" },
+        { title: "Loan Type", route: "/settings/loan-type" },
       ],
     },
     {

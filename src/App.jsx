@@ -22,6 +22,9 @@ import PLoanAdd from "./pages/Admin/Loan/personal/PLoanAdd";
 import RejectedApplication from "./pages/Admin/Loan/RejectedApplication";
 import ProgressApplication from "./pages/Admin/Loan/ProgressApplication";
 import ApprovedApplication from "./pages/Admin/Loan/ApprovedApplication";
+import Document from "./pages/Admin/setting/Document";
+import DocumentType from "./pages/Admin/setting/DocumentType";
+import LoanType from "./pages/Admin/setting/LoanType";
 
 function App() {
   let isRefreshing = false;
@@ -111,6 +114,9 @@ function App() {
               path="/application/personal-loan/add"
               element={<PLoanAdd />}
             />
+            <Route path="/settings/document" element={<Document />} />
+            <Route path="/settings/document-type" element={<DocumentType />} />
+            <Route path="/settings/loan-type" element={<LoanType />} />
           </Route>
         </Routes>
       </BrowserRouter>
