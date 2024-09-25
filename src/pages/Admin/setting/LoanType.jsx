@@ -52,7 +52,7 @@ const LoanType = () => {
           res.data.map((item) => ({
             ...item,
             label: item.name,
-            value: item._id,
+            value: item.id,
           }))
         );
       })
@@ -178,7 +178,7 @@ const LoanType = () => {
           emptyMessage="No data found."
           filterDisplay="row"
         >
-          <Column field="name" header="name" />
+          <Column field="name" header="Name" />
           <Column field="country" header="Country" body={countryTemplate} />
           <Column field="isActive" header="Status" body={statusTemplate} />
           <Column field="createdBy" header="CreatedBy" />

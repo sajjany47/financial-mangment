@@ -26,7 +26,7 @@ import {
 const documentSchema = Yup.object().shape({
   documentName: Yup.string().required("Name is required"),
   documentType: Yup.string().required("Document Type is required"),
-  optional: Yup.string().required("Optional is required"),
+  // optional: Yup.string().required("Optional is required"),
   loanType: Yup.array().min(1, "Loan type is required"),
   country: Yup.array().min(1, "Country is required"),
 });
@@ -69,7 +69,7 @@ const Document = () => {
           res.data.map((item) => ({
             ...item,
             label: item.name,
-            value: item._id,
+            value: item.id,
           }))
         );
       })
