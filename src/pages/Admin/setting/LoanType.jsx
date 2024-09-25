@@ -19,6 +19,7 @@ import { countryList } from "../AddUser/AddUserService";
 const loanTypeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   icon: Yup.string().required("Icon is required"),
+  path: Yup.string().required("Path is required"),
   country: Yup.array().min(1, "Country is required"),
 });
 
@@ -36,12 +37,14 @@ const LoanType = () => {
           name: "",
           country: [],
           icon: "",
+          path: "",
         }
       : {
           name: selectData.name,
           country: selectData.country,
           isActive: selectData.isActive,
           icon: selectData.icon,
+          path: selectData.path,
         };
 
   useEffect(() => {
@@ -181,6 +184,7 @@ const LoanType = () => {
           <Column field="name" header="Name" />
           <Column field="country" header="Country" body={countryTemplate} />
           <Column field="isActive" header="Status" body={statusTemplate} />
+          <Column field="path" header="Path" />
           <Column field="createdBy" header="CreatedBy" />
           <Column field="updatedBy" header="UpdatedBy" />
           <Column header="Action" body={actionBodyTemplate} />
@@ -210,6 +214,9 @@ const LoanType = () => {
                 </div>
                 <div className="col-12 md:col-4">
                   <Field label="Icon" component={InputField} name="icon" />
+                </div>
+                <div className="col-12 md:col-4">
+                  <Field label="Path" component={InputField} name="path" />
                 </div>
                 <div className="col-12 md:col-12">
                   <Field
