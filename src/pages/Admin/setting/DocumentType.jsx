@@ -145,7 +145,7 @@ const DocumentType = () => {
           emptyMessage="No data found."
           filterDisplay="row"
         >
-          <Column field="name" header="name" />
+          <Column field="name" header="Name" />
           <Column field="description" header="Description" />
           <Column field="isActive" header="Status" body={statusTemplate} />
           <Column field="createdBy" header="CreatedBy" />
