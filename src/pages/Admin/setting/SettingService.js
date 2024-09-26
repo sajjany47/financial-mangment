@@ -18,10 +18,10 @@ export const documentTypeUpdate = async (payload) => {
   return response.data;
 };
 
-export const documentTypeList = async () => {
-  const response = await Instance.get(
+export const documentTypeList = async (payload) => {
+  const response = await Instance.post(
     `/document/document-type/list`,
-
+    payload,
     headerWithToken()
   );
   return response.data;
@@ -45,10 +45,10 @@ export const documentUpdate = async (payload) => {
   return response.data;
 };
 
-export const documentList = async () => {
-  const response = await Instance.get(
+export const documentList = async (payload) => {
+  const response = await Instance.post(
     `/document/list`,
-
+    payload,
     headerWithToken()
   );
   return response.data;
@@ -72,10 +72,10 @@ export const loanTypeUpdate = async (payload) => {
   return response.data;
 };
 
-export const loanTypeList = async () => {
-  const response = await Instance.get(
+export const loanTypeList = async (payload) => {
+  const response = await Instance.post(
     `/document/loan-type/list`,
-
+    payload,
     headerWithToken()
   );
   return response.data;
@@ -93,15 +93,6 @@ export const loanTypeGetList = async (payload) => {
 export const documentGetList = async (payload) => {
   const response = await Instance.post(
     `/document/dropdown-list`,
-    payload,
-    headerWithToken()
-  );
-  return response.data;
-};
-
-export const documentTypeGetList = async (payload) => {
-  const response = await Instance.get(
-    `/document/document-type/dropdown-list`,
     payload,
     headerWithToken()
   );

@@ -92,7 +92,7 @@ const Document = () => {
 
   const docmentTypeList = () => {
     setLoading(true);
-    documentTypeList()
+    documentTypeList({ isActive: true })
       .then((res) => {
         setDocumntsList(
           res.data.map((item) => ({ label: item.name, value: item._id }))
@@ -106,7 +106,7 @@ const Document = () => {
 
   const loanList = () => {
     setLoading(true);
-    loanTypeList()
+    loanTypeList({ isActive: true })
       .then((res) => {
         setLoanList(
           res.data.map((item) => ({ label: item.name, value: item._id }))
