@@ -6,9 +6,11 @@ import PLoanAddress from "./PLoanAddress";
 import PLoanWork from "./PLoanWork";
 import PLoanDocument from "./PLoanDocument";
 import PLoanAccount from "./PLoanAccount";
+import { useLocation } from "react-router-dom";
 
 const PLoanAdd = () => {
   const stepperRef = useRef(null);
+  const data = useLocation().state;
 
   const next = () => {
     return stepperRef.current.nextCallback();
@@ -23,7 +25,7 @@ const PLoanAdd = () => {
       <div className="card flex justify-content-center">
         <Stepper ref={stepperRef} style={{ flexBasis: "75rem" }}>
           <StepperPanel header="Basic">
-            <PLoanBasic next={next} />
+            <PLoanBasic next={next} loanTypeOption={data.loanTypeOption} />
           </StepperPanel>
           <StepperPanel header="Communication">
             <PLoanAddress next={next} back={back} />

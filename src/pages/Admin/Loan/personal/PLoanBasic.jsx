@@ -18,7 +18,7 @@ import { branchList } from "../../Branch/BranchService";
 import Swal from "sweetalert2";
 import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import * as Yup from "yup";
-import { LoanTypes, Position } from "../../../../shared/Config";
+import { Position } from "../../../../shared/Config";
 
 const basicValidationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -116,7 +116,7 @@ const PLoanBasic = (props) => {
             userDetails.position === Position.ADMIN
               ? ""
               : userDetails.branch,
-          loanType: loanDetails.loanType.value,
+          loanType: loanDetails.loanType._id,
         };
 
   const handelSubmit = (values) => {
@@ -181,8 +181,8 @@ const PLoanBasic = (props) => {
                       label="Loan Type"
                       component={DropdownField}
                       name="loanType"
-                      options={LoanTypes}
-                      disabled
+                      options={props.loanTypeOption}
+                      // disabled
                     />
                   </div>
                   <div className="col-12 md:col-3">

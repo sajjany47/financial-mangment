@@ -97,7 +97,15 @@ const LoanList = (props) => {
         loanType: { ...item, country: selectCountry },
       })
     );
-    navigate(item.path);
+    navigate(item.path, {
+      state: {
+        loanTypeOption: loanTypeOption.map((elm) => ({
+          ...elm,
+          label: elm.name,
+          value: elm._id,
+        })),
+      },
+    });
   };
 
   const handelSubmit = () => {
