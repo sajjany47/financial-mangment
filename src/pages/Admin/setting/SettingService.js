@@ -80,3 +80,30 @@ export const loanTypeList = async () => {
   );
   return response.data;
 };
+
+export const loanTypeGetList = async (payload) => {
+  const response = await Instance.post(
+    `/document/loan-type/dropdown-list`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
+export const documentGetList = async (payload) => {
+  const response = await Instance.post(
+    `/document/dropdown-list`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
+export const documentTypeGetList = async (payload) => {
+  const response = await Instance.get(
+    `/document/document-type/dropdown-list`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
