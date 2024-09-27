@@ -5,7 +5,6 @@ import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { Panel } from "primereact/panel";
 import Loader from "../../../../component/Loader";
-import { personalLoanDocuments } from "../../../../shared/Config";
 import {
   DropdownField,
   InputField,
@@ -14,6 +13,7 @@ import {
 import { applicationUpdateWithImage, getLoanDetails } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import { documentGetList } from "../../setting/SettingService";
 // import { Image } from "primereact/image";
 
 const documentValidationSchema = Yup.object().shape({
@@ -58,8 +58,21 @@ const PLoanDocument = (props) => {
   const loanDetails = useSelector((state) => state.loan.addLoan);
   const [loading, setLoading] = useState(false);
   const [getLoanData, setLoanData] = useState({});
+  const [personalLoanDocuments, setPersonalLoanDocuments] = useState([]);
 
   useEffect(() => {
+    setLoading(false);
+    documentGetList({
+      country: loanDetails.loanType.country,
+      loanTypeId: loanDetails.loanType._id,
+    })
+      .then((res) => {
+        setPersonalLoanDocuments(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
     if (loanDetails.type === "edit") {
       setLoading(true);
       getLoanDetails(loanDetails.loanId)
@@ -189,7 +202,11 @@ const PLoanDocument = (props) => {
                               / /g,
                               "_"
                             )}_documentType`}
-                            options={item.documentNameList}
+                            options={item.document.map((item) => ({
+                              ...item,
+                              label: item.name,
+                              value: item.value,
+                            }))}
                           />
                         </div>
 

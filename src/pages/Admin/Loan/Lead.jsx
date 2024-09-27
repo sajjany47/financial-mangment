@@ -11,7 +11,6 @@ import {
   InputField,
   TextAreaInputField,
 } from "../../../component/FieldType";
-import { LoanTypes } from "../../../shared/Config";
 import { city, countryList, state } from "../AddUser/AddUserService";
 import { branchList } from "../Branch/BranchService";
 import {
@@ -21,6 +20,7 @@ import {
 } from "./LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import { loanTypeGetList } from "../setting/SettingService";
 
 const leadSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -51,6 +51,7 @@ const Lead = () => {
   const [branch, setBranch] = useState([]);
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
+  const [loanTypeOption, setLoanTypeOption] = useState([]);
 
   const initialValues =
     actionType === "add"
@@ -102,7 +103,23 @@ const Lead = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const getLoanTypeList = (countrId) => {
+    loanTypeGetList({ country: countrId })
+      .then((res) => {
+        setLoanTypeOption(
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item._id,
+          }))
+        );
 
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const getLeadList = () => {
     setLoading(true);
 
@@ -314,9 +331,10 @@ const Lead = () => {
                         name="country"
                         options={countryData}
                         filter
-                        onChange={(e) =>
-                          handelSate(setFieldValue, e.target.value)
-                        }
+                        onChange={(e) => {
+                          handelSate(setFieldValue, e.target.value);
+                          getLoanTypeList(e.target.value);
+                        }}
                       />
                     </div>
                     <div className="col-12 md:col-4">
@@ -352,7 +370,7 @@ const Lead = () => {
                         label="Loan Type"
                         component={DropdownField}
                         name="loanType"
-                        options={LoanTypes}
+                        options={loanTypeOption}
                       />
                     </div>
                     <div className="col-12 md:col-4">
