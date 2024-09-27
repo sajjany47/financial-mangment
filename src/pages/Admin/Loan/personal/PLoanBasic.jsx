@@ -182,7 +182,7 @@ const PLoanBasic = (props) => {
                       component={DropdownField}
                       name="loanType"
                       options={props.loanTypeOption}
-                      // disabled
+                      disabled
                     />
                   </div>
                   <div className="col-12 md:col-3">
