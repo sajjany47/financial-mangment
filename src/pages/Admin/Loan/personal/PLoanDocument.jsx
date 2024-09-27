@@ -90,64 +90,64 @@ const PLoanDocument = (props) => {
   const initialValues =
     loanDetails.type === "edit"
       ? {
-          ID_Proof_documentType: getLoanData.IDProof.documentType,
-          ID_Proof_documentNumber: getLoanData.IDProof.documentNumber,
-          ID_Proof_documentImage: getLoanData.IDProof.documentImage,
+          id_proof_documentType: getLoanData.IDProof.documentType,
+          id_proof_documentNumber: getLoanData.IDProof.documentNumber,
+          id_proof_documentImage: getLoanData.IDProof.documentImage,
 
-          Address_Proof_documentType: getLoanData.addressProof.documentType,
-          Address_Proof_documentNumber: getLoanData.addressProof.documentNumber,
-          Address_Proof_documentImage: getLoanData.addressProof.documentImage,
+          address_proof_documentType: getLoanData.addressProof.documentType,
+          address_proof_documentNumber: getLoanData.addressProof.documentNumber,
+          address_proof_documentImage: getLoanData.addressProof.documentImage,
 
-          Income_Proof_documentType: getLoanData.incomeProof.documentType,
-          Income_Proof_documentImage: getLoanData.incomeProof.documentImage,
+          income_proof_documentType: getLoanData.incomeProof.documentType,
+          income_proof_documentImage: getLoanData.incomeProof.documentImage,
 
-          Bank_Statements_documentType: getLoanData.bankStatement.documentType,
-          Bank_Statements_documentImage:
+          bank_statements_documentType: getLoanData.bankStatement.documentType,
+          bank_statements_documentImage:
             getLoanData.bankStatement.documentImage,
 
-          Employment_Proof_documentType:
+          employment_proof_documentType:
             getLoanData.employmentProof.documentType,
-          Employment_Proof_documentImage:
+          employment_proof_documentImage:
             getLoanData.employmentProof.documentImage,
         }
       : {
-          ID_Proof_documentType: "",
-          ID_Proof_documentNumber: "",
-          ID_Proof_documentImage: "",
-          Address_Proof_documentType: "",
-          Address_Proof_documentNumber: "",
-          Address_Proof_documentImage: "",
-          Income_Proof_documentType: "",
-          Income_Proof_documentImage: "",
-          Bank_Statements_documentType: "",
-          Bank_Statements_documentImage: "",
-          Employment_Proof_documentType: "",
-          Employment_Proof_documentImage: "",
+          id_proof_documentType: "",
+          id_proof_documentNumber: "",
+          id_proof_documentImage: "",
+          address_proof_documentType: "",
+          address_proof_documentNumber: "",
+          address_proof_documentImage: "",
+          income_proof_documentType: "",
+          income_proof_documentImage: "",
+          bank_statements_documentType: "",
+          bank_statements_documentImage: "",
+          employment_proof_documentType: "",
+          employment_proof_documentImage: "",
         };
 
   const handelSubmit = (values) => {
-    let reqData = {
+    const reqData = {
       IDProof: {
-        documentType: values.ID_Proof_documentType,
-        documentNumber: values.ID_Proof_documentNumber,
-        documentImage: values.Address_Proof_documentImage,
+        documentType: values.id_proof_documentType,
+        documentNumber: values.id_proof_documentNumber,
+        documentImage: values.id_proof_documentImage,
       },
       addressProof: {
-        documentType: values.Address_Proof_documentType,
-        documentNumber: values.Address_Proof_documentNumber,
-        documentImage: values.ID_Proof_documentImage,
+        documentType: values.address_proof_documentType,
+        documentNumber: values.address_proof_documentNumber,
+        documentImage: values.address_proof_documentImage,
       },
       incomeProof: {
-        documentType: values.Income_Proof_documentType,
-        documentImage: values.Income_Proof_documentImage,
+        documentType: values.income_proof_documentType,
+        documentImage: values.income_proof_documentImage,
       },
       bankStatement: {
-        documentType: values.Bank_Statements_documentType,
-        documentImage: values.Bank_Statements_documentImage,
+        documentType: values.bank_statements_documentType,
+        documentImage: values.bank_statements_documentImage,
       },
       employmentProof: {
-        documentType: values.Employment_Proof_documentType,
-        documentImage: values.Employment_Proof_documentImage,
+        documentType: values.employment_proof_documentType,
+        documentImage: values.employment_proof_documentImage,
       },
     };
     applicationUpdateWithImage({
@@ -198,10 +198,7 @@ const PLoanDocument = (props) => {
                           <Field
                             label="Document Type"
                             component={DropdownField}
-                            name={`${item.documentType.replace(
-                              / /g,
-                              "_"
-                            )}_documentType`}
+                            name={`${item.entity}_documentType`}
                             options={item.document.map((item) => ({
                               ...item,
                               label: item.name,
@@ -210,17 +207,14 @@ const PLoanDocument = (props) => {
                           />
                         </div>
 
-                        {item.documentType !== "Income Proof" &&
-                          item.documentType !== "Bank Statements" &&
-                          item.documentType !== "Employment Proof" && (
+                        {item.entity !== "income_proof" &&
+                          item.entity !== "bank_statements" &&
+                          item.entity !== "employment_proof" && (
                             <div className="col-12 md:col-4">
                               <Field
                                 label="Document Number"
                                 component={InputField}
-                                name={`${item.documentType.replace(
-                                  / /g,
-                                  "_"
-                                )}_documentNumber`}
+                                name={`${item.entity}_documentNumber`}
                               />
                             </div>
                           )}
@@ -229,10 +223,7 @@ const PLoanDocument = (props) => {
                             label="Document (Image or pdf)"
                             component={UploadField}
                             multiple
-                            name={`${item.documentType.replace(
-                              / /g,
-                              "_"
-                            )}_documentImage`}
+                            name={`${item.entity}_documentImage`}
                             onSelect={onTemplateSelect}
                           />
                         </div>
