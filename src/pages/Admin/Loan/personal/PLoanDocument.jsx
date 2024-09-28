@@ -127,6 +127,7 @@ const PLoanDocument = (props) => {
 
   const handelSubmit = (values) => {
     const reqData = {
+      applicationType: "document",
       IDProof: {
         documentType: values.id_proof_documentType,
         documentNumber: values.id_proof_documentNumber,
@@ -153,7 +154,7 @@ const PLoanDocument = (props) => {
     applicationUpdateWithImage({
       ...reqData,
       dataType: "document",
-      id: getLoanData._id,
+      _id: getLoanData._id,
     })
       .then((res) => {
         setLoading(false);

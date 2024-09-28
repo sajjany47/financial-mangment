@@ -7,7 +7,7 @@ export const getLoanDetails = async (payload) => {
 
 export const applicationCreate = async (payload) => {
   const response = await Instance.post(
-    `/loan/create`,
+    `/loan/application-create`,
     payload,
     headerWithToken()
   );
@@ -16,7 +16,7 @@ export const applicationCreate = async (payload) => {
 
 export const applicationUpdate = async (payload) => {
   const response = await Instance.post(
-    `/loan/update`,
+    `/loan/application-update`,
     payload,
     headerWithToken()
   );

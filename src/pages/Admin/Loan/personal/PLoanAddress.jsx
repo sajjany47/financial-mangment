@@ -192,8 +192,8 @@ const PLoanAddress = (props) => {
   const handelSubmit = (values) => {
     applicationUpdate({
       ...values,
-      dataType: "address",
-      id: getLoanData._id,
+      applicationType: "address",
+      _id: getLoanData._id,
     })
       .then((res) => {
         setLoading(false);

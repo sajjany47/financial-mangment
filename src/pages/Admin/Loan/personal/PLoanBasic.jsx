@@ -101,8 +101,10 @@ const PLoanBasic = (props) => {
           loanType: getLoanData.loanType,
           fatherName: getLoanData.fatherName,
           motherName: getLoanData.motherName,
+          applicationType: "basic",
         }
       : {
+          applicationType: "basic",
           loanAmount: "",
           loanTenure: "",
           name: "",
@@ -126,8 +128,7 @@ const PLoanBasic = (props) => {
     if (loanDetails.type === "edit") {
       applicationUpdate({
         ...values,
-        dataType: "basic",
-        id: getLoanData._id,
+        _id: getLoanData._id,
       })
         .then((res) => {
           setLoading(false);
@@ -141,7 +142,7 @@ const PLoanBasic = (props) => {
           setLoading(false);
         });
     } else {
-      applicationCreate({ ...values, userImage: values.userImage.name })
+      applicationCreate({ ...values })
         .then((res) => {
           dispatch(
             setAddLoan({

@@ -68,7 +68,9 @@ const Lead = () => {
           loanAmount: "",
           loanTenure: "",
           monthlyIncome: "",
+          branch: userDetails.position === "admin" ? "" : userDetails.branch,
           userType: userDetails.position,
+          applicationType: "lead",
         }
       : {
           name: selectData.name,
@@ -83,7 +85,9 @@ const Lead = () => {
           loanAmount: selectData.loanAmount,
           loanTenure: selectData.loanTenure,
           monthlyIncome: selectData.monthlyIncome,
+          branch: selectData.branch,
           userType: userDetails.position,
+          applicationType: "lead",
         };
   useEffect(() => {
     countryList()
@@ -232,7 +236,7 @@ const Lead = () => {
     setLoading(true);
 
     if (actionType === "add") {
-      applicationCreate({ ...values, type: "lead" })
+      applicationCreate({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
