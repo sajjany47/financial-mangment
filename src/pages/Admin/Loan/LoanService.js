@@ -22,6 +22,10 @@ export const applicationUpdate = async (payload) => {
   );
   return response.data;
 };
+export const applicationDetails = async (id) => {
+  const response = await Instance.get(`/loan/${id}`, headerWithToken());
+  return response.data;
+};
 export const applicationStatusChange = async (payload) => {
   const response = await Instance.post(
     `/loan/status-change`,

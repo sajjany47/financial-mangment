@@ -10,7 +10,7 @@ import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import Loader from "../../../../component/Loader";
 import { InputField } from "../../../../component/FieldType";
 import { findIFSC } from "../../AddUser/AddUserService";
-import { applicationUpdate, getLoanDetails } from "../LoanService";
+import { applicationDetails, applicationUpdate } from "../LoanService";
 
 const PLoanAccount = (props) => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const PLoanAccount = (props) => {
   useEffect(() => {
     if (loanDetails.type === "edit") {
       setLoading(true);
-      getLoanDetails(loanDetails.loanId)
+      applicationDetails(loanDetails.loanId)
         .then((res) => {
           setLoanData(res.data);
           setLoading(false);

@@ -11,8 +11,8 @@ import {
 } from "../../../../component/FieldType";
 import {
   applicationCreate,
+  applicationDetails,
   applicationUpdate,
-  getLoanDetails,
 } from "../LoanService";
 import { branchList } from "../../Branch/BranchService";
 import Swal from "sweetalert2";
@@ -45,7 +45,7 @@ const PLoanBasic = (props) => {
   useEffect(() => {
     if (loanDetails.type === "edit") {
       setLoading(true);
-      getLoanDetails(loanDetails.loanId)
+      applicationDetails(loanDetails.loanId)
         .then((res) => {
           setLoanData(res.data);
 
@@ -203,12 +203,7 @@ const PLoanBasic = (props) => {
                     />
                   </div>
                   <div className="col-12 md:col-3">
-                    <Field
-                      label="Name"
-                      component={InputField}
-                      name="name"
-                      keyfilter="alpha"
-                    />
+                    <Field label="Name" component={InputField} name="name" />
                   </div>
                   <div className="col-12 md:col-3">
                     <Field
@@ -238,7 +233,6 @@ const PLoanBasic = (props) => {
                       label="Father Name"
                       component={InputField}
                       name="fatherName"
-                      keyfilter="alpha"
                     />
                   </div>{" "}
                   <div className="col-12 md:col-3">
@@ -246,7 +240,6 @@ const PLoanBasic = (props) => {
                       label="Mother Name"
                       component={InputField}
                       name="motherName"
-                      keyfilter="alpha"
                     />
                   </div>
                   <div className="col-12 md:col-3">

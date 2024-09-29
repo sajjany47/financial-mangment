@@ -8,7 +8,7 @@ import { DropdownField, InputField } from "../../../../component/FieldType";
 import { Panel } from "primereact/panel";
 import { city, countryList, state } from "../../AddUser/AddUserService";
 import { EmployeeTypes } from "../../../../shared/Config";
-import { applicationUpdate, getLoanDetails } from "../LoanService";
+import { applicationDetails, applicationUpdate } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 
@@ -54,7 +54,7 @@ const PLoanWork = (props) => {
       });
     if (loanDetails.type === "edit") {
       setLoading(true);
-      getLoanDetails(loanDetails.loanId)
+      applicationDetails(loanDetails.loanId)
         .then((res) => {
           setLoanData(res.data);
           Promise.all([

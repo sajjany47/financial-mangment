@@ -1,3 +1,4 @@
+import { applicationRenderStatus } from "../../../shared/Config";
 import LoanList from "./LoanList";
 
 const ProgressApplication = () => {
@@ -6,7 +7,7 @@ const ProgressApplication = () => {
       <LoanList
         show={false}
         labelName={"Progress Application List"}
-        type="progress"
+        type={applicationRenderStatus.inProgress}
       />
     </div>
   );

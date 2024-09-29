@@ -125,7 +125,7 @@ export const ResidenceTypes = [
 export const applicationRenderStatus = {
   lead: "lead",
   incompleted: "incompleted",
-  inProgress: "in_progress",
+  inProgress: "progress",
   approved: "approved",
   rejected: "rejected",
 };

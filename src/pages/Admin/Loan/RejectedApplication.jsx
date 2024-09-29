@@ -1,3 +1,4 @@
+import { applicationRenderStatus } from "../../../shared/Config";
 import LoanList from "./LoanList";
 
 const RejectedApplication = () => {
@@ -6,7 +7,7 @@ const RejectedApplication = () => {
       <LoanList
         show={false}
         labelName={"Rejected Application List"}
-        type="rejected"
+        type={applicationRenderStatus.rejected}
       />
     </div>
   );

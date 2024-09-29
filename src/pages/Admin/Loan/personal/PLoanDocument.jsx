@@ -10,7 +10,7 @@ import {
   InputField,
   UploadField,
 } from "../../../../component/FieldType";
-import { applicationUpdateWithImage, getLoanDetails } from "../LoanService";
+import { applicationDetails, applicationUpdateWithImage } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { documentGetList } from "../../setting/SettingService";
@@ -75,7 +75,7 @@ const PLoanDocument = (props) => {
       });
     if (loanDetails.type === "edit") {
       setLoading(true);
-      getLoanDetails(loanDetails.loanId)
+      applicationDetails(loanDetails.loanId)
         .then((res) => {
           setLoanData(res.data);
           setLoading(false);

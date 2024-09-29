@@ -1,3 +1,4 @@
+import { applicationRenderStatus } from "../../../shared/Config";
 import LoanList from "./LoanList";
 
 const ApprovedApplication = () => {
@@ -6,7 +7,7 @@ const ApprovedApplication = () => {
       <LoanList
         show={false}
         labelName={"Approved Application List"}
-        type="approved"
+        type={applicationRenderStatus.approved}
       />
     </div>
   );

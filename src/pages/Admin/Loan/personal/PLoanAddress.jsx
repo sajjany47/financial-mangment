@@ -12,7 +12,7 @@ import {
   InputField,
 } from "../../../../component/FieldType";
 import { ResidenceTypes } from "../../../../shared/Config";
-import { applicationUpdate, getLoanDetails } from "../LoanService";
+import { applicationDetails, applicationUpdate } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 
@@ -62,7 +62,7 @@ const PLoanAddress = (props) => {
       });
     if (loanDetails.type === "edit") {
       setLoading(true);
-      getLoanDetails(loanDetails.loanId)
+      applicationDetails(loanDetails.loanId)
         .then((res) => {
           setLoanData(res.data);
           Promise.all([
@@ -207,6 +207,22 @@ const PLoanAddress = (props) => {
         setLoading(false);
       });
   };
+
+  const handelResisdence = (e, setFieldValue, values) => {
+    setFieldValue("addressSame", e.checked);
+    if (e.checked) {
+      setFieldValue("residenceCountry", values.permanentCountry);
+      setFieldValue("residenceState", values.permanentState);
+      setFieldValue("residenceCity", values.permanentCity);
+      setFieldValue(
+        "residenceHouseOrBuildingNumber",
+        values.permanentHouseOrBuildingNumber
+      );
+      setFieldValue("residenceStreet", values.permanentStreet);
+      setFieldValue("residenceLandmark", values.permanentLandmark);
+      setFieldValue("residencePincode", values.permanentPincode);
+    }
+  };
   return (
     <>
       {loading && <Loader />}{" "}
@@ -315,14 +331,14 @@ const PLoanAddress = (props) => {
                         label="Residence address same as permanent address?"
                         component={CheckField}
                         name="addressSame"
+                        onChange={(e) =>
+                          handelResisdence(e, setFieldValue, values)
+                        }
                       />
                     </div>
                     <div className="col-12 md:col-4">
                       <Field
                         label="Country"
-                        value={
-                          values.addressSame ? values.permanentCountry : ""
-                        }
                         component={DropdownField}
                         name="residenceCountry"
                         options={countryData}
@@ -339,7 +355,6 @@ const PLoanAddress = (props) => {
                       <Field
                         label="State"
                         filter
-                        value={values.addressSame ? values.permanentState : ""}
                         component={DropdownField}
                         name="residenceState"
                         options={
@@ -357,7 +372,6 @@ const PLoanAddress = (props) => {
                     <div className="col-12 md:col-4">
                       <Field
                         label="City"
-                        value={values.addressSame ? values.permanentCity : ""}
                         component={DropdownField}
                         name="residenceCity"
                         filter
@@ -371,11 +385,6 @@ const PLoanAddress = (props) => {
                     </div>
                     <div className="col-12 md:col-4">
                       <Field
-                        value={
-                          values.addressSame
-                            ? values.permanentHouseOrBuildingNumber
-                            : ""
-                        }
                         label="House/Building/Block Number"
                         component={InputField}
                         name="residenceHouseOrBuildingNumber"
@@ -383,7 +392,6 @@ const PLoanAddress = (props) => {
                     </div>
                     <div className="col-12 md:col-4">
                       <Field
-                        value={values.addressSame ? values.permanentStreet : ""}
                         label="Street/Road/Village Name"
                         component={InputField}
                         name="residenceStreet"
@@ -392,9 +400,6 @@ const PLoanAddress = (props) => {
 
                     <div className="col-12 md:col-4">
                       <Field
-                        value={
-                          values.addressSame ? values.permanentLandmark : ""
-                        }
                         label="Landmark"
                         component={InputField}
                         name="residenceLandmark"
@@ -403,9 +408,6 @@ const PLoanAddress = (props) => {
 
                     <div className="col-12 md:col-4">
                       <Field
-                        value={
-                          values.addressSame ? values.permanentPincode : ""
-                        }
                         label="Pincode"
                         component={InputField}
                         name="residencePincode"

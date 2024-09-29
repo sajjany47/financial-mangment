@@ -45,6 +45,18 @@ const LoanList = (props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const loanTypeDetails = (country) => {
+    loanTypeGetList({ country: country })
+      .then((res) => {
+        setLoanTypeOption(res.data);
+        setActionType("loanType");
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const getApplicationList = () => {
     let reqData = {
       page: 1,
@@ -81,7 +93,8 @@ const LoanList = (props) => {
       </div>
     );
   };
-  const actionBodyTemplate = () => {
+  const actionBodyTemplate = (item) => {
+    loanTypeDetails(item.branchDetails.country);
     return (
       <>
         <Button
@@ -90,7 +103,23 @@ const LoanList = (props) => {
           text
           aria-label="Filter"
           onClick={() => {
-            navigate("/employee/edit");
+            navigate(item.loanDetails.path, {
+              state: {
+                loanTypeOption: loanTypeOption.map((elm) => ({
+                  ...elm,
+                  label: elm.name,
+                  value: elm._id,
+                })),
+              },
+            });
+            dispatch(
+              setAddLoan({
+                type: "edit",
+                loanType: {},
+                loanId: item._id,
+                data: {},
+              })
+            );
           }}
         />
       </>
@@ -117,17 +146,16 @@ const LoanList = (props) => {
 
   const handelSubmit = () => {
     setLoading(true);
-    loanTypeGetList({ country: selectCountry })
-      .then((res) => {
-        setLoanTypeOption(res.data);
-        setActionType("loanType");
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    loanTypeDetails(selectCountry);
   };
 
+  const branchTemplate = (item) => {
+    return (
+      <div>
+        {item.branchDetails.name} ({item.branchDetails.code})
+      </div>
+    );
+  };
   return (
     <>
       {loading && <Loader />}
@@ -143,10 +171,14 @@ const LoanList = (props) => {
           <Column field="applicationNumber" header="Application Number" />
           <Column field="name" header="Name" />
           <Column field="mobile" header="Mobile" />
-          <Column field="loanType" header="Type" />
+          <Column field="loanDetails.name" header="Type" />
           <Column field="loanAmount" header="Amount" />
           <Column field="loanStatus" header="Status" />
-          <Column field="branch" header="Branch" />
+          <Column
+            field="branchDetails.name"
+            header="Branch"
+            body={branchTemplate}
+          />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />
