@@ -42,7 +42,7 @@ export const applicationUpdateWithImage = async (payload) => {
 
 export const applicationList = async (payload) => {
   const response = await Instance.post(
-    `/loan/list`,
+    `/loan/datatable`,
     payload,
     headerWithToken()
   );

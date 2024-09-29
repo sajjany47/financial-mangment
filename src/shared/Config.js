@@ -10,6 +10,7 @@ export const Position = {
   LD: "loan-department",
   VD: "verication-department",
   FM: "financial-manager",
+  CM: "city-manager",
 };
 
 export const DropdownPosition = [
@@ -121,76 +122,10 @@ export const ResidenceTypes = [
   { label: "Parent", value: "parent" },
 ];
 
-export const LoanTypes = [
-  { value: "personal_loan", label: "Personal Loan", icon: "pi-user" },
-  { value: "home_loan", label: "Home Loan", icon: "pi-home" },
-  { value: "car_loan", label: "Car Loan", icon: "pi-car" },
-  { value: "education_loan", label: "Education Loan", icon: "pi-book" },
-  { value: "business_loan", label: "Business Loan", icon: "pi-briefcase" },
-  { value: "payday_loan", label: "Payday Loan", icon: "pi-dollar" },
-  { value: "gold_loan", label: "Gold Loan", icon: "pi-eject" },
-  { value: "mortgage_loan", label: "Mortgage Loan", icon: "pi-building" },
-  {
-    value: "credit_card_loan",
-    label: "Credit Card Loan",
-    icon: "pi-credit-card",
-  },
-  { value: "agriculture_loan", label: "Agriculture Loan", icon: "pi-globe" },
-];
-
-export const personalLoanDocuments = [
-  {
-    documentType: "ID Proof",
-    documentNameList: [
-      { label: "Passport", value: "passport" },
-      { label: "Driver’s License", value: "drivers_license" },
-      { label: "Aadhaar Card", value: "aadhaar_card" },
-      { label: "Voter ID", value: "voter_id" },
-      { label: "PAN Card", value: "pan_card" },
-    ],
-    description: "A valid government-issued ID",
-    required: true,
-  },
-  {
-    documentType: "Address Proof",
-    documentNameList: [
-      { label: "Utility Bill", value: "utility_bill" },
-      { label: "Rental Agreement", value: "rental_agreement" },
-      { label: "Bank Statement", value: "bank_statement" },
-      { label: "Aadhaar Card", value: "aadhaar_card" },
-    ],
-    description: "Proof of your current residential address",
-    required: true,
-  },
-  {
-    documentType: "Income Proof",
-    documentNameList: [
-      { label: "Salary Slips", value: "salary_slips" },
-      { label: "Bank Statements", value: "bank_statements" },
-      { label: "Income Tax Returns", value: "income_tax_returns" },
-    ],
-    description: "Documents showing your recent income",
-    required: true,
-  },
-  {
-    documentType: "Bank Statements",
-    documentNameList: [
-      { label: "Bank Account Statements", value: "bank_account_statements" },
-    ],
-    description: "Latest 6 months' bank account statements",
-    required: true,
-  },
-  {
-    documentType: "Employment Proof",
-    documentNameList: [
-      {
-        label: "Employment Verification Letter",
-        value: "employment_verification_letter",
-      },
-      { label: "Offer Letter", value: "offer_letter" },
-      { label: "Employment Contract", value: "employment_contract" },
-    ],
-    description: "Proof of your employment",
-    required: false,
-  },
-];
+export const applicationRenderStatus = {
+  lead: "lead",
+  incompleted: "incompleted",
+  inProgress: "in_progress",
+  approved: "approved",
+  rejected: "rejected",
+};

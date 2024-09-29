@@ -13,6 +13,7 @@ import { applicationList } from "./LoanService";
 import { Dropdown } from "primereact/dropdown";
 import { countryList } from "../AddUser/AddUserService";
 import { loanTypeGetList } from "../setting/SettingService";
+import CPaginator from "../../../component/CPaginator";
 
 const LoanList = (props) => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const LoanList = (props) => {
   const [loanTypeOption, setLoanTypeOption] = useState([]);
   const [countryData, setCountryData] = useState([]);
   const [actionType, setActionType] = useState("country");
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     countryList()
@@ -44,12 +46,17 @@ const LoanList = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const getApplicationList = () => {
+    let reqData = {
+      page: 1,
+      limit: 10,
+      applicationStaus: props.type,
+    };
     setLoading(true);
 
-    applicationList({ type: props.type })
+    applicationList(reqData)
       .then((res) => {
         setList(res.data);
-
+        setTotal(res.count);
         setLoading(false);
       })
       .catch(() => {
@@ -142,6 +149,7 @@ const LoanList = (props) => {
           <Column field="branch" header="Branch" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
+        <CPaginator totalRecords={total} />
       </div>
 
       <Dialog

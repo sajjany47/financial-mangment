@@ -6,12 +6,7 @@ import { useSelector } from "react-redux";
 import { Dialog } from "primereact/dialog";
 import Loader from "../../../component/Loader";
 import { Field, Form, Formik } from "formik";
-import {
-  DropdownField,
-  InputField,
-  TextAreaInputField,
-} from "../../../component/FieldType";
-import { city, countryList, state } from "../AddUser/AddUserService";
+import { DropdownField, InputField } from "../../../component/FieldType";
 import { branchList } from "../Branch/BranchService";
 import {
   applicationCreate,
@@ -21,16 +16,13 @@ import {
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { loanTypeGetList } from "../setting/SettingService";
+import { Position } from "../../../shared/Config";
+import CPaginator from "../../../component/CPaginator";
 
 const leadSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  country: Yup.string().required("Country is required"),
-  state: Yup.string().required("State is required"),
-  city: Yup.string().required("City is required"),
   email: Yup.string().required("Email is required"),
   mobile: Yup.string().required("Mobile number is required"),
-  address: Yup.string().required("Address is required"),
-  pincode: Yup.string().required("Pincode is required"),
   loanAmount: Yup.string().required("Loan amount is required"),
   loanTenure: Yup.string().required("Loan tenure is required"),
   loanType: Yup.string().required("Loan type is required"),
@@ -45,13 +37,11 @@ const Lead = () => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [countryData, setCountryData] = useState([]);
-  const [stateData, setStateData] = useState([]);
-  const [cityData, setCityData] = useState([]);
   const [branch, setBranch] = useState([]);
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
   const [loanTypeOption, setLoanTypeOption] = useState([]);
+  const [total, setTotal] = useState(0);
 
   const initialValues =
     actionType === "add"
@@ -59,16 +49,19 @@ const Lead = () => {
           name: "",
           mobile: "",
           email: "",
-          address: "",
           state: "",
           country: "",
           city: "",
-          pincode: "",
           loanType: "",
           loanAmount: "",
           loanTenure: "",
           monthlyIncome: "",
-          branch: userDetails.position === "admin" ? "" : userDetails.branch,
+          branch:
+            userDetails.position === Position.ADMIN ||
+            userDetails.position === Position.SM ||
+            userDetails.position === Position.CM
+              ? ""
+              : userDetails.branch,
           userType: userDetails.position,
           applicationType: "lead",
         }
@@ -76,11 +69,9 @@ const Lead = () => {
           name: selectData.name,
           mobile: selectData.mobile,
           email: selectData.email,
-          address: selectData.address,
           state: selectData.state,
           country: selectData.country,
           city: selectData.city,
-          pincode: selectData.pincode,
           loanType: selectData.loanType,
           loanAmount: selectData.loanAmount,
           loanTenure: selectData.loanTenure,
@@ -90,25 +81,16 @@ const Lead = () => {
           applicationType: "lead",
         };
   useEffect(() => {
-    countryList()
-      .then((res) => {
-        setCountryData(
-          res.data.map((item) => ({
-            ...item,
-            label: item.name,
-            value: item.id,
-          }))
-        );
-      })
-      .catch(() => {});
-
     getBranchList({});
     getLeadList();
+    getLoanTypeList();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const getLoanTypeList = (countrId) => {
-    loanTypeGetList({ country: countrId })
+  const getLoanTypeList = () => {
+    loanTypeGetList(
+      userDetails.position === "admin" ? {} : { country: userDetails.country }
+    )
       .then((res) => {
         setLoanTypeOption(
           res.data.map((item) => ({
@@ -125,12 +107,17 @@ const Lead = () => {
       });
   };
   const getLeadList = () => {
+    let reqData = {
+      page: 1,
+      limit: 10,
+      applicationStaus: "lead",
+    };
     setLoading(true);
 
-    applicationList({ type: "lead" })
+    applicationList(reqData)
       .then((res) => {
         setList(res.data);
-
+        setTotal(res.count);
         setLoading(false);
       })
       .catch(() => {
@@ -138,7 +125,17 @@ const Lead = () => {
       });
   };
 
-  const getBranchList = (payload) => {
+  const getBranchList = () => {
+    const payload =
+      userDetails.position === Position.ADMIN
+        ? {}
+        : userDetails.position === Position.SM
+        ? { country: userDetails.country, state: userDetails.state }
+        : {
+            country: userDetails.country,
+            state: userDetails.state,
+            city: userDetails.city,
+          };
     setLoading(true);
     branchList(payload)
       .then((res) => {
@@ -155,34 +152,6 @@ const Lead = () => {
       });
   };
 
-  const stateList = (country) => {
-    state(Number(country))
-      .then((res) => {
-        setStateData(
-          res.data.map((item) => ({
-            ...item,
-            label: item.name,
-            value: item.id,
-          }))
-        );
-      })
-      .catch(() => {});
-  };
-
-  const cityList = (country, state) => {
-    city(Number(country), Number(state))
-      .then((res) => {
-        setCityData(
-          res.data.map((item) => ({
-            ...item,
-            label: item.name,
-            value: item.id,
-          }))
-        );
-      })
-      .catch(() => {});
-  };
-
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
@@ -192,6 +161,7 @@ const Lead = () => {
           label="Add Application"
           icon="pi pi-plus"
           onClick={() => {
+            setActionType("add");
             setVisible(true);
           }}
         />
@@ -207,29 +177,13 @@ const Lead = () => {
           text
           aria-label="Filter"
           onClick={() => {
+            setActionType("edit");
             setVisible(true);
             setSelectData(item);
-            setActionType("edit");
           }}
         />
       </>
     );
-  };
-
-  const handelSate = (setFieldValue, e) => {
-    setStateData([]);
-    setCityData([]);
-    setFieldValue("state", "");
-    setFieldValue("city", "");
-    setFieldValue("country", e);
-    stateList(e);
-  };
-
-  const handelCityList = (setFieldValue, e, value) => {
-    setCityData([]);
-    setFieldValue("city", "");
-    setFieldValue("state", e);
-    cityList(value.country, e);
   };
 
   const handelSubmit = (values) => {
@@ -252,11 +206,20 @@ const Lead = () => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
           setVisible(false);
+          getLeadList();
         })
         .catch(() => {
           setLoading(false);
         });
     }
+  };
+
+  const branchTemplate = (item) => {
+    return (
+      <div>
+        {item.branchDetails.name} ({item.branchDetails.code})
+      </div>
+    );
   };
 
   return (
@@ -274,12 +237,16 @@ const Lead = () => {
           <Column field="applicationNumber" header="Lead Number" />
           <Column field="name" header="Name" />
           <Column field="mobile" header="Mobile" />
-          <Column field="loanType" header="Type" />
+          <Column field="loanDetails.name" header="Type" />
           <Column field="loanAmount" header="Amount" />
-          <Column field="loanStatus" header="Status" />
-          <Column field="branch" header="Branch" />
+          <Column
+            field="branchDetails.name"
+            header="Branch"
+            body={branchTemplate}
+          />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
+        <CPaginator totalRecords={total} />
       </div>
 
       <Dialog
@@ -295,7 +262,7 @@ const Lead = () => {
           initialValues={initialValues}
           validationSchema={leadSchema}
         >
-          {({ handleSubmit, setFieldValue, values }) => (
+          {({ handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <div className="flex flex-column ">
                 <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
@@ -321,56 +288,6 @@ const Lead = () => {
 
                     <div className="col-12 md:col-4">
                       <Field
-                        label="Address"
-                        component={TextAreaInputField}
-                        name="address"
-                        rows={2}
-                        cols={10}
-                      />
-                    </div>
-                    <div className="col-12 md:col-4">
-                      <Field
-                        label="Country"
-                        component={DropdownField}
-                        name="country"
-                        options={countryData}
-                        filter
-                        onChange={(e) => {
-                          handelSate(setFieldValue, e.target.value);
-                          getLoanTypeList(e.target.value);
-                        }}
-                      />
-                    </div>
-                    <div className="col-12 md:col-4">
-                      <Field
-                        label="State"
-                        filter
-                        component={DropdownField}
-                        name="state"
-                        options={stateData}
-                        onChange={(e) =>
-                          handelCityList(setFieldValue, e.target.value, values)
-                        }
-                      />
-                    </div>
-                    <div className="col-12 md:col-4">
-                      <Field
-                        label="City"
-                        component={DropdownField}
-                        name="city"
-                        filter
-                        options={cityData}
-                      />
-                    </div>
-                    <div className="col-12 md:col-4">
-                      <Field
-                        label="Pincode"
-                        component={InputField}
-                        name="pincode"
-                      />
-                    </div>
-                    <div className="col-12 md:col-4">
-                      <Field
                         label="Loan Type"
                         component={DropdownField}
                         name="loanType"
@@ -386,7 +303,7 @@ const Lead = () => {
                     </div>
                     <div className="col-12 md:col-4">
                       <Field
-                        label="Loan Tenure"
+                        label="Loan Tenure (In months)"
                         component={InputField}
                         name="loanTenure"
                       />
