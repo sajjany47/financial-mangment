@@ -25,6 +25,7 @@ import ApprovedApplication from "./pages/Admin/Loan/ApprovedApplication";
 import Document from "./pages/Admin/setting/Document";
 import DocumentType from "./pages/Admin/setting/DocumentType";
 import LoanType from "./pages/Admin/setting/LoanType";
+import PLoanEdit from "./pages/Admin/Loan/personal/PLoanEdit";
 
 function App() {
   let isRefreshing = false;
@@ -113,6 +114,10 @@ function App() {
             <Route
               path="/application/personal-loan/add"
               element={<PLoanAdd />}
+            />
+            <Route
+              path="/application/personal-loan/edit"
+              element={<PLoanEdit />}
             />
             <Route path="/settings/document" element={<Document />} />
             <Route path="/settings/document-type" element={<DocumentType />} />

@@ -14,6 +14,7 @@ import { Dropdown } from "primereact/dropdown";
 import { countryList } from "../AddUser/AddUserService";
 import { loanTypeGetList } from "../setting/SettingService";
 import CPaginator from "../../../component/CPaginator";
+import { AddLoanPath, EditLoanPath } from "../../../shared/Config";
 
 const LoanList = (props) => {
   const dispatch = useDispatch();
@@ -94,7 +95,6 @@ const LoanList = (props) => {
     );
   };
   const actionBodyTemplate = (item) => {
-    loanTypeDetails(item.branchDetails.country);
     return (
       <>
         <Button
@@ -103,15 +103,7 @@ const LoanList = (props) => {
           text
           aria-label="Filter"
           onClick={() => {
-            navigate(item.loanDetails.path, {
-              state: {
-                loanTypeOption: loanTypeOption.map((elm) => ({
-                  ...elm,
-                  label: elm.name,
-                  value: elm._id,
-                })),
-              },
-            });
+            navigate(EditLoanPath(item.loanDetails.entity));
             dispatch(
               setAddLoan({
                 type: "edit",
@@ -133,15 +125,7 @@ const LoanList = (props) => {
         loanType: { ...item, country: selectCountry },
       })
     );
-    navigate(item.path, {
-      state: {
-        loanTypeOption: loanTypeOption.map((elm) => ({
-          ...elm,
-          label: elm.name,
-          value: elm._id,
-        })),
-      },
-    });
+    navigate(AddLoanPath(item.entity));
   };
 
   const handelSubmit = () => {

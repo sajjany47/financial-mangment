@@ -6,7 +6,6 @@ import PLoanAddress from "./PLoanAddress";
 import PLoanWork from "./PLoanWork";
 import PLoanDocument from "./PLoanDocument";
 import PLoanAccount from "./PLoanAccount";
-import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { applicationDetails } from "../LoanService";
 import Loader from "../../../../component/Loader";
@@ -14,7 +13,6 @@ import Loader from "../../../../component/Loader";
 const PLoanAdd = () => {
   const stepperRef = useRef(null);
   const loanDetails = useSelector((state) => state.loan.addLoan);
-  const data = useLocation().state;
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({});
 
@@ -50,7 +48,7 @@ const PLoanAdd = () => {
           activeStep={Object.keys(details).length > 0 ? details?.pageIndex : 0}
         >
           <StepperPanel header="Basic">
-            <PLoanBasic next={next} loanTypeOption={data.loanTypeOption} />
+            <PLoanBasic next={next} />
           </StepperPanel>
           <StepperPanel header="Communication">
             <PLoanAddress next={next} back={back} />

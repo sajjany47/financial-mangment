@@ -19,6 +19,7 @@ import Swal from "sweetalert2";
 import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import * as Yup from "yup";
 import { Position } from "../../../../shared/Config";
+import { loanTypeList } from "../../setting/SettingService";
 
 const basicValidationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -41,8 +42,10 @@ const PLoanBasic = (props) => {
   const [loading, setLoading] = useState(false);
   const [branch, setBranch] = useState([]);
   const [getLoanData, setLoanData] = useState({});
+  const [loanTypeOption, setLoanTypeOption] = useState([]);
 
   useEffect(() => {
+    loanTypeDetails();
     if (loanDetails.type === "edit") {
       setLoading(true);
       applicationDetails(loanDetails.loanId)
@@ -72,6 +75,19 @@ const PLoanBasic = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const loanTypeDetails = () => {
+    loanTypeList({ isActive: true })
+      .then((res) => {
+        setLoanTypeOption(
+          res.data.map((item) => ({ label: item.name, value: item._id }))
+        );
+
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const getBranchList = (payload) => {
     setLoading(true);
     branchList(payload)
@@ -182,7 +198,7 @@ const PLoanBasic = (props) => {
                       label="Loan Type"
                       component={DropdownField}
                       name="loanType"
-                      options={props.loanTypeOption}
+                      options={loanTypeOption}
                       disabled
                     />
                   </div>

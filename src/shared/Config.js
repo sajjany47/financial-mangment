@@ -129,3 +129,59 @@ export const applicationRenderStatus = {
   approved: "approved",
   rejected: "rejected",
 };
+
+export const AddLoanPath = (entity) => {
+  switch (entity) {
+    case "personal_loan":
+      return "/application/personal-loan/add";
+    case "home_loan":
+      return "/application/home-loan/add";
+    case "car_loan":
+      return "/application/car-loan/add";
+    case "education_loan":
+      return "/application/education-loan/add";
+    case "business_loan":
+      return "/application/business-loan/add";
+    case "payday_loan":
+      return "/application/payday-loan/add";
+    case "gold_loan":
+      return "/application/gold-loan/add";
+    case "mortgage_loan":
+      return "/application/mortgage-loan/add";
+    case "credit_card_loan":
+      return "/application/credit-card-loan/add";
+    case "agriculture_loan":
+      return "/application/agriculture-loan/add";
+
+    default:
+      return "";
+  }
+};
+
+export const EditLoanPath = (entity) => {
+  switch (entity) {
+    case "personal_loan":
+      return "/application/personal-loan/edit";
+    case "home_loan":
+      return "/application/home-loan/edit";
+    case "car_loan":
+      return "/application/car-loan/edit";
+    case "education_loan":
+      return "/application/education-loan/edit";
+    case "business_loan":
+      return "/application/business-loan/edit";
+    case "payday_loan":
+      return "/application/payday-loan/edit";
+    case "gold_loan":
+      return "/application/gold-loan/edit";
+    case "mortgage_loan":
+      return "/application/mortgage-loan/edit";
+    case "credit_card_loan":
+      return "/application/credit-card-loan/edit";
+    case "agriculture_loan":
+      return "/application/agriculture-loan/edit";
+
+    default:
+      return "";
+  }
+};
