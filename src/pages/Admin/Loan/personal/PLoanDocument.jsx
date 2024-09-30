@@ -17,40 +17,40 @@ import { documentGetList } from "../../setting/SettingService";
 // import { Image } from "primereact/image";
 
 const documentValidationSchema = Yup.object().shape({
-  ID_Proof_documentType: Yup.string().required(
+  id_proof_documentType: Yup.string().required(
     "Id Proof Document type is required"
   ),
-  ID_Proof_documentNumber: Yup.string().required(
+  id_proof_documentNumber: Yup.string().required(
     "Id Proof Document number is required"
   ),
-  ID_Proof_documentImage: Yup.string().required(
+  id_proof_documentImage: Yup.string().required(
     "Id Proof Document file is required"
   ),
-  Address_Proof_documentType: Yup.string().required(
+  address_proof_documentType: Yup.string().required(
     "Address proof Document type is required"
   ),
-  Address_Proof_documentNumber: Yup.string().required(
+  address_proof_documentNumber: Yup.string().required(
     "Address proof Document number is required"
   ),
-  Address_Proof_documentImage: Yup.string().required(
+  address_proof_documentImage: Yup.string().required(
     "Address proof Document file is required"
   ),
-  Income_Proof_documentType: Yup.string().required(
+  income_proof_documentType: Yup.string().required(
     "Income proof Document type is required"
   ),
-  Income_Proof_documentImage: Yup.string().required(
+  income_proof_documentImage: Yup.string().required(
     "Income proof Document file is required"
   ),
-  Bank_Statements_documentType: Yup.string().required(
+  bank_statements_documentType: Yup.string().required(
     "Bank statement proof Document type is required"
   ),
-  Bank_Statements_documentImage: Yup.string().required(
+  bank_statements_documentImage: Yup.string().required(
     "Bank statement proof Document file is required"
   ),
-  Employment_Proof_documentType: Yup.string().required(
+  employment_proof_documentType: Yup.string().required(
     "Employment proof Document type is required"
   ),
-  Employment_Proof_documentImage: Yup.string().required(
+  employment_proof_documentImage: Yup.string().required(
     "Employment proof Document file is required"
   ),
 });
@@ -152,10 +152,11 @@ const PLoanDocument = (props) => {
         documentImage: values.employment_proof_documentImage,
       },
     };
+
     applicationUpdateWithImage({
       ...reqData,
       dataType: "document",
-      _id: getLoanData._id,
+      _id: loanDetails.loanId,
     })
       .then((res) => {
         setLoading(false);
@@ -170,10 +171,9 @@ const PLoanDocument = (props) => {
       });
   };
 
-  const onTemplateSelect = (e) => {
-    let files = e.files;
-
-    console.log(files);
+  const onTemplateSelect = (e, setFieldValue, name) => {
+    let files = e.files[0];
+    setFieldValue(name, files, true);
   };
   return (
     <>
@@ -184,7 +184,7 @@ const PLoanDocument = (props) => {
         validationSchema={documentValidationSchema}
         enableReinitialize
       >
-        {({ handleSubmit }) => (
+        {({ handleSubmit, setFieldValue }) => (
           <Form onSubmit={handleSubmit}>
             {personalLoanDocuments.map((item, index) => {
               return (
@@ -204,7 +204,7 @@ const PLoanDocument = (props) => {
                             options={item.document.map((item) => ({
                               ...item,
                               label: item.name,
-                              value: item.value,
+                              value: item._id,
                             }))}
                           />
                         </div>
@@ -226,7 +226,13 @@ const PLoanDocument = (props) => {
                             component={UploadField}
                             multiple
                             name={`${item.entity}_documentImage`}
-                            onSelect={onTemplateSelect}
+                            onSelect={(e) =>
+                              onTemplateSelect(
+                                e,
+                                setFieldValue,
+                                `${item.entity}_documentImage`
+                              )
+                            }
                           />
                         </div>
 

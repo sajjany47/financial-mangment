@@ -37,7 +37,7 @@ export const applicationStatusChange = async (payload) => {
 
 export const applicationUpdateWithImage = async (payload) => {
   const response = await Instance.post(
-    `/loan/update`,
+    `/loan/application-update`,
     payload,
     headerWithToken()
   );
