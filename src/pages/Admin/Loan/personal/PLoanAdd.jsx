@@ -46,6 +46,11 @@ const PLoanAdd = () => {
           ref={stepperRef}
           style={{ flexBasis: "75rem" }}
           activeStep={Object.keys(details).length > 0 ? details?.pageIndex : 0}
+          onChangeStep={(e) => {
+            // Prevent step navigation through header clicks
+            e.originalEvent.preventDefault();
+          }}
+          readonly
         >
           <StepperPanel header="Basic">
             <PLoanBasic next={next} />

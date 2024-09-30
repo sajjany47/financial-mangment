@@ -98,6 +98,9 @@ input[type="file"] {
   height: calc(100vh - 60px); /* Available height for content */
   overflow-y: auto; /* Scrollable content */
 }
+.p-stepper-header {
+  pointer-events: none;
+}
 
 .main-content {
   flex: 1; /* Take up the remaining space */

@@ -420,6 +420,14 @@ const PLoanAddress = (props) => {
             </Panel>
 
             <div className="flex pt-4 justify-content-end gap-2 mb-3">
+              <Button
+                label="Back"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                // eslint-disable-next-line react/prop-types
+                onClick={() => props.back()}
+                type="button"
+              />
               {loanDetails.type === "edit" && (
                 <Button
                   type="button"
