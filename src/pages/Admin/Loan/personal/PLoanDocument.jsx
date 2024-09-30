@@ -61,54 +61,55 @@ const PLoanDocument = (props) => {
   const [personalLoanDocuments, setPersonalLoanDocuments] = useState([]);
 
   useEffect(() => {
-    setLoading(false);
-    documentGetList({
-      country: loanDetails.loanType.country,
-      loanTypeId: loanDetails.loanType._id,
-    })
+    // if (loanDetails.type === "edit") {
+    setLoading(true);
+    applicationDetails(loanDetails.loanId)
       .then((res) => {
-        setPersonalLoanDocuments(res.data);
+        setLoanData(res.data);
+        documentGetList({
+          country: res.data.permanentCountry,
+          loanTypeId: res.data.loanDetails._id,
+        })
+          .then((res) => {
+            setPersonalLoanDocuments(res.data);
+            setLoading(false);
+          })
+          .catch(() => {
+            setLoading(false);
+          });
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
       });
-    if (loanDetails.type === "edit") {
-      setLoading(true);
-      applicationDetails(loanDetails.loanId)
-        .then((res) => {
-          setLoanData(res.data);
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initialValues =
     loanDetails.type === "edit"
       ? {
-          id_proof_documentType: getLoanData.IDProof.documentType,
-          id_proof_documentNumber: getLoanData.IDProof.documentNumber,
-          id_proof_documentImage: getLoanData.IDProof.documentImage,
+          id_proof_documentType: getLoanData?.IDProof?.documentType,
+          id_proof_documentNumber: getLoanData?.IDProof?.documentNumber,
+          id_proof_documentImage: getLoanData?.IDProof?.documentImage,
 
-          address_proof_documentType: getLoanData.addressProof.documentType,
-          address_proof_documentNumber: getLoanData.addressProof.documentNumber,
-          address_proof_documentImage: getLoanData.addressProof.documentImage,
+          address_proof_documentType: getLoanData?.addressProof?.documentType,
+          address_proof_documentNumber:
+            getLoanData?.addressProof?.documentNumber,
+          address_proof_documentImage: getLoanData?.addressProof?.documentImage,
 
-          income_proof_documentType: getLoanData.incomeProof.documentType,
-          income_proof_documentImage: getLoanData.incomeProof.documentImage,
+          income_proof_documentType: getLoanData?.incomeProof?.documentType,
+          income_proof_documentImage: getLoanData?.incomeProof?.documentImage,
 
-          bank_statements_documentType: getLoanData.bankStatement.documentType,
+          bank_statements_documentType:
+            getLoanData?.bankStatement?.documentType,
           bank_statements_documentImage:
-            getLoanData.bankStatement.documentImage,
+            getLoanData?.bankStatement?.documentImage,
 
           employment_proof_documentType:
-            getLoanData.employmentProof.documentType,
+            getLoanData?.employmentProof?.documentType,
           employment_proof_documentImage:
-            getLoanData.employmentProof.documentImage,
+            getLoanData?.employmentProof?.documentImage,
         }
       : {
           id_proof_documentType: "",

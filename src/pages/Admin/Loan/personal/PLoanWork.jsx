@@ -46,28 +46,31 @@ const PLoanWork = (props) => {
         setCountryData(
           res.data.map((item) => ({ label: item.name, value: item.id }))
         );
-        setLoanData({});
+
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
       });
-    if (loanDetails.type === "edit") {
-      setLoading(true);
-      applicationDetails(loanDetails.loanId)
-        .then((res) => {
-          setLoanData(res.data);
-          Promise.all([
-            stateList(Number(res.data.country)),
-            cityList(Number(res.data.country), Number(res.data.state)),
-          ]);
+    // if (loanDetails.type === "edit") {
+    setLoading(true);
+    applicationDetails(loanDetails.loanId)
+      .then((res) => {
+        setLoanData(res.data);
+        if (res?.data?.workCountry && res?.data?.workState) {
+          stateList(Number(res?.data?.workCountry));
+          cityList(
+            Number(res?.data?.workCountry),
+            Number(res?.data?.workState)
+          );
+        }
 
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,7 +149,7 @@ const PLoanWork = (props) => {
     applicationUpdate({
       ...values,
       applicationType: "work",
-      _id: getLoanData._id,
+      _id: loanDetails.loanId,
     })
       .then((res) => {
         setLoading(false);

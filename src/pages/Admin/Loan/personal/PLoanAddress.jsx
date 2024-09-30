@@ -54,28 +54,38 @@ const PLoanAddress = (props) => {
         setCountryData(
           res.data.map((item) => ({ label: item.name, value: item.id }))
         );
-        setLoanData({});
+
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
       });
-    if (loanDetails.type === "edit") {
-      setLoading(true);
-      applicationDetails(loanDetails.loanId)
-        .then((res) => {
-          setLoanData(res.data);
-          Promise.all([
-            stateList(Number(res.data.country)),
-            cityList(Number(res.data.country), Number(res.data.state)),
-          ]);
+    // if (loanDetails.type === "edit") {
+    setLoading(true);
+    applicationDetails(loanDetails.loanId)
+      .then((res) => {
+        setLoanData(res.data);
+        setLoading(false);
+        if (res?.data?.permanentCountry && res?.data?.permanentState) {
+          stateList(res.data.permanentCountry, "permanent");
+          stateList(res.data.residenceCountry, "residence");
 
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
+          cityList(
+            res.data.permanentCountry,
+            res.data.permanentState,
+            "permanent"
+          );
+          cityList(
+            res.data.residenceCountry,
+            res.data.permanentCity,
+            "residence"
+          );
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -193,7 +203,7 @@ const PLoanAddress = (props) => {
     applicationUpdate({
       ...values,
       applicationType: "address",
-      _id: getLoanData._id,
+      _id: loanDetails.loanId,
     })
       .then((res) => {
         setLoading(false);
