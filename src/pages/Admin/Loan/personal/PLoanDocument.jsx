@@ -73,11 +73,11 @@ const PLoanDocument = (props) => {
   const handelSubmit = (values) => {
     const reqData = {
       applicationType: "document",
-      [selectTypeDocument.entity]: {
-        documentType: values.documentType,
-        documentImage: values.documentImage,
-        documentNumber: values.documentNumber,
-      },
+
+      documentType: values.documentType,
+      documentImage: values.documentImage,
+      documentNumber: values.documentNumber,
+      entity: selectTypeDocument.entity,
     };
 
     applicationUpdateWithImage({
@@ -91,7 +91,7 @@ const PLoanDocument = (props) => {
           title: res.message,
           icon: "success",
         });
-        props.next();
+        // props.next();
       })
       .catch(() => {
         setLoading(false);

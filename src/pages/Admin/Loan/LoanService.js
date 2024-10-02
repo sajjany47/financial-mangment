@@ -1,4 +1,8 @@
-import { headerWithToken, Instance } from "../../../shared/constant";
+import {
+  headerWithFormData,
+  headerWithToken,
+  Instance,
+} from "../../../shared/constant";
 
 export const getLoanDetails = async (payload) => {
   const response = await Instance.get(`/loan/${payload}`, headerWithToken());
@@ -37,9 +41,9 @@ export const applicationStatusChange = async (payload) => {
 
 export const applicationUpdateWithImage = async (payload) => {
   const response = await Instance.post(
-    `/loan/application-update`,
+    `/loan/application-document`,
     payload,
-    headerWithToken()
+    headerWithFormData()
   );
   return response.data;
 };
