@@ -48,6 +48,15 @@ export const applicationUpdateWithImage = async (payload) => {
   return response.data;
 };
 
+export const documentUpdateWithImage = async (payload) => {
+  const response = await Instance.post(
+    `/loan/document-update`,
+    payload,
+    headerWithFormData()
+  );
+  return response.data;
+};
+
 export const applicationList = async (payload) => {
   const response = await Instance.post(
     `/loan/datatable`,

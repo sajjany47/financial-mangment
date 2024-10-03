@@ -10,7 +10,11 @@ import {
   InputField,
   UploadField,
 } from "../../../../component/FieldType";
-import { applicationDetails, applicationUpdateWithImage } from "../LoanService";
+import {
+  applicationDetails,
+  applicationUpdateWithImage,
+  documentUpdateWithImage,
+} from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { documentGetList } from "../../setting/SettingService";
@@ -80,22 +84,42 @@ const PLoanDocument = (props) => {
       entity: selectTypeDocument.entity,
     };
 
-    applicationUpdateWithImage({
-      ...reqData,
-      dataType: "document",
-      _id: loanDetails.loanId,
-    })
-      .then((res) => {
-        setLoading(false);
-        Swal.fire({
-          title: res.message,
-          icon: "success",
-        });
-        // props.next();
+    if (actionType === "add") {
+      applicationUpdateWithImage({
+        ...reqData,
+        dataType: "document",
+        _id: loanDetails.loanId,
       })
-      .catch(() => {
-        setLoading(false);
-      });
+        .then((res) => {
+          setLoading(false);
+          Swal.fire({
+            title: res.message,
+            icon: "success",
+          });
+          // props.next();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } else {
+      documentUpdateWithImage({
+        ...reqData,
+        dataType: "document",
+        documentId: "",
+        _id: loanDetails.loanId,
+      })
+        .then((res) => {
+          setLoading(false);
+          Swal.fire({
+            title: res.message,
+            icon: "success",
+          });
+          // props.next();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const onTemplateSelect = (e, setFieldValue, name) => {
@@ -117,6 +141,7 @@ const PLoanDocument = (props) => {
           onClick={() => {
             setSelectTypeDocument(data);
             setVisible(true);
+            setActionType("add");
           }}
           type="button"
         />
