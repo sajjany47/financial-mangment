@@ -20,6 +20,7 @@ import * as Yup from "yup";
 import { documentGetList } from "../../setting/SettingService";
 import { Dialog } from "primereact/dialog";
 import { Image } from "primereact/image";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 const documentValidationSchema = Yup.object().shape({
   documentType: Yup.string().required("Document type is required"),
@@ -155,10 +156,27 @@ const PLoanDocument = (props) => {
     );
   };
 
+  const accept = (documentId, documentImage) => {
+    console.log(documentId);
+    console.log(documentImage);
+  };
+
+  const reject = () => {};
+  const confirm = (documentId, documentImage) => {
+    confirmDialog({
+      message: "Are you sure you want to proceed?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      defaultFocus: "accept",
+      accept: () => accept(documentId, documentImage),
+      reject,
+    });
+  };
+
   return (
     <>
       {loading && <Loader />}
-
+      <ConfirmDialog />
       {personalLoanDocuments.map((item, index) => {
         return (
           <Panel
@@ -177,6 +195,7 @@ const PLoanDocument = (props) => {
                             src={elm[elm.entity].documentUrl}
                             alt="Image"
                             width="250"
+                            height="200"
                           />
                         </div>
                         <div className="col-12 md:col-3">
@@ -195,24 +214,38 @@ const PLoanDocument = (props) => {
                                   ? elm[elm.entity]?.documentNumber
                                   : "N/A"}
                               </div>
-                              <Button
-                                severity="secondary"
-                                icon="pi pi-pencil"
-                                text
-                                onClick={() => {
-                                  setSelectTypeDocument(item);
-                                  setSelectedData({
-                                    documentType: elm[elm.entity].documentType,
-                                    documentImage:
-                                      elm[elm.entity]?.documentImage,
-                                    documentNumber:
-                                      elm[elm.entity]?.documentNumber,
-                                    documentId: elm._id,
-                                  });
-                                  setVisible(true);
-                                  setActionType("edit");
-                                }}
-                              />
+                              <div className="flex">
+                                <Button
+                                  severity="secondary"
+                                  icon="pi pi-pencil"
+                                  text
+                                  onClick={() => {
+                                    setSelectTypeDocument(item);
+                                    setSelectedData({
+                                      documentType:
+                                        elm[elm.entity].documentType,
+                                      documentImage:
+                                        elm[elm.entity]?.documentImage,
+                                      documentNumber:
+                                        elm[elm.entity]?.documentNumber,
+                                      documentId: elm._id,
+                                    });
+                                    setVisible(true);
+                                    setActionType("edit");
+                                  }}
+                                />
+                                <Button
+                                  severity="danger"
+                                  icon="pi pi-trash"
+                                  text
+                                  onClick={() => {
+                                    confirm(
+                                      elm._id,
+                                      elm[elm.entity]?.documentImage
+                                    );
+                                  }}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
