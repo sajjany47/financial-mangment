@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { documentGetList } from "../../setting/SettingService";
 import { Dialog } from "primereact/dialog";
-// import { Image } from "primereact/image";
+import { Image } from "primereact/image";
 
 const documentValidationSchema = Yup.object().shape({
   documentType: Yup.string().required("Document type is required"),
@@ -34,9 +34,13 @@ const PLoanDocument = (props) => {
   const [visible, setVisible] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectTypeDocument, setSelectTypeDocument] = useState({});
+  const [selectedData, setSelectedData] = useState({});
 
   useEffect(() => {
-    // if (loanDetails.type === "edit") {
+    getDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const getDetails = () => {
     setLoading(true);
     applicationDetails(loanDetails.loanId)
       .then((res) => {
@@ -57,16 +61,11 @@ const PLoanDocument = (props) => {
       .catch(() => {
         setLoading(false);
       });
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  };
   const initialValues =
     loanDetails.type === "edit"
       ? {
-          documentType: "",
-          documentImage: "",
-          documentNumber: "",
+          ...selectedData,
         }
       : {
           documentType: "",
@@ -82,6 +81,7 @@ const PLoanDocument = (props) => {
       documentImage: values.documentImage,
       documentNumber: values.documentNumber,
       entity: selectTypeDocument.entity,
+      _id: loanDetails.loanId,
     };
 
     if (actionType === "add") {
@@ -96,6 +96,9 @@ const PLoanDocument = (props) => {
             title: res.message,
             icon: "success",
           });
+          getDetails();
+          setVisible(false);
+          setActionType("add");
           // props.next();
         })
         .catch(() => {
@@ -105,15 +108,18 @@ const PLoanDocument = (props) => {
       documentUpdateWithImage({
         ...reqData,
         dataType: "document",
-        documentId: "",
+        documentId: selectedData.documentId,
         _id: loanDetails.loanId,
       })
         .then((res) => {
+          getDetails();
           setLoading(false);
           Swal.fire({
             title: res.message,
             icon: "success",
           });
+          setVisible(false);
+          setActionType("add");
           // props.next();
         })
         .catch(() => {
@@ -160,9 +166,60 @@ const PLoanDocument = (props) => {
             className="mt-2 "
             key={index}
           >
-            <div className="flex flex-column ">
-              <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-start align-items-start font-medium">
-                <div className="grid p-3"></div>
+            <div className="border-2 border-dashed surface-border border-round surface-ground align-items-start font-medium">
+              <div className="grid p-3">
+                {getLoanData?.document?.map((elm, index) => {
+                  if (elm.entity === item.entity) {
+                    return (
+                      <div className="col-12 grid" key={index}>
+                        <div className="col-12 md:col-3">
+                          <Image
+                            src={elm[elm.entity].documentUrl}
+                            alt="Image"
+                            width="250"
+                          />
+                        </div>
+                        <div className="col-12 md:col-3">
+                          <div className="flex flex-column justify-content-center mb-3 ">
+                            <div>
+                              <span className="block text-500 font-medium mb-3">
+                                {
+                                  item.document.find(
+                                    (a) =>
+                                      a._id === elm[elm.entity].documentType
+                                  ).name
+                                }
+                              </span>
+                              <div className="text-900 font-medium text-xl">
+                                {elm[elm.entity]?.documentNumber !== null
+                                  ? elm[elm.entity]?.documentNumber
+                                  : "N/A"}
+                              </div>
+                              <Button
+                                severity="secondary"
+                                icon="pi pi-pencil"
+                                text
+                                onClick={() => {
+                                  setSelectTypeDocument(item);
+                                  setSelectedData({
+                                    documentType: elm[elm.entity].documentType,
+                                    documentImage:
+                                      elm[elm.entity]?.documentImage,
+                                    documentNumber:
+                                      elm[elm.entity]?.documentNumber,
+                                    documentId: elm._id,
+                                  });
+                                  setVisible(true);
+                                  setActionType("edit");
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
               </div>
             </div>
           </Panel>
