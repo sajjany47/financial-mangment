@@ -39,6 +39,15 @@ export const applicationStatusChange = async (payload) => {
   return response.data;
 };
 
+export const applicationDocumentDelete = async (payload) => {
+  const response = await Instance.post(
+    `/loan/document-delete`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const applicationUpdateWithImage = async (payload) => {
   const response = await Instance.post(
     `/loan/application-document`,

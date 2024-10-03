@@ -12,6 +12,7 @@ import {
 } from "../../../../component/FieldType";
 import {
   applicationDetails,
+  applicationDocumentDelete,
   applicationUpdateWithImage,
   documentUpdateWithImage,
 } from "../LoanService";
@@ -157,8 +158,23 @@ const PLoanDocument = (props) => {
   };
 
   const accept = (documentId, documentImage) => {
-    console.log(documentId);
-    console.log(documentImage);
+    setLoading(true);
+    applicationDocumentDelete({
+      _id: loanDetails.loanId,
+      documentId: documentId,
+      doumentImage: documentImage,
+    })
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        getDetails();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const reject = () => {};
@@ -196,6 +212,7 @@ const PLoanDocument = (props) => {
                             alt="Image"
                             width="250"
                             height="200"
+                            preview
                           />
                         </div>
                         <div className="col-12 md:col-3">
