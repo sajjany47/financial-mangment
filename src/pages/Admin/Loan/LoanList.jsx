@@ -4,12 +4,12 @@ import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loader from "../../../component/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddLoan } from "../../../store/reducer/AddLoanReducer";
 import { Dialog } from "primereact/dialog";
-import { applicationList } from "./LoanService";
+import { applicationList, applicationStatusChange } from "./LoanService";
 import { Dropdown } from "primereact/dropdown";
 import { countryList } from "../AddUser/AddUserService";
 import { loanTypeGetList } from "../setting/SettingService";
@@ -17,11 +17,15 @@ import CPaginator from "../../../component/CPaginator";
 import {
   AddLoanPath,
   EditLoanPath,
+  LoanApplicationSteps,
   LoantatusSeverityColor,
 } from "../../../shared/Config";
 import { Tag } from "primereact/tag";
+import { Menu } from "primereact/menu";
+import Swal from "sweetalert2";
 
 const LoanList = (props) => {
+  const menuRef = useRef();
   const dispatch = useDispatch();
   const loanDetails = useSelector((state) => state.loan.addLoan);
   const userDetails = useSelector((state) => state.user.user.data);
@@ -29,11 +33,14 @@ const LoanList = (props) => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [statusVisible, setStatusVisible] = useState(false);
   const [selectCountry, setSelectCountry] = useState(userDetails.country);
   const [loanTypeOption, setLoanTypeOption] = useState([]);
   const [countryData, setCountryData] = useState([]);
   const [actionType, setActionType] = useState("country");
   const [total, setTotal] = useState(0);
+  const [selectedItem, setSelectedItem] = useState({});
+  const [statusValue, setStatusValue] = useState("");
 
   useEffect(() => {
     countryList()
@@ -103,20 +110,15 @@ const LoanList = (props) => {
     return (
       <>
         <Button
-          icon="pi pi-pencil"
+          icon="pi pi-ellipsis-v"
           rounded
           text
           aria-label="Filter"
-          onClick={() => {
-            navigate(EditLoanPath(item.loanDetails.entity));
-            dispatch(
-              setAddLoan({
-                type: "edit",
-                loanType: {},
-                loanId: item._id,
-                data: {},
-              })
-            );
+          aria-controls="popup_menu_right"
+          aria-haspopup
+          onClick={(event) => {
+            menuRef.current.toggle(event);
+            setSelectedItem(item);
           }}
         />
       </>
@@ -134,7 +136,7 @@ const LoanList = (props) => {
   };
 
   const handelSubmit = () => {
-    setLoading(true);
+    // setLoading(true);
     loanTypeDetails(selectCountry);
   };
 
@@ -150,8 +152,59 @@ const LoanList = (props) => {
     const { label, severity } = LoantatusSeverityColor(item.status);
     return <Tag severity={severity} value={label} />;
   };
+
+  const menuTemplate = [
+    {
+      //   label: "Profile",
+      items: [
+        {
+          label: "Edit Application",
+          command: () => {
+            navigate(EditLoanPath(selectedItem.loanDetails.entity));
+            dispatch(
+              setAddLoan({
+                type: "edit",
+                loanType: {},
+                loanId: selectedItem._id,
+                data: {},
+              })
+            );
+          },
+        },
+        {
+          label: "Status Change",
+          visible: selectedItem.status !== "incompleted",
+          command: () => {
+            setStatusVisible(true);
+          },
+        },
+      ],
+    },
+  ];
+
+  const handelStatusChange = () => {
+    setLoading(true);
+    applicationStatusChange({ _id: selectedItem._id, status: statusValue })
+      .then((res) => {
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   return (
     <>
+      <Menu
+        model={menuTemplate}
+        popup
+        ref={menuRef}
+        id="popup_menu_right"
+        popupAlignment="right"
+      />
       {loading && <Loader />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
         <DataTable
@@ -182,6 +235,37 @@ const LoanList = (props) => {
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
+      <Dialog
+        header={"Status Change"}
+        visible={statusVisible}
+        style={{ width: "25vw" }}
+        onHide={() => {
+          setStatusVisible(false);
+          setStatusValue("");
+        }}
+      >
+        <div className="surface-0">
+          <div className="grid">
+            <div className="col-12 md:col-12 m-2 ">
+              <Dropdown
+                filter
+                value={statusValue}
+                onChange={(e) => setStatusValue(e.value)}
+                options={LoanApplicationSteps}
+                placeholder="Select status"
+                className="w-full md:w-18rem"
+              />
+            </div>
+            <div className="col-12 md:col-12 m-2 ">
+              <Button
+                label="Submit"
+                className="w-full md:w-18rem"
+                onClick={handelStatusChange}
+              />
+            </div>
+          </div>
+        </div>
+      </Dialog>
 
       <Dialog
         header={

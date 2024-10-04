@@ -95,26 +95,30 @@ export const EmployeeTypes = [
 
 export const LoanApplicationSteps = [
   {
+    label: "Incompleted",
+    value: "incompleted",
+  },
+  {
     label: "Application Number Generated",
     value: "application_number_generated",
   },
   { label: "Loan Amount Generated", value: "loan_amount_generated" },
   {
-    label: "Document & Address Verification Processing",
+    label: "Document Address Verified",
     value: "document_address_verification",
   },
   {
-    label: "Business or Company Address Verification Processing",
+    label: "Business or Company Address Verified",
     value: "business_address_verification",
   },
-  { label: "Document Verification Processing", value: "document_verification" },
+  { label: "Document Verified", value: "document_verification" },
   {
     label: "Loan Amount Approved Processing",
     value: "loan_amount_approved_processing",
   },
   { label: "Loan Approved", value: "loan_approved" },
-  { label: "Loan Rejected", value: "rejected" },
-  { label: "Loan Disbursed", value: "disbursed" },
+  { label: "Rejected", value: "rejected" },
+  { label: "Amount Disbursed", value: "disbursed" },
 ];
 
 export const ResidenceTypes = [
@@ -198,7 +202,10 @@ export const LoantatusSeverityColor = (role) => {
     case "document_address_verification":
       return { label: "Document Address Verified", severity: "help" };
     case "business_address_verification":
-      return { label: "Business Address Verified", severity: "warning" };
+      return {
+        label: "Business or Company Address Verified",
+        severity: "warning",
+      };
     case "document_verification":
       return { label: "Document Verified", severity: "secondary" };
     case "loan_amount_approved_processing":
