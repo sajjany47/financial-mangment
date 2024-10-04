@@ -13,6 +13,7 @@ import {
 import {
   applicationDetails,
   applicationDocumentDelete,
+  applicationUpdate,
   applicationUpdateWithImage,
   documentUpdateWithImage,
 } from "../LoanService";
@@ -189,6 +190,60 @@ const PLoanDocument = (props) => {
     });
   };
 
+  const validateDocument = () => {
+    let isValid = true;
+    personalLoanDocuments.forEach((item) => {
+      const uploadedDocs = getLoanData?.document.filter(
+        (elm) => elm.entity === item.entity
+      );
+      if (uploadedDocs.length === 0) {
+        // If no document is uploaded for this document type
+        isValid = false;
+        console.log(`${item.documentType} is missing.`);
+      } else {
+        uploadedDocs.forEach((doc) => {
+          if (
+            !doc[doc.entity]?.documentImage ||
+            !doc[doc.entity]?.documentNumber
+          ) {
+            // Validate required fields
+            isValid = false;
+            Swal.fire({
+              title: `Missing details for ${doc[doc.entity]?.name}`,
+              icon: "error",
+            });
+          }
+        });
+      }
+    });
+    return isValid;
+  };
+
+  const handelNextClick = () => {
+    if (validateDocument()) {
+      applicationUpdate({
+        applicationType: "document",
+        _id: loanDetails.loanId,
+      })
+        .then((res) => {
+          setLoading(false);
+          Swal.fire({
+            title: res.message,
+            icon: "success",
+          });
+          props.next();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } else {
+      Swal.fire({
+        title: `Please upload all required documents and fill in the necessary details.`,
+        icon: "warning",
+      });
+    }
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -290,7 +345,7 @@ const PLoanDocument = (props) => {
           label={"Next"}
           icon="pi pi-arrow-right"
           iconPos="right"
-          onClick={() => props.next()}
+          onClick={handelNextClick}
         />
       </div>
 
