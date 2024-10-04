@@ -112,10 +112,7 @@ export const LoanApplicationSteps = [
     value: "business_address_verification",
   },
   { label: "Document Verified", value: "document_verification" },
-  {
-    label: "Loan Amount Approved Processing",
-    value: "loan_amount_approved_processing",
-  },
+
   { label: "Loan Approved", value: "loan_approved" },
   { label: "Rejected", value: "rejected" },
   { label: "Amount Disbursed", value: "disbursed" },

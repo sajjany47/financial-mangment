@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Dialog } from "primereact/dialog";
 import Loader from "../../../component/Loader";
@@ -10,6 +10,7 @@ import { DropdownField, InputField } from "../../../component/FieldType";
 import { branchList } from "../Branch/BranchService";
 import {
   applicationCreate,
+  applicationDelete,
   applicationList,
   applicationUpdate,
 } from "./LoanService";
@@ -18,6 +19,8 @@ import * as Yup from "yup";
 import { loanTypeGetList } from "../setting/SettingService";
 import { Position } from "../../../shared/Config";
 import CPaginator from "../../../component/CPaginator";
+import { Menu } from "primereact/menu";
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 
 const leadSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -33,6 +36,7 @@ const leadSchema = Yup.object().shape({
   }),
 });
 const Lead = () => {
+  const menuRef = useRef();
   const userDetails = useSelector((state) => state.user?.user.data);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
@@ -171,14 +175,27 @@ const Lead = () => {
   const actionBodyTemplate = (item) => {
     return (
       <>
-        <Button
+        {/* <Button
           icon="pi pi-pencil"
           rounded
           text
           aria-label="Filter"
+
           onClick={() => {
             setActionType("edit");
             setVisible(true);
+            setSelectData(item);
+          }}
+        /> */}
+        <Button
+          icon="pi pi-ellipsis-v"
+          rounded
+          text
+          aria-label="Filter"
+          aria-controls="popup_menu_right"
+          aria-haspopup
+          onClick={(event) => {
+            menuRef.current.toggle(event);
             setSelectData(item);
           }}
         />
@@ -213,6 +230,79 @@ const Lead = () => {
         });
     }
   };
+  const accept = () => {
+    setLoading(true);
+    setLoading(true);
+    applicationDelete({ _id: selectData._id })
+      .then((res) => {
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        setLoading(false);
+
+        getLeadList();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const reject = () => {};
+  const confirm = () => {
+    confirmDialog({
+      message: "Are you sure you want to proceed?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      defaultFocus: "accept",
+      accept: () => accept(),
+      reject,
+    });
+  };
+  const menuTemplate = [
+    {
+      //   label: "Profile",
+      items: [
+        {
+          label: "Edit Lead",
+          command: () => {
+            setActionType("edit");
+            setVisible(true);
+          },
+        },
+        {
+          label: "Convert To Application",
+
+          command: () => {
+            setLoading(true);
+            applicationUpdate({
+              _id: selectData._id,
+              status: "incompleted",
+              applicationType: "status",
+              remark: `Lead converted by ${userDetails.username}`,
+            })
+              .then((res) => {
+                Swal.fire({
+                  title: res.message,
+                  icon: "success",
+                });
+                setLoading(false);
+                getLeadList();
+              })
+              .catch(() => {
+                setLoading(false);
+              });
+          },
+        },
+        {
+          label: "Lead Delete",
+          command: () => {
+            confirm();
+          },
+        },
+      ],
+    },
+  ];
 
   const branchTemplate = (item) => {
     return (
@@ -225,6 +315,14 @@ const Lead = () => {
   return (
     <>
       {loading && <Loader />}
+      <ConfirmDialog />
+      <Menu
+        model={menuTemplate}
+        popup
+        ref={menuRef}
+        id="popup_menu_right"
+        popupAlignment="right"
+      />
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
         <DataTable
           value={list}
