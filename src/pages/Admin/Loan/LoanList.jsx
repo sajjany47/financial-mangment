@@ -14,7 +14,12 @@ import { Dropdown } from "primereact/dropdown";
 import { countryList } from "../AddUser/AddUserService";
 import { loanTypeGetList } from "../setting/SettingService";
 import CPaginator from "../../../component/CPaginator";
-import { AddLoanPath, EditLoanPath } from "../../../shared/Config";
+import {
+  AddLoanPath,
+  EditLoanPath,
+  LoantatusSeverityColor,
+} from "../../../shared/Config";
+import { Tag } from "primereact/tag";
 
 const LoanList = (props) => {
   const dispatch = useDispatch();
@@ -140,6 +145,11 @@ const LoanList = (props) => {
       </div>
     );
   };
+
+  const statusTemplate = (item) => {
+    const { label, severity } = LoantatusSeverityColor(item.status);
+    return <Tag severity={severity} value={label} />;
+  };
   return (
     <>
       {loading && <Loader />}
@@ -157,11 +167,16 @@ const LoanList = (props) => {
           <Column field="mobile" header="Mobile" />
           <Column field="loanDetails.name" header="Type" />
           <Column field="loanAmount" header="Amount" />
-          <Column field="loanStatus" header="Status" />
           <Column
             field="branchDetails.name"
             header="Branch"
             body={branchTemplate}
+          />
+          <Column field="status" header="Status" body={statusTemplate} />
+          <Column
+            field="loanRejectedReason"
+            header="Reason"
+            // body={statusTemplate}
           />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>

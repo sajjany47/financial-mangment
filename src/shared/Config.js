@@ -114,6 +114,7 @@ export const LoanApplicationSteps = [
   },
   { label: "Loan Approved", value: "loan_approved" },
   { label: "Loan Rejected", value: "rejected" },
+  { label: "Loan Disbursed", value: "disbursed" },
 ];
 
 export const ResidenceTypes = [
@@ -183,5 +184,33 @@ export const EditLoanPath = (entity) => {
 
     default:
       return "";
+  }
+};
+
+export const LoantatusSeverityColor = (role) => {
+  switch (role) {
+    case "incompleted":
+      return { label: "Incompleted", severity: "info" };
+    case "application_number_generated":
+      return { label: "Application Number Generated", severity: "warning" };
+    case "loan_amount_generated":
+      return { label: "Loan Amount Generated", severity: "success" };
+    case "document_address_verification":
+      return { label: "Document Address Verified", severity: "help" };
+    case "business_address_verification":
+      return { label: "Business Address Verified", severity: "warning" };
+    case "document_verification":
+      return { label: "Document Verified", severity: "secondary" };
+    case "loan_amount_approved_processing":
+      return { label: "Loan Amount Approved Processing", severity: "success" };
+    case "loan_approved":
+      return { label: "Loan Approved", severity: "secondary" };
+    case "rejected":
+      return { label: "Rejected", severity: "danger" };
+    case "disbursed":
+      return { label: "Amount Disbursed", severity: "help" };
+
+    default:
+      return { label: "Unknown", severity: "contrast" }; // Fallback case
   }
 };
