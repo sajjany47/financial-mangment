@@ -30,9 +30,9 @@ export const applicationDetails = async (id) => {
   const response = await Instance.get(`/loan/${id}`, headerWithToken());
   return response.data;
 };
-export const applicationStatusChange = async (payload) => {
+export const applicationDelete = async (payload) => {
   const response = await Instance.post(
-    `/loan/status-change`,
+    `/loan/application-delete`,
     payload,
     headerWithToken()
   );

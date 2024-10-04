@@ -9,7 +9,11 @@ import Loader from "../../../component/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddLoan } from "../../../store/reducer/AddLoanReducer";
 import { Dialog } from "primereact/dialog";
-import { applicationList, applicationStatusChange } from "./LoanService";
+import {
+  applicationDelete,
+  applicationList,
+  applicationUpdate,
+} from "./LoanService";
 import { Dropdown } from "primereact/dropdown";
 import { countryList } from "../AddUser/AddUserService";
 import { loanTypeGetList } from "../setting/SettingService";
@@ -23,7 +27,18 @@ import {
 import { Tag } from "primereact/tag";
 import { Menu } from "primereact/menu";
 import Swal from "sweetalert2";
+import { Field, Form, Formik } from "formik";
+import {
+  DropdownField,
+  TextAreaInputField,
+} from "../../../component/FieldType";
+import * as Yup from "yup";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
+const ApplicationStatusSchema = Yup.object().shape({
+  status: Yup.string().required("Application status is required"),
+  remark: Yup.string().required("Application remark is required"),
+});
 const LoanList = (props) => {
   const menuRef = useRef();
   const dispatch = useDispatch();
@@ -40,7 +55,6 @@ const LoanList = (props) => {
   const [actionType, setActionType] = useState("country");
   const [total, setTotal] = useState(0);
   const [selectedItem, setSelectedItem] = useState({});
-  const [statusValue, setStatusValue] = useState("");
 
   useEffect(() => {
     countryList()
@@ -150,7 +164,9 @@ const LoanList = (props) => {
 
   const statusTemplate = (item) => {
     const { label, severity } = LoantatusSeverityColor(item.status);
-    return <Tag severity={severity} value={label} />;
+    return (
+      <Tag severity={severity} value={label} style={{ fontSize: "10px" }} />
+    );
   };
 
   const menuTemplate = [
@@ -178,19 +194,62 @@ const LoanList = (props) => {
             setStatusVisible(true);
           },
         },
+        {
+          label: "Application Delete",
+          command: () => {
+            confirm();
+          },
+        },
       ],
     },
   ];
 
-  const handelStatusChange = () => {
+  const accept = () => {
     setLoading(true);
-    applicationStatusChange({ _id: selectedItem._id, status: statusValue })
+    setLoading(true);
+    applicationDelete({ _id: selectedItem._id })
       .then((res) => {
         Swal.fire({
           title: res.message,
           icon: "success",
         });
         setLoading(false);
+
+        getApplicationList();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const reject = () => {};
+  const confirm = () => {
+    confirmDialog({
+      message: "Are you sure you want to proceed?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      defaultFocus: "accept",
+      accept: () => accept(),
+      reject,
+    });
+  };
+
+  const handelStatusChange = (values) => {
+    setLoading(true);
+    applicationUpdate({
+      _id: selectedItem._id,
+      status: values.status,
+      remark: values.remark,
+      applicationType: "status",
+    })
+      .then((res) => {
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        setLoading(false);
+        setStatusVisible(false);
+        getApplicationList();
       })
       .catch(() => {
         setLoading(false);
@@ -198,6 +257,7 @@ const LoanList = (props) => {
   };
   return (
     <>
+      <ConfirmDialog />
       <Menu
         model={menuTemplate}
         popup
@@ -227,8 +287,8 @@ const LoanList = (props) => {
           />
           <Column field="status" header="Status" body={statusTemplate} />
           <Column
-            field="loanRejectedReason"
-            header="Reason"
+            field="remark"
+            header="Remark"
             // body={statusTemplate}
           />
           <Column header="Action" body={actionBodyTemplate} />
@@ -241,30 +301,47 @@ const LoanList = (props) => {
         style={{ width: "25vw" }}
         onHide={() => {
           setStatusVisible(false);
-          setStatusValue("");
         }}
       >
-        <div className="surface-0">
-          <div className="grid">
-            <div className="col-12 md:col-12 m-2 ">
-              <Dropdown
-                filter
-                value={statusValue}
-                onChange={(e) => setStatusValue(e.value)}
-                options={LoanApplicationSteps}
-                placeholder="Select status"
-                className="w-full md:w-18rem"
-              />
-            </div>
-            <div className="col-12 md:col-12 m-2 ">
-              <Button
-                label="Submit"
-                className="w-full md:w-18rem"
-                onClick={handelStatusChange}
-              />
-            </div>
-          </div>
-        </div>
+        <Formik
+          onSubmit={handelStatusChange}
+          initialValues={{ status: "", remark: "" }}
+          validationSchema={ApplicationStatusSchema}
+        >
+          {({ handleSubmit }) => (
+            <Form onSubmit={handleSubmit}>
+              <div className="border-2 border-dashed surface-border border-round surface-ground  font-medium">
+                <div className="grid p-3">
+                  <div className="col-12 md:col-12">
+                    <Field
+                      label="Status"
+                      component={DropdownField}
+                      name="status"
+                      options={LoanApplicationSteps}
+                      filter
+                    />
+                  </div>
+                  <div className="col-12 md:col-12">
+                    <Field
+                      label="Remark"
+                      component={TextAreaInputField}
+                      rows={5}
+                      cols={30}
+                      name="remark"
+                    />
+                  </div>
+                  <div className="col-12 md:col-12 ">
+                    <Button
+                      label="Submit"
+                      type="submit"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </Dialog>
 
       <Dialog
