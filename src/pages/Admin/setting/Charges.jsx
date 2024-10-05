@@ -4,8 +4,9 @@ import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import {
-  documentTypeCreate,
-  documentTypeList,
+  chargesCreate,
+  chargesList,
+  chargesStatusChange,
   documentTypeUpdate,
 } from "./SettingService";
 import { Dialog } from "primereact/dialog";
@@ -13,6 +14,7 @@ import { Field, Form, Formik } from "formik";
 import { InputField } from "../../../component/FieldType";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import { InputSwitch } from "primereact/inputswitch";
 
 const chargesSchema = Yup.object().shape({
   processingFees: Yup.string().required("Processing Fees is required"),
@@ -58,7 +60,7 @@ const Charges = () => {
   const getList = () => {
     setLoading(true);
 
-    documentTypeList()
+    chargesList()
       .then((res) => {
         setList(res.data);
         setLoading(false);
@@ -88,7 +90,7 @@ const Charges = () => {
     setLoading(true);
 
     if (actionType === "add") {
-      documentTypeCreate({ ...values })
+      chargesCreate({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -112,6 +114,28 @@ const Charges = () => {
     }
   };
 
+  const handelStatus = (value, id) => {
+    setLoading(true);
+    chargesStatusChange({ status: value, _id: id })
+      .then((res) => {
+        setLoading(false);
+        getList();
+        Swal.fire({ title: res.message, icon: "success" });
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const statusTemplate = (item) => {
+    return (
+      <InputSwitch
+        checked={item.isActive}
+        onChange={() => handelStatus(!item.isActive, item._id)}
+      />
+    );
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -124,13 +148,37 @@ const Charges = () => {
           emptyMessage="No data found."
           filterDisplay="row"
         >
-          <Column field="processingFees" header="Processing Fees" />
-          <Column field="processingFeesGST" header="Processing Fees GST" />
-          <Column field="loginFees" header="Login Fees" />
-          <Column field="loginFeesGST" header="Login Fees GST" />
-          <Column field="otherCharges" header="Other Charges" />
-          <Column header="Other Charges GST" field="otherChargesGST" />
-          <Column header="Status" field="status" />
+          <Column
+            field="processingFees"
+            header="Processing Fees"
+            body={(item) => <>{item.processingFees}%</>}
+            align={"center"}
+          />
+          <Column
+            field="processingFeesGST"
+            header="Processing Fees GST"
+            body={(item) => <>{item.processingFeesGST}%</>}
+            align={"center"}
+          />
+          <Column field="loginFees" header="Login Fees" align={"center"} />
+          <Column
+            field="loginFeesGST"
+            header="Login Fees GST"
+            body={(item) => <>{item.loginFeesGST}%</>}
+            align={"center"}
+          />
+          <Column
+            field="otherCharges"
+            header="Other Charges"
+            align={"center"}
+          />
+          <Column
+            header="Other Charges GST"
+            field="otherChargesGST"
+            body={(item) => <>{item.otherChargesGST}%</>}
+            align={"center"}
+          />
+          <Column header="Status" field="isActive" body={statusTemplate} />
         </DataTable>
       </div>
 

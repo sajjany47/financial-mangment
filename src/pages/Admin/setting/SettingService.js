@@ -98,3 +98,26 @@ export const documentGetList = async (payload) => {
   );
   return response.data;
 };
+
+export const chargesList = async () => {
+  const response = await Instance.get(`/charges/list`, headerWithToken());
+  return response.data;
+};
+
+export const chargesCreate = async (payload) => {
+  const response = await Instance.post(
+    `/charges/create`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
+export const chargesStatusChange = async (payload) => {
+  const response = await Instance.post(
+    `/charges/status-change`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
