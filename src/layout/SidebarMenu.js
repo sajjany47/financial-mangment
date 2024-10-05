@@ -66,7 +66,7 @@ const sidebarMenu = {
       title: "Settings",
       icon: "pi pi-cog",
       submenu: [
-        { title: "General Settings", route: "/settings/general" },
+        { title: "Charges", route: "/settings/charges" },
         { title: "Documents", route: "/settings/document" },
         { title: "Document Type", route: "/settings/document-type" },
         { title: "Loan Type", route: "/settings/loan-type" },

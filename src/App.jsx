@@ -26,6 +26,7 @@ import Document from "./pages/Admin/setting/Document";
 import DocumentType from "./pages/Admin/setting/DocumentType";
 import LoanType from "./pages/Admin/setting/LoanType";
 import PLoanEdit from "./pages/Admin/Loan/personal/PLoanEdit";
+import Charges from "./pages/Admin/setting/Charges";
 
 function App() {
   let isRefreshing = false;
@@ -122,6 +123,7 @@ function App() {
             <Route path="/settings/document" element={<Document />} />
             <Route path="/settings/document-type" element={<DocumentType />} />
             <Route path="/settings/loan-type" element={<LoanType />} />
+            <Route path="/settings/charges" element={<Charges />} />
           </Route>
         </Routes>
       </BrowserRouter>
