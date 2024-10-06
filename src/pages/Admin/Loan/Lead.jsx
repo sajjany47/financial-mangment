@@ -280,6 +280,7 @@ const Lead = () => {
               status: "incompleted",
               applicationType: "status",
               remark: `Lead converted by ${userDetails.username}`,
+              loanAllotAgent: true,
             })
               .then((res) => {
                 Swal.fire({
