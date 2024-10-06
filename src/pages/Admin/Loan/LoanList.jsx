@@ -30,6 +30,7 @@ import Swal from "sweetalert2";
 import { Field, Form, Formik } from "formik";
 import {
   DropdownField,
+  InputField,
   TextAreaInputField,
 } from "../../../component/FieldType";
 import * as Yup from "yup";
@@ -38,6 +39,11 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 const ApplicationStatusSchema = Yup.object().shape({
   status: Yup.string().required("Application status is required"),
   remark: Yup.string().required("Application remark is required"),
+  interestRate: Yup.string().when("status", {
+    is: (val) => val === "loan_approved",
+    then: () => Yup.string().required("Interest rate is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
 });
 const LoanList = (props) => {
   const menuRef = useRef();
@@ -189,7 +195,7 @@ const LoanList = (props) => {
         },
         {
           label: "Status Change",
-          visible: selectedItem.status !== "incompleted",
+          // visible: selectedItem.status !== "incompleted",
           command: () => {
             setStatusVisible(true);
           },
@@ -241,6 +247,8 @@ const LoanList = (props) => {
       status: values.status,
       remark: values.remark,
       applicationType: "status",
+      interestRate:
+        values.status === "loan_approved" ? values.interestRate : null,
     })
       .then((res) => {
         Swal.fire({
@@ -305,10 +313,10 @@ const LoanList = (props) => {
       >
         <Formik
           onSubmit={handelStatusChange}
-          initialValues={{ status: "", remark: "" }}
+          initialValues={{ status: "", remark: "", interestRate: "" }}
           validationSchema={ApplicationStatusSchema}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, values }) => (
             <Form onSubmit={handleSubmit}>
               <div className="border-2 border-dashed surface-border border-round surface-ground  font-medium">
                 <div className="grid p-3">
@@ -321,6 +329,19 @@ const LoanList = (props) => {
                       filter
                     />
                   </div>
+                  {values.status === "loan_approved" && (
+                    <div className="col-12 md:col-12">
+                      <Field
+                        label="Interest Rate/Month"
+                        component={InputField}
+                        name="interestRate"
+                      />
+                      <a className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">
+                        Check EMI Details?
+                      </a>
+                    </div>
+                  )}
+
                   <div className="col-12 md:col-12">
                     <Field
                       label="Remark"
