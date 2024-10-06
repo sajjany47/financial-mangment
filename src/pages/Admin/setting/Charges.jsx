@@ -41,6 +41,8 @@ const Charges = () => {
           loginFeesGST: "",
           otherCharges: "",
           otherChargesGST: "",
+          foreclosureFees: "",
+          foreclosureFeesGST: "",
         }
       : {
           processingFees: selectData.processingFees,
@@ -49,6 +51,8 @@ const Charges = () => {
           loginFeesGST: selectData.loginFeesGST,
           otherCharges: selectData.otherCharges,
           otherChargesGST: selectData.otherChargesGST,
+          foreclosureFees: selectData.foreclosureFees,
+          foreclosureFeesGST: selectData.foreclosureFeesGST,
         };
 
   useEffect(() => {
@@ -151,20 +155,40 @@ const Charges = () => {
           <Column
             field="processingFees"
             header="Processing Fees"
-            body={(item) => <>{item.processingFees}%</>}
+            body={(item) => (
+              <>{item.processingFees && `${item.processingFees}%`}</>
+            )}
             align={"center"}
           />
           <Column
             field="processingFeesGST"
             header="Processing Fees GST"
-            body={(item) => <>{item.processingFeesGST}%</>}
+            body={(item) => (
+              <>{item.processingFeesGST && `${item.processingFeesGST}%`}</>
+            )}
             align={"center"}
           />
           <Column field="loginFees" header="Login Fees" align={"center"} />
           <Column
             field="loginFeesGST"
             header="Login Fees GST"
-            body={(item) => <>{item.loginFeesGST}%</>}
+            body={(item) => <>{item.loginFeesGST && `${item.loginFeesGST}%`}</>}
+            align={"center"}
+          />
+          <Column
+            field="foreclosureFees"
+            header="Foreclosure Fees"
+            body={(item) => (
+              <>{item.foreclosureFees && `${item.foreclosureFees}%`}</>
+            )}
+            align={"center"}
+          />
+          <Column
+            field="foreclosureFeesGST"
+            header="Foreclosure Fees GST"
+            body={(item) => (
+              <>{item.foreclosureFeesGST && `${item.foreclosureFeesGST}%`}</>
+            )}
             align={"center"}
           />
           <Column
@@ -175,7 +199,9 @@ const Charges = () => {
           <Column
             header="Other Charges GST"
             field="otherChargesGST"
-            body={(item) => <>{item.otherChargesGST}%</>}
+            body={(item) => (
+              <>{item.otherChargesGST && `${item.otherChargesGST}%`}</>
+            )}
             align={"center"}
           />
           <Column header="Status" field="isActive" body={statusTemplate} />
@@ -231,7 +257,21 @@ const Charges = () => {
                     name="loginFeesGST"
                   />
                 </div>
+                <div className="col-12 md:col-6">
+                  <Field
+                    label="Foreclosure Fees(%)"
+                    component={InputField}
+                    name="foreclosureFees"
+                  />
+                </div>
 
+                <div className="col-12 md:col-6">
+                  <Field
+                    label="Foreclosure Fees GST(%)"
+                    component={InputField}
+                    name="foreclosureFeesGST"
+                  />
+                </div>
                 <div className="col-12 md:col-6">
                   <Field
                     label="Other Charges Amount"
