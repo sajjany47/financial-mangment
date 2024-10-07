@@ -17,7 +17,7 @@ import {
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { loanTypeGetList } from "../setting/SettingService";
-import { Position } from "../../../shared/Config";
+import { LoanApplicationStepsEnum, Position } from "../../../shared/Config";
 import CPaginator from "../../../component/CPaginator";
 import { Menu } from "primereact/menu";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
@@ -93,7 +93,9 @@ const Lead = () => {
   }, []);
   const getLoanTypeList = () => {
     loanTypeGetList(
-      userDetails.position === "admin" ? {} : { country: userDetails.country }
+      userDetails.position === Position.ADMIN
+        ? {}
+        : { country: userDetails.country }
     )
       .then((res) => {
         setLoanTypeOption(
@@ -277,7 +279,7 @@ const Lead = () => {
             setLoading(true);
             applicationUpdate({
               _id: selectData._id,
-              status: "incompleted",
+              status: LoanApplicationStepsEnum.INCOMPLETED,
               applicationType: "status",
               remark: `Lead converted by ${userDetails.username}`,
               loanAllotAgent: true,

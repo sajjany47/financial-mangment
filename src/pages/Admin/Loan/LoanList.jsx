@@ -22,6 +22,7 @@ import {
   AddLoanPath,
   EditLoanPath,
   LoanApplicationSteps,
+  LoanApplicationStepsEnum,
   LoantatusSeverityColor,
 } from "../../../shared/Config";
 import { Tag } from "primereact/tag";
@@ -41,17 +42,17 @@ const ApplicationStatusSchema = Yup.object().shape({
   status: Yup.string().required("Application status is required"),
   remark: Yup.string().required("Application remark is required"),
   interestRate: Yup.string().when("status", {
-    is: (val) => val === "disbursed",
+    is: (val) => val === LoanApplicationStepsEnum.DISBURSED,
     then: () => Yup.string().required("Interest rate is required"),
     otherwise: () => Yup.string().notRequired(),
   }),
   emiDate: Yup.string().when("status", {
-    is: (val) => val === "disbursed",
+    is: (val) => val === LoanApplicationStepsEnum.DISBURSED,
     then: () => Yup.string().required("EMI date is required"),
     otherwise: () => Yup.string().notRequired(),
   }),
   transactionNumber: Yup.string().when("status", {
-    is: (val) => val === "disbursed",
+    is: (val) => val === LoanApplicationStepsEnum.DISBURSED,
     then: () => Yup.string().required("Transaction Number is required"),
     otherwise: () => Yup.string().notRequired(),
   }),
@@ -206,7 +207,7 @@ const LoanList = (props) => {
         },
         {
           label: "Status Change",
-          visible: selectedItem.status !== "incompleted",
+          visible: selectedItem.status !== LoanApplicationStepsEnum.INCOMPLETED,
           command: () => {
             setStatusVisible(true);
           },
@@ -347,7 +348,7 @@ const LoanList = (props) => {
                       filter
                     />
                   </div>
-                  {values.status === "disbursed" && (
+                  {values.status === LoanApplicationStepsEnum.DISBURSED && (
                     <>
                       <div className="col-12 md:col-6">
                         <Field

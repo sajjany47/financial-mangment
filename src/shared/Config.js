@@ -133,6 +133,18 @@ export const applicationRenderStatus = {
   rejected: "rejected",
 };
 
+export const LoanApplicationStepsEnum = {
+  INCOMPLETED: "incompleted",
+  APPLICATION_NUMBER_GENERATED: "application_number_generated",
+  LOAN_AMOUNT_GENERATED: "loan_amount_generated",
+  DOCUMENT_ADDRESS_VERIFICATION: "document_address_verification",
+  BUSINESS_ADDRESS_VERIFICATION: "business_address_verification",
+  DOCUMENT_VERIFICATION: "document_verification",
+  LOAN_APPROVED: "loan_approved",
+  REJECTED: "rejected",
+  DISBURSED: "disbursed",
+};
+
 export const AddLoanPath = (entity) => {
   switch (entity) {
     case "personal_loan":
