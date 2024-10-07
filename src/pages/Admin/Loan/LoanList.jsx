@@ -50,6 +50,11 @@ const ApplicationStatusSchema = Yup.object().shape({
     then: () => Yup.string().required("EMI date is required"),
     otherwise: () => Yup.string().notRequired(),
   }),
+  transactionNumber: Yup.string().when("status", {
+    is: (val) => val === "disbursed",
+    then: () => Yup.string().required("Transaction Number is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
 });
 const LoanList = (props) => {
   const menuRef = useRef();
@@ -254,6 +259,7 @@ const LoanList = (props) => {
       remark: values.remark,
       interestRate: values.interestRate,
       emiDate: values.emiDate,
+      transactionNumber: values.transactionNumber,
       applicationType: "status",
     })
       .then((res) => {
@@ -312,7 +318,7 @@ const LoanList = (props) => {
       <Dialog
         header={"Status Change"}
         visible={statusVisible}
-        style={{ width: "25vw" }}
+        style={{ width: "50vw" }}
         onHide={() => {
           setStatusVisible(false);
         }}
@@ -324,6 +330,7 @@ const LoanList = (props) => {
             remark: "",
             interestRate: "",
             emiDate: "",
+            transactionNumber: "",
           }}
           validationSchema={ApplicationStatusSchema}
         >
@@ -342,21 +349,22 @@ const LoanList = (props) => {
                   </div>
                   {values.status === "disbursed" && (
                     <>
-                      <div className="col-12 md:col-12">
+                      <div className="col-12 md:col-6">
                         <Field
                           label="EMI Date"
                           component={DateField}
                           name="emiDate"
                         />
                       </div>
-                      <div className="col-12 md:col-12">
+
+                      <div className="col-12 md:col-6">
                         <Field
                           label="Interest Rate/Month"
                           component={InputField}
                           name="interestRate"
                         />
                         {values.interestRate && (
-                          <a
+                          <span
                             className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer"
                             onClick={() =>
                               navigate("/emi/calculator", {
@@ -371,8 +379,15 @@ const LoanList = (props) => {
                             }
                           >
                             Check EMI Details?
-                          </a>
+                          </span>
                         )}
+                      </div>
+                      <div className="col-12 md:col-12">
+                        <Field
+                          label="Transaction Number"
+                          component={InputField}
+                          name="transactionNumber"
+                        />
                       </div>
                     </>
                   )}
