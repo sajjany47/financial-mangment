@@ -11,6 +11,7 @@ import moment from "moment";
 import CustomChip from "./CustomChip";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { useLocation } from "react-router-dom";
 
 const emiSchema = Yup.object().shape({
   loanTenure: Yup.string().required("Loan tenure is required"),
@@ -18,6 +19,8 @@ const emiSchema = Yup.object().shape({
   interestRate: Yup.string().required("Interest rate is required"),
 });
 const Calculator = () => {
+  const propsValue = useLocation()?.state?.data;
+  console.log(propsValue);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
 
@@ -54,7 +57,15 @@ const Calculator = () => {
         >
           <Formik
             onSubmit={handelStatusChange}
-            initialValues={{ loanTenure: "", interestRate: "", loanAmount: "" }}
+            initialValues={
+              propsValue === undefined
+                ? { loanTenure: "", interestRate: "", loanAmount: "" }
+                : {
+                    loanTenure: propsValue.loanTenure,
+                    interestRate: propsValue.interestRate,
+                    loanAmount: propsValue.loanAmount,
+                  }
+            }
             validationSchema={emiSchema}
           >
             {({ handleSubmit }) => (

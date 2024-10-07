@@ -29,6 +29,7 @@ import { Menu } from "primereact/menu";
 import Swal from "sweetalert2";
 import { Field, Form, Formik } from "formik";
 import {
+  DateField,
   DropdownField,
   InputField,
   TextAreaInputField,
@@ -195,7 +196,7 @@ const LoanList = (props) => {
         },
         {
           label: "Status Change",
-          // visible: selectedItem.status !== "incompleted",
+          visible: selectedItem.status !== "incompleted",
           command: () => {
             setStatusVisible(true);
           },
@@ -313,7 +314,12 @@ const LoanList = (props) => {
       >
         <Formik
           onSubmit={handelStatusChange}
-          initialValues={{ status: "", remark: "", interestRate: "" }}
+          initialValues={{
+            status: "",
+            remark: "",
+            interestRate: "",
+            emiDate: "",
+          }}
           validationSchema={ApplicationStatusSchema}
         >
           {({ handleSubmit, values }) => (
@@ -329,25 +335,49 @@ const LoanList = (props) => {
                       filter
                     />
                   </div>
-                  {values.status === "loan_approved" && (
-                    <div className="col-12 md:col-12">
-                      <Field
-                        label="Interest Rate/Month"
-                        component={InputField}
-                        name="interestRate"
-                      />
-                      <a className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">
-                        Check EMI Details?
-                      </a>
-                    </div>
+                  {values.status === "disbursed" && (
+                    <>
+                      <div className="col-12 md:col-12">
+                        <Field
+                          label="EMI Date"
+                          component={DateField}
+                          name="emiDate"
+                        />
+                      </div>
+                      <div className="col-12 md:col-12">
+                        <Field
+                          label="Interest Rate/Month"
+                          component={InputField}
+                          name="interestRate"
+                        />
+                        {values.interestRate && (
+                          <a
+                            className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer"
+                            onClick={() =>
+                              navigate("/emi/calculator", {
+                                state: {
+                                  data: {
+                                    loanAmount: selectedItem.loanAmount,
+                                    loanTenure: selectedItem.loanTenure,
+                                    interestRate: values.interestRate,
+                                  },
+                                },
+                              })
+                            }
+                          >
+                            Check EMI Details?
+                          </a>
+                        )}
+                      </div>
+                    </>
                   )}
 
                   <div className="col-12 md:col-12">
                     <Field
                       label="Remark"
                       component={TextAreaInputField}
-                      rows={5}
-                      cols={30}
+                      rows={2}
+                      cols={15}
                       name="remark"
                     />
                   </div>
