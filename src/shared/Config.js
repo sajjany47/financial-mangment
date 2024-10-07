@@ -129,6 +129,7 @@ export const applicationRenderStatus = {
   incompleted: "incompleted",
   inProgress: "progress",
   approved: "approved",
+  disbursed: "disbursed",
   rejected: "rejected",
 };
 

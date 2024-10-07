@@ -41,8 +41,13 @@ const ApplicationStatusSchema = Yup.object().shape({
   status: Yup.string().required("Application status is required"),
   remark: Yup.string().required("Application remark is required"),
   interestRate: Yup.string().when("status", {
-    is: (val) => val === "loan_approved",
+    is: (val) => val === "disbursed",
     then: () => Yup.string().required("Interest rate is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+  emiDate: Yup.string().when("status", {
+    is: (val) => val === "disbursed",
+    then: () => Yup.string().required("EMI date is required"),
     otherwise: () => Yup.string().notRequired(),
   }),
 });
@@ -247,9 +252,9 @@ const LoanList = (props) => {
       _id: selectedItem._id,
       status: values.status,
       remark: values.remark,
+      interestRate: values.interestRate,
+      emiDate: values.emiDate,
       applicationType: "status",
-      interestRate:
-        values.status === "loan_approved" ? values.interestRate : null,
     })
       .then((res) => {
         Swal.fire({

@@ -28,6 +28,7 @@ import LoanType from "./pages/Admin/setting/LoanType";
 import PLoanEdit from "./pages/Admin/Loan/personal/PLoanEdit";
 import Charges from "./pages/Admin/setting/Charges";
 import Calculator from "./pages/Admin/EMI/Calculator";
+import Disbursed from "./pages/Admin/Loan/Disbursed";
 
 function App() {
   let isRefreshing = false;
@@ -114,6 +115,7 @@ function App() {
               path="/applications/progress"
               element={<ProgressApplication />}
             />
+            <Route path="/applications/disbursed" element={<Disbursed />} />
             <Route
               path="/application/personal-loan/add"
               element={<PLoanAdd />}

@@ -27,6 +27,7 @@ const sidebarMenu = {
         { title: "Application", route: "/applications/list" },
         { title: "In Progress", route: "/applications/progress" },
         { title: "Approved", route: "/applications/approved" },
+        { title: "Disbursed", route: "/applications/disbursed" },
         { title: "Rejected", route: "/applications/rejected" },
       ],
     },
