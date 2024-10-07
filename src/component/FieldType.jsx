@@ -328,3 +328,12 @@ export const CheckField = ({ field, form: { touched, errors }, ...props }) => (
     )}
   </div>
 );
+
+export const Currency = (data) => {
+  const a = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "INR",
+  }).format(data ? data : 0);
+
+  return a;
+};

@@ -15,6 +15,11 @@ const sidebarMenu = {
       submenu: [{ title: "Branch", route: "/branch/list" }],
     },
     {
+      title: "EMI",
+      icon: "pi pi-calculator",
+      submenu: [{ title: "Calculator", route: "/emi/calculator" }],
+    },
+    {
       title: "Loan",
       icon: "pi pi-file",
       submenu: [

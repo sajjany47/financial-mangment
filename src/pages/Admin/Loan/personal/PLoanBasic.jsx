@@ -215,7 +215,7 @@ const PLoanBasic = (props) => {
                       label="Tenure (In months)"
                       component={InputField}
                       name="loanTenure"
-                      keyfilter="num"
+                      keyfilter="int"
                     />
                   </div>
                   <div className="col-12 md:col-3">

@@ -27,6 +27,7 @@ import DocumentType from "./pages/Admin/setting/DocumentType";
 import LoanType from "./pages/Admin/setting/LoanType";
 import PLoanEdit from "./pages/Admin/Loan/personal/PLoanEdit";
 import Charges from "./pages/Admin/setting/Charges";
+import Calculator from "./pages/Admin/EMI/Calculator";
 
 function App() {
   let isRefreshing = false;
@@ -98,6 +99,7 @@ function App() {
             <Route path="/employee/list" element={<EmployeeList />} />
             <Route path="/employee/add" element={<AddEmployee />} />
             <Route path="/employee/edit" element={<EditEmployee />} />
+            <Route path="/emi/calculator" element={<Calculator />} />
             <Route path="/lead/list" element={<Lead />} />
             <Route path="/applications/list" element={<NewApplication />} />
             <Route
