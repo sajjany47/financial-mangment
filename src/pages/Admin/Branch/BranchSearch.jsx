@@ -104,8 +104,11 @@ const BranchSearch = () => {
       <Formik onSubmit={handelSubmit} initialValues={initialValues}>
         {({ handleSubmit, setFieldValue, values, resetForm }) => (
           <Form onSubmit={handleSubmit}>
-            <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-              <div className="grid p-3">
+            <div className=" surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+              <div
+                className="grid p-3 border-2 border-dashed surface-border border-round"
+                style={{ backgroundColor: "beige" }}
+              >
                 <div className="col-12 md:col-3">
                   <Field
                     label="Code"

@@ -187,14 +187,26 @@ const Branch = () => {
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Branch List"}</span>
         <div className="flex gap-2">
-          <Button
-            label="Search"
-            icon="pi pi-search"
-            onClick={() => {
-              setSearchShow(!searchShow);
-            }}
-            severity="secondary"
-          />
+          {searchShow ? (
+            <Button
+              icon="pi pi-times"
+              severity="help"
+              label="Hide"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+            />
+          ) : (
+            <Button
+              label="Search"
+              icon="pi pi-search"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+              severity="secondary"
+            />
+          )}
+
           <Button
             label="Add Branch"
             icon="pi pi-plus"
@@ -295,7 +307,7 @@ const Branch = () => {
       {loading && <Loader />}
 
       {searchShow && <BranchSearch />}
-      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-3">
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={branchList}
           header={header}
