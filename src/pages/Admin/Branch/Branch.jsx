@@ -266,6 +266,7 @@ const Branch = () => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
           setVisible(false);
+          getBranchList();
         })
         .catch(() => {
           setLoading(false);
