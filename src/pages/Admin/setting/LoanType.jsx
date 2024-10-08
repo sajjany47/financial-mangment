@@ -169,7 +169,7 @@ const LoanType = () => {
   return (
     <>
       {loading && <Loader />}
-      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}
           header={header}
