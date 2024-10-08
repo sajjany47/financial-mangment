@@ -14,18 +14,10 @@ import { branchDatatable, createBranch, updateBranch } from "./BranchService";
 import Swal from "sweetalert2";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useDispatch, useSelector } from "react-redux";
-import { setSearch } from "../../../store/reducer/searchReducer";
-import { Dropdown } from "primereact/dropdown";
-import { capitalizeFirstLetter } from "../../../shared/constant";
-import { InputText } from "primereact/inputtext";
-import {
-  ActiveStatus,
-  PAGE_ROW,
-  PAGINATOR_DROPDOWN_OPTIONS,
-} from "../../../shared/Config";
-import { Paginator } from "primereact/paginator";
+import { useSelector } from "react-redux";
 import { Tag } from "primereact/tag";
+import BranchSearch from "./BranchSearch";
+import CPaginator from "../../../component/CPaginator";
 
 const createBranchSchema = Yup.object().shape({
   _id: Yup.string(),
@@ -40,37 +32,20 @@ const createBranchSchema = Yup.object().shape({
   code: Yup.string().required("Code is required"),
 });
 const Branch = () => {
-  const dispatch = useDispatch();
   const searchKey = useSelector((state) => state?.search?.value);
   const [visible, setVisible] = useState(false);
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
   const [branchList, setBranchList] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
-
-  useEffect(() => {
-    if (searchKey?.page === "branch") {
-      dispatch(setSearch({ ...searchKey }));
-    } else {
-      dispatch(
-        setSearch({
-          page: "branch",
-          filterOptions: {},
-          pageNumber: 1,
-          firstPage: 0,
-          rows: 10,
-          sortOrder: 1,
-          sortField: "name",
-        })
-      );
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [searchShow, setSearchShow] = useState(false);
+  const [sortOrder, setSortOrder] = useState(null);
+  const [sortField, setSortField] = useState(null);
+  const [searchData, setSearchData] = useState({});
 
   useEffect(() => {
     countryList()
@@ -91,47 +66,27 @@ const Branch = () => {
   useEffect(() => {
     getBranchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKey]);
+  }, [searchData]);
+
+  const getSearch = (get) => {
+    setSearchData(get);
+  };
 
   const getBranchList = () => {
-    const filters = searchKey?.filterOptions;
     setLoading(true);
     let reqData = {
-      page: searchKey?.pageNumber,
-      limit: searchKey?.rows,
-      sort:
-        searchKey?.sortField && searchKey?.sortOrder
-          ? { [searchKey.sortField]: searchKey.sortOrder }
-          : { name: 1 },
+      page: 1,
+      limit: 10,
+      sort: sortField && sortOrder ? { [sortField]: sortOrder } : { name: 1 },
     };
 
-    if (Object.keys(filters).length > 0) {
-      if (filters.code !== "" && filters?.code !== undefined) {
-        reqData.code = filters.code;
-      }
-      if (filters.name !== "" && filters?.name !== undefined) {
-        reqData.name = filters.name;
-      }
-      if (filters.country !== "" && filters?.country !== undefined) {
-        reqData.country = filters.country;
-      }
-      if (filters.state !== "" && filters.state !== undefined) {
-        reqData.state = filters.state;
-      }
-      if (filters.pincode !== "" && filters.pincode !== undefined) {
-        reqData.pincode = filters.pincode;
-      }
-      if (filters.city !== "" && filters.city !== undefined) {
-        reqData.city = filters.city;
-      }
-      if (filters.isActive !== "" && filters.isActive !== undefined) {
-        reqData.isActive = filters.isActive === "active" ? true : false;
-      }
+    if (Object.keys(searchData).length > 0) {
+      reqData = { ...reqData, ...searchData };
     }
     branchDatatable(reqData)
       .then((res) => {
         setBranchList(res.data);
-        setTotalCount(res.count);
+        setTotal(res.count);
         setLoading(false);
       })
       .catch(() => {
@@ -211,14 +166,24 @@ const Branch = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Branch List"}</span>
-        <Button
-          label="Add Branch"
-          icon="pi pi-plus"
-          onClick={() => {
-            setVisible(true);
-            setActionType("add");
-          }}
-        />
+        <div className="flex gap-2">
+          <Button
+            label="Search"
+            icon="pi pi-search"
+            onClick={() => {
+              setSearchShow(!searchShow);
+            }}
+            severity="secondary"
+          />
+          <Button
+            label="Add Branch"
+            icon="pi pi-plus"
+            onClick={() => {
+              setVisible(true);
+              setActionType("add");
+            }}
+          />
+        </div>
       </div>
     );
   };
@@ -267,160 +232,11 @@ const Branch = () => {
     }
   };
 
-  // const statusItemTemplate = (rowData, type) => {
-  //   return (
-  //     <>
-  //       {type === "isActive" ? (
-  //         <>
-  //           {rowData.value === "active" ? (
-  //             <Tag severity="success" value="Active" rounded />
-  //           ) : (
-  //             <Tag severity="danger" value="Inactive" rounded />
-  //           )}
-  //         </>
-  //       ) : type === "country" ? (
-  //         rowData.name
-  //       ) : (
-  //         ""
-  //       )}
-  //     </>
-  //   );
-  // };
-
-  const dropdownFilterTemplate = (options) => {
-    const filters = searchKey?.filterOptions;
-
-    return (
-      <>
-        <Dropdown
-          value={filters[options.field] || ""}
-          onChange={(e) => onFilter(e, options.field)}
-          options={
-            options.field === "isActive"
-              ? ActiveStatus
-              : options.field === "country"
-              ? countryData
-              : options.field === "state"
-              ? stateData
-              : options.field === "city"
-              ? cityData
-              : []
-          }
-          // showFilterClear={true}
-          filter
-          showClear={filters[options?.field] !== undefined ? true : false}
-          // itemTemplate={(e) => statusItemTemplate(e, options.field)}
-          placeholder={`${
-            options.field === "isActive"
-              ? "Status"
-              : capitalizeFirstLetter(options.field)
-          }`}
-          style={{ width: "8rem" }}
-        />
-      </>
-    );
-  };
-
-  const inputFilterTemplate = (options) => {
-    const filters = searchKey?.filterOptions;
-
-    return (
-      <>
-        <InputText
-          value={filters[options.field] || ""}
-          onChange={(e) => onFilter(e, options.field)}
-          placeholder={`${capitalizeFirstLetter(options.field)}`}
-          style={{ width: "8rem" }}
-        />
-      </>
-    );
-  };
-
-  const onFilter = (event, field) => {
-    let updatedFilters = { ...searchKey?.filterOptions };
-
-    if (field === "country") {
-      setStateData([]);
-      if (event.target.value) {
-        stateList(event.target.value);
-      }
-    }
-    if (field === "state") {
-      setCityData([]);
-      if (event.target.value) {
-        cityList(updatedFilters.country, event.target.value);
-      }
-    }
-    updatedFilters[field] = event.target.value;
-    dispatch(
-      setSearch({
-        ...searchKey,
-        pageNumber: 1,
-        firstPage: 0,
-        filterOptions: updatedFilters,
-      })
-    );
-  };
-
-  const onPageChange = (event) => {
-    dispatch(
-      setSearch({
-        ...searchKey,
-        pageNumber: Number(event.page) + 1,
-        firstPage: event.first,
-        rows: event.rows,
-      })
-    );
-  };
-
-  const paginatorTemplate = {
-    layout: "RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink",
-    RowsPerPageDropdown: (options) => {
-      return (
-        <>
-          <span
-            className="mx-1"
-            style={{
-              color: "var(--text-color)",
-              userSelect: "none",
-            }}
-          >
-            Items per page:{" "}
-          </span>
-          <Dropdown
-            value={options.value}
-            options={PAGINATOR_DROPDOWN_OPTIONS}
-            onChange={options.onChange}
-          />
-        </>
-      );
-    },
-    CurrentPageReport: (options) => {
-      return (
-        <span
-          style={{
-            color: "var(--text-color)",
-            userSelect: "none",
-            width: "120px",
-            textAlign: "center",
-          }}
-        >
-          {options.first} - {options.last} of {options.totalRecords}
-        </span>
-      );
-    },
-  };
-
   const onSort = (e) => {
     setLoading(true);
     const { sortField, sortOrder } = e;
-    dispatch(
-      setSearch({
-        ...searchKey,
-        sortOrder: sortOrder,
-        sortField: sortField,
-      })
-    );
+    setSortField(sortField);
+    setSortOrder(sortOrder);
 
     setBranchList([]);
   };
@@ -444,7 +260,8 @@ const Branch = () => {
     <>
       {loading && <Loader />}
 
-      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+      {searchShow && <BranchSearch getSearch={getSearch} />}
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-3">
         <DataTable
           value={branchList}
           header={header}
@@ -452,86 +269,46 @@ const Branch = () => {
           emptyMessage="No data found."
           filterDisplay="row"
           onSort={onSort}
-          sortOrder={searchKey.sortOrder}
-          sortField={searchKey.sortField}
+          sortOrder={sortOrder}
+          sortField={sortField}
         >
           <Column field="" header="SLNo." body={rowNumberTemplate} />
-          <Column
-            field="code"
-            header="Code"
-            sortable
-            filter
-            showFilterMenu={false}
-            filterElement={inputFilterTemplate}
-          />
-          <Column
-            field="name"
-            header="Name"
-            sortable
-            filter
-            showFilterMenu={false}
-            filterElement={inputFilterTemplate}
-          />
+          <Column field="code" header="Code" sortable />
+          <Column field="name" header="Name" sortable />
           <Column
             field="isActive"
             header="Status"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={dropdownFilterTemplate}
             body={statusTemplate}
           />
           <Column
             field="countryName"
             header="Country"
             sortable
-            filter
-            showFilterMenu={false}
-            filterField="country"
             sortField="countryName"
-            filterElement={dropdownFilterTemplate}
           />
           <Column
             field="stateName"
             header="State"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={dropdownFilterTemplate}
-            filterField="state"
             sortField="stateName"
           />
           <Column
             field="cityName"
             header="City"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={dropdownFilterTemplate}
-            filterField="city"
             sortField="cityName"
           />
           <Column
             field="pincode"
             header="Pincode"
             sortable
-            filter
-            filterField="pincode"
             sortField="pincode"
-            showFilterMenu={false}
-            filterElement={inputFilterTemplate}
           />
           <Column field="phone" header="Phone" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
-        <Paginator
-          first={searchKey?.firstPage}
-          rows={searchKey?.rows}
-          totalRecords={totalCount}
-          rowsPerPageOptions={PAGE_ROW}
-          template={paginatorTemplate}
-          onPageChange={onPageChange}
-        />
+        <CPaginator totalRecords={total} />
       </div>
       <Dialog
         header={actionType === "add" ? "Add Branch" : "Edit Branch"}
