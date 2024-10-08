@@ -206,10 +206,19 @@ const Branch = () => {
   };
 
   const handelSubmit = (values) => {
-    setLoading(true);
+    // setLoading(true);
+    const countryName = countryData.find((item) => item.id === values.country);
+    const stateName = stateData.find((item) => item.id === values.state);
+    const cityName = cityData.find((item) => item.id === values.city);
 
+    const reqData = {
+      ...values,
+      countryName: countryName.name,
+      stateName: stateName.name,
+      cityName: cityName.name,
+    };
     if (actionType === "add") {
-      createBranch(values)
+      createBranch(reqData)
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -220,7 +229,7 @@ const Branch = () => {
           setLoading(false);
         });
     } else {
-      updateBranch({ ...values, _id: selectData._id })
+      updateBranch({ ...reqData, _id: selectData._id })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -364,9 +373,9 @@ const Branch = () => {
                         name="country"
                         options={countryData}
                         filter
-                        onChange={(e) =>
-                          handelSate(setFieldValue, e.target.value)
-                        }
+                        onChange={(e) => {
+                          handelSate(setFieldValue, e.target.value);
+                        }}
                       />
                     </div>
                     <div className="col-12 md:col-4">
