@@ -1,11 +1,14 @@
 /* eslint-disable react/prop-types */
 import { Dropdown } from "primereact/dropdown";
 import { Paginator } from "primereact/paginator";
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearch } from "../store/reducer/searchReducer";
 
 const CPaginator = (props) => {
-  const [first, setFirst] = useState(0);
-  const [rows, setRows] = useState(10);
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
+
   const template = {
     layout: "RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink",
     RowsPerPageDropdown: (options) => {
@@ -49,14 +52,20 @@ const CPaginator = (props) => {
   };
 
   const onPageChange = (event) => {
-    setFirst(event.first);
-    setRows(event.rows);
+    dispatch(
+      setSearch({
+        ...searchKey,
+        pageNumber: Number(event.page) + 1,
+        firstPage: event.first,
+        rows: event.rows,
+      })
+    );
   };
   return (
     <Paginator
       template={template}
-      first={first}
-      rows={rows}
+      first={searchKey?.firstPage}
+      rows={searchKey?.rows}
       totalRecords={props.totalRecords}
       onPageChange={(e) => onPageChange(e)}
       className="justify-content-end"

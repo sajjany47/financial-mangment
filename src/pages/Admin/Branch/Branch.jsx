@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -14,10 +15,11 @@ import { branchDatatable, createBranch, updateBranch } from "./BranchService";
 import Swal from "sweetalert2";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Tag } from "primereact/tag";
 import BranchSearch from "./BranchSearch";
 import CPaginator from "../../../component/CPaginator";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
 const createBranchSchema = Yup.object().shape({
   _id: Yup.string(),
@@ -32,6 +34,7 @@ const createBranchSchema = Yup.object().shape({
   code: Yup.string().required("Code is required"),
 });
 const Branch = () => {
+  const dispatch = useDispatch();
   const searchKey = useSelector((state) => state?.search?.value);
   const [visible, setVisible] = useState(false);
   const [countryData, setCountryData] = useState([]);
@@ -43,9 +46,26 @@ const Branch = () => {
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
   const [searchShow, setSearchShow] = useState(false);
-  const [sortOrder, setSortOrder] = useState(null);
-  const [sortField, setSortField] = useState(null);
-  const [searchData, setSearchData] = useState({});
+
+  useEffect(() => {
+    if (searchKey?.page === "branch") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "branch",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     countryList()
@@ -66,22 +86,22 @@ const Branch = () => {
   useEffect(() => {
     getBranchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchData]);
-
-  const getSearch = (get) => {
-    setSearchData(get);
-  };
+  }, [searchKey]);
 
   const getBranchList = () => {
     setLoading(true);
     let reqData = {
-      page: 1,
-      limit: 10,
-      sort: sortField && sortOrder ? { [sortField]: sortOrder } : { name: 1 },
+      page: searchKey?.pageNumber,
+      limit: searchKey?.rows,
+      sort:
+        searchKey.hasOwnProperty("sortField") &&
+        searchKey.hasOwnProperty("sortOrder")
+          ? { [searchKey.sortField]: searchKey.sortOrder }
+          : { name: 1 },
     };
 
-    if (Object.keys(searchData).length > 0) {
-      reqData = { ...reqData, ...searchData };
+    if (Object.keys(searchKey?.filterOptions).length > 0) {
+      reqData = { ...reqData, ...searchKey?.filterOptions };
     }
     branchDatatable(reqData)
       .then((res) => {
@@ -244,8 +264,13 @@ const Branch = () => {
   const onSort = (e) => {
     setLoading(true);
     const { sortField, sortOrder } = e;
-    setSortField(sortField);
-    setSortOrder(sortOrder);
+    dispatch(
+      setSearch({
+        ...searchKey,
+        sortOrder: sortOrder,
+        sortField: sortField,
+      })
+    );
 
     setBranchList([]);
   };
@@ -269,7 +294,7 @@ const Branch = () => {
     <>
       {loading && <Loader />}
 
-      {searchShow && <BranchSearch getSearch={getSearch} />}
+      {searchShow && <BranchSearch />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-3">
         <DataTable
           value={branchList}
@@ -278,8 +303,8 @@ const Branch = () => {
           emptyMessage="No data found."
           filterDisplay="row"
           onSort={onSort}
-          sortOrder={sortOrder}
-          sortField={sortField}
+          sortOrder={searchKey.sortOrder}
+          sortField={searchKey.sortField}
         >
           <Column field="" header="SLNo." body={rowNumberTemplate} />
           <Column field="code" header="Code" sortable />

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Field, Form, Formik } from "formik";
 import { DropdownField, InputField } from "../../../component/FieldType";
 import { Button } from "primereact/button";
@@ -6,8 +5,12 @@ import { useEffect, useState } from "react";
 import { city, countryList, state } from "../AddUser/AddUserService";
 import { cleanObject } from "../../../shared/constant";
 import { ActiveStatus } from "../../../shared/Config";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
-const BranchSearch = (props) => {
+const BranchSearch = () => {
+  const searchKey = useSelector((state) => state?.search?.value);
+  const dispatch = useDispatch();
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
@@ -87,8 +90,14 @@ const BranchSearch = (props) => {
     if (data.hasOwnProperty("isActive")) {
       data.isActive = data.isActive === "active" ? true : false;
     }
-
-    props.getSearch(data);
+    dispatch(
+      setSearch({
+        ...searchKey,
+        pageNumber: 1,
+        firstPage: 0,
+        filterOptions: data,
+      })
+    );
   };
   return (
     <>
@@ -165,6 +174,15 @@ const BranchSearch = (props) => {
                       label={"Reset"}
                       severity="danger"
                       onClick={() => {
+                        dispatch(
+                          setSearch({
+                            ...searchKey,
+                            pageNumber: 1,
+                            firstPage: 0,
+                            filterOptions: {},
+                            reset: !searchKey.reset,
+                          })
+                        );
                         resetForm();
                       }}
                     />

@@ -11,6 +11,7 @@ export const search = createSlice({
       rows: 10,
       sortOrder: 1,
       sortField: "name",
+      reset: false,
     },
   },
   reducers: {
