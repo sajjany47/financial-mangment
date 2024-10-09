@@ -37,6 +37,8 @@ import {
 } from "../../../component/FieldType";
 import * as Yup from "yup";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { setSearch } from "../../../store/reducer/searchReducer";
+import LoanSearch from "./LoanSearch";
 
 const ApplicationStatusSchema = Yup.object().shape({
   status: Yup.string().required("Application status is required"),
@@ -62,6 +64,7 @@ const LoanList = (props) => {
   const dispatch = useDispatch();
   const loanDetails = useSelector((state) => state.loan.addLoan);
   const userDetails = useSelector((state) => state.user.user.data);
+  const searchKey = useSelector((state) => state?.search?.value);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
@@ -73,6 +76,32 @@ const LoanList = (props) => {
   const [actionType, setActionType] = useState("country");
   const [total, setTotal] = useState(0);
   const [selectedItem, setSelectedItem] = useState({});
+  const [searchShow, setSearchShow] = useState(false);
+
+  useEffect(() => {
+    if (searchKey?.page === props.type) {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: props.type,
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getApplicationList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKey]);
 
   useEffect(() => {
     countryList()
@@ -86,7 +115,6 @@ const LoanList = (props) => {
         );
       })
       .catch(() => {});
-    getApplicationList();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -103,12 +131,20 @@ const LoanList = (props) => {
       });
   };
   const getApplicationList = () => {
+    setLoading(true);
     let reqData = {
-      page: 1,
-      limit: 10,
+      page: searchKey?.pageNumber,
+      limit: searchKey?.rows,
+      sort:
+        searchKey.hasOwnProperty("sortField") &&
+        searchKey.hasOwnProperty("sortOrder")
+          ? { [searchKey.sortField]: searchKey.sortOrder }
+          : { name: 1 },
       applicationStaus: props.type,
     };
-    setLoading(true);
+    if (Object.keys(searchKey?.filterOptions).length > 0) {
+      reqData = { ...reqData, ...searchKey?.filterOptions };
+    }
 
     applicationList(reqData)
       .then((res) => {
@@ -124,17 +160,37 @@ const LoanList = (props) => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{props.labelName}</span>
-        {props.show && (
-          <Button
-            label="Add Application"
-            icon="pi pi-plus"
-            onClick={() => {
-              // navigate("/application/add");
-              dispatch(setAddLoan({ type: "add" }));
-              setVisible(true);
-            }}
-          />
-        )}
+        <div className="flex gap-2">
+          {searchShow ? (
+            <Button
+              icon="pi pi-times"
+              severity="help"
+              label="Hide"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+            />
+          ) : (
+            <Button
+              label="Search"
+              icon="pi pi-search"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+              severity="secondary"
+            />
+          )}
+          {props.show && (
+            <Button
+              label="Add Application"
+              icon="pi pi-plus"
+              onClick={() => {
+                dispatch(setAddLoan({ type: "add" }));
+                setVisible(true);
+              }}
+            />
+          )}
+        </div>
       </div>
     );
   };
@@ -276,8 +332,27 @@ const LoanList = (props) => {
         setLoading(false);
       });
   };
+
+  const onSort = (e) => {
+    setLoading(true);
+    const { sortField, sortOrder } = e;
+    dispatch(
+      setSearch({
+        ...searchKey,
+        sortOrder: sortOrder,
+        sortField: sortField,
+      })
+    );
+
+    setList([]);
+  };
+
+  const rowNumberTemplate = (rowData, rowIndex) => {
+    return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
+  };
   return (
     <>
+      {loading && <Loader />}
       <ConfirmDialog />
       <Menu
         model={menuTemplate}
@@ -286,8 +361,9 @@ const LoanList = (props) => {
         id="popup_menu_right"
         popupAlignment="right"
       />
-      {loading && <Loader />}
-      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+
+      {searchShow && <LoanSearch />}
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}
           header={header}
@@ -295,23 +371,30 @@ const LoanList = (props) => {
           dataKey="_id"
           emptyMessage="No data found."
           filterDisplay="row"
+          onSort={onSort}
+          sortOrder={searchKey.sortOrder}
+          sortField={searchKey.sortField}
         >
+          <Column field="" header="SLNo." body={rowNumberTemplate} />
           <Column field="applicationNumber" header="Application Number" />
-          <Column field="name" header="Name" />
-          <Column field="mobile" header="Mobile" />
-          <Column field="loanDetails.name" header="Type" />
+          <Column field="name" header="Name" sortable />
+          <Column field="mobile" header="Mobile" sortable />
+          <Column
+            field="loanDetails.name"
+            header="Type"
+            sortable
+            sortField="loanDetails.name"
+          />
           <Column field="loanAmount" header="Amount" />
           <Column
             field="branchDetails.name"
             header="Branch"
             body={branchTemplate}
+            sortable
+            sortField="branchDetails.name"
           />
           <Column field="status" header="Status" body={statusTemplate} />
-          <Column
-            field="remark"
-            header="Remark"
-            // body={statusTemplate}
-          />
+          <Column field="remark" header="Remark" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />

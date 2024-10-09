@@ -1,8 +1,9 @@
+/* eslint-disable no-prototype-builtins */
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Dialog } from "primereact/dialog";
 import Loader from "../../../component/Loader";
 import { Field, Form, Formik } from "formik";
@@ -21,6 +22,8 @@ import { LoanApplicationStepsEnum, Position } from "../../../shared/Config";
 import CPaginator from "../../../component/CPaginator";
 import { Menu } from "primereact/menu";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import { setSearch } from "../../../store/reducer/searchReducer";
+import LoanSearch from "./LoanSearch";
 
 const leadSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -37,7 +40,9 @@ const leadSchema = Yup.object().shape({
 });
 const Lead = () => {
   const menuRef = useRef();
+  const dispatch = useDispatch();
   const userDetails = useSelector((state) => state.user?.user.data);
+  const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -46,6 +51,27 @@ const Lead = () => {
   const [selectData, setSelectData] = useState({});
   const [loanTypeOption, setLoanTypeOption] = useState([]);
   const [total, setTotal] = useState(0);
+  const [searchShow, setSearchShow] = useState(false);
+
+  useEffect(() => {
+    if (searchKey?.page === "lead") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "lead",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialValues =
     actionType === "add"
@@ -90,7 +116,7 @@ const Lead = () => {
     getLoanTypeList();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchKey]);
   const getLoanTypeList = () => {
     loanTypeGetList(
       userDetails.position === Position.ADMIN
@@ -113,12 +139,20 @@ const Lead = () => {
       });
   };
   const getLeadList = () => {
+    setLoading(true);
     let reqData = {
-      page: 1,
-      limit: 10,
+      page: searchKey?.pageNumber,
+      limit: searchKey?.rows,
+      sort:
+        searchKey.hasOwnProperty("sortField") &&
+        searchKey.hasOwnProperty("sortOrder")
+          ? { [searchKey.sortField]: searchKey.sortOrder }
+          : { name: 1 },
       applicationStaus: "lead",
     };
-    setLoading(true);
+    if (Object.keys(searchKey?.filterOptions).length > 0) {
+      reqData = { ...reqData, ...searchKey?.filterOptions };
+    }
 
     applicationList(reqData)
       .then((res) => {
@@ -162,33 +196,41 @@ const Lead = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Lead List"}</span>
-
-        <Button
-          label="Add Application"
-          icon="pi pi-plus"
-          onClick={() => {
-            setActionType("add");
-            setVisible(true);
-          }}
-        />
+        <div className="flex gap-2">
+          {searchShow ? (
+            <Button
+              icon="pi pi-times"
+              severity="help"
+              label="Hide"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+            />
+          ) : (
+            <Button
+              label="Search"
+              icon="pi pi-search"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+              severity="secondary"
+            />
+          )}
+          <Button
+            label="Add Application"
+            icon="pi pi-plus"
+            onClick={() => {
+              setActionType("add");
+              setVisible(true);
+            }}
+          />
+        </div>
       </div>
     );
   };
   const actionBodyTemplate = (item) => {
     return (
       <>
-        {/* <Button
-          icon="pi pi-pencil"
-          rounded
-          text
-          aria-label="Filter"
-
-          onClick={() => {
-            setActionType("edit");
-            setVisible(true);
-            setSelectData(item);
-          }}
-        /> */}
         <Button
           icon="pi pi-ellipsis-v"
           rounded
@@ -315,9 +357,28 @@ const Lead = () => {
     );
   };
 
+  const onSort = (e) => {
+    setLoading(true);
+    const { sortField, sortOrder } = e;
+    dispatch(
+      setSearch({
+        ...searchKey,
+        sortOrder: sortOrder,
+        sortField: sortField,
+      })
+    );
+
+    setList([]);
+  };
+
+  const rowNumberTemplate = (rowData, rowIndex) => {
+    return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
+  };
+
   return (
     <>
       {loading && <Loader />}
+      {searchShow && <LoanSearch />}
       <ConfirmDialog />
       <Menu
         model={menuTemplate}
@@ -326,7 +387,7 @@ const Lead = () => {
         id="popup_menu_right"
         popupAlignment="right"
       />
-      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}
           header={header}
@@ -334,16 +395,27 @@ const Lead = () => {
           dataKey="_id"
           emptyMessage="No data found."
           filterDisplay="row"
+          onSort={onSort}
+          sortOrder={searchKey.sortOrder}
+          sortField={searchKey.sortField}
         >
+          <Column field="" header="SLNo." body={rowNumberTemplate} />
           <Column field="applicationNumber" header="Lead Number" />
-          <Column field="name" header="Name" />
-          <Column field="mobile" header="Mobile" />
-          <Column field="loanDetails.name" header="Type" />
+          <Column field="name" header="Name" sortable />
+          <Column field="mobile" header="Mobile" sortable />
+          <Column
+            field="loanDetails.name"
+            header="Type"
+            sortable
+            sortField="loanDetails.name"
+          />
           <Column field="loanAmount" header="Amount" />
           <Column
             field="branchDetails.name"
             header="Branch"
             body={branchTemplate}
+            sortable
+            sortField="branchDetails.name"
           />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
