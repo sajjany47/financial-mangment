@@ -217,7 +217,7 @@ const Lead = () => {
             />
           )}
           <Button
-            label="Add Application"
+            label="Add Lead"
             icon="pi pi-plus"
             onClick={() => {
               setActionType("add");
