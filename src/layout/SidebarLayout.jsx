@@ -3,11 +3,12 @@ import sidebarMenu from "./SidebarMenu";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Position } from "../shared/Config";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { capitalizeFirstLetter } from "../shared/constant";
 import Topbar from "./Topbar";
 
 const SidebarLayout = () => {
+  const path = useLocation().pathname;
   const user = useSelector((state) => state.user?.user);
   const [userMenu, setUserMenu] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
@@ -47,7 +48,26 @@ const SidebarLayout = () => {
         className={` ${collapsed ? "sidebar collapsed" : "sidebar"}`}
         collapsed={collapsed}
       >
-        <Menu>
+        <Menu
+          menuItemStyles={{
+            button: ({ level, active }) => {
+              return {
+                // Active (clicked) state
+                backgroundColor: active ? "white" : undefined,
+                borderRadius: active ? "10px" : undefined,
+                color: active ? "blue" : undefined,
+                fontWeight: active ? "bold" : undefined,
+                // Hover state
+                "&:hover": {
+                  backgroundColor: "#F1FFE7", // Darker teal
+                  color: "black", // Coral text on hover
+                },
+                // Optional: Style for different menu levels
+                paddingLeft: level === 1 ? "24px" : undefined,
+              };
+            },
+          }}
+        >
           <MenuItem
             onClick={() => {
               setCollapsed(!collapsed);
@@ -71,6 +91,7 @@ const SidebarLayout = () => {
                       key={ind}
                       icon={<i className={res.icon}></i>}
                       component={<NavLink to={res.route} />}
+                      active={path === res.route}
                     >
                       {res.title}{" "}
                     </MenuItem>

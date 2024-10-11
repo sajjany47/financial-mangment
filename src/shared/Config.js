@@ -10,6 +10,7 @@ export const Position = {
   LD: "loan-department",
   VD: "verication-department",
   FM: "financial-manager",
+  CM: "city-manager",
 };
 
 export const DropdownPosition = [
@@ -81,6 +82,151 @@ export const RoleSeverityColor = (role) => {
       return { label: "Financial Manager", severity: "help" };
     case "customer":
       return { label: "Customer", severity: "danger" };
+    default:
+      return { label: "Unknown", severity: "contrast" }; // Fallback case
+  }
+};
+
+export const EmployeeTypes = [
+  { label: "Salaried", value: "salaried" },
+  { label: "Self-Employed", value: "self_employed" },
+  { label: "Business", value: "business" },
+];
+
+export const LoanApplicationSteps = [
+  {
+    label: "Incompleted",
+    value: "incompleted",
+  },
+  {
+    label: "Application Number Generated",
+    value: "application_number_generated",
+  },
+  { label: "Loan Amount Generated", value: "loan_amount_generated" },
+  {
+    label: "Document Address Verified",
+    value: "document_address_verification",
+  },
+  {
+    label: "Business or Company Address Verified",
+    value: "business_address_verification",
+  },
+  { label: "Document Verified", value: "document_verification" },
+
+  { label: "Loan Approved", value: "loan_approved" },
+  { label: "Rejected", value: "rejected" },
+  { label: "Amount Disbursed", value: "disbursed" },
+];
+
+export const ResidenceTypes = [
+  { label: "Rented", value: "rented" },
+  { label: "Owned", value: "owned" },
+  { label: "Parent", value: "parent" },
+];
+
+export const applicationRenderStatus = {
+  lead: "lead",
+  incompleted: "incompleted",
+  inProgress: "progress",
+  approved: "approved",
+  disbursed: "disbursed",
+  rejected: "rejected",
+};
+
+export const LoanApplicationStepsEnum = {
+  INCOMPLETED: "incompleted",
+  APPLICATION_NUMBER_GENERATED: "application_number_generated",
+  LOAN_AMOUNT_GENERATED: "loan_amount_generated",
+  DOCUMENT_ADDRESS_VERIFICATION: "document_address_verification",
+  BUSINESS_ADDRESS_VERIFICATION: "business_address_verification",
+  DOCUMENT_VERIFICATION: "document_verification",
+  LOAN_APPROVED: "loan_approved",
+  REJECTED: "rejected",
+  DISBURSED: "disbursed",
+};
+
+export const AddLoanPath = (entity) => {
+  switch (entity) {
+    case "personal_loan":
+      return "/application/personal-loan/add";
+    case "home_loan":
+      return "/application/home-loan/add";
+    case "car_loan":
+      return "/application/car-loan/add";
+    case "education_loan":
+      return "/application/education-loan/add";
+    case "business_loan":
+      return "/application/business-loan/add";
+    case "payday_loan":
+      return "/application/payday-loan/add";
+    case "gold_loan":
+      return "/application/gold-loan/add";
+    case "mortgage_loan":
+      return "/application/mortgage-loan/add";
+    case "credit_card_loan":
+      return "/application/credit-card-loan/add";
+    case "agriculture_loan":
+      return "/application/agriculture-loan/add";
+
+    default:
+      return "";
+  }
+};
+
+export const EditLoanPath = (entity) => {
+  switch (entity) {
+    case "personal_loan":
+      return "/application/personal-loan/edit";
+    case "home_loan":
+      return "/application/home-loan/edit";
+    case "car_loan":
+      return "/application/car-loan/edit";
+    case "education_loan":
+      return "/application/education-loan/edit";
+    case "business_loan":
+      return "/application/business-loan/edit";
+    case "payday_loan":
+      return "/application/payday-loan/edit";
+    case "gold_loan":
+      return "/application/gold-loan/edit";
+    case "mortgage_loan":
+      return "/application/mortgage-loan/edit";
+    case "credit_card_loan":
+      return "/application/credit-card-loan/edit";
+    case "agriculture_loan":
+      return "/application/agriculture-loan/edit";
+
+    default:
+      return "";
+  }
+};
+
+export const LoantatusSeverityColor = (role) => {
+  switch (role) {
+    case "incompleted":
+      return { label: "Incompleted", severity: "info" };
+    case "application_number_generated":
+      return { label: "Application Number Generated", severity: "warning" };
+    case "loan_amount_generated":
+      return { label: "Loan Amount Generated", severity: "success" };
+    case "document_address_verification":
+      return { label: "Document Address Verified", severity: "help" };
+    case "business_address_verification":
+      return {
+        label: "Business or Company Address Verified",
+        severity: "warning",
+      };
+    case "document_verification":
+      return { label: "Document Verified", severity: "secondary" };
+    case "loan_amount_approved_processing":
+      return { label: "Loan Amount Approved Processing", severity: "success" };
+    case "loan_approved":
+      return { label: "Loan Approved", severity: "secondary" };
+    case "rejected":
+      return { label: "Rejected", severity: "danger" };
+    case "disbursed":
+      return { label: "Amount Disbursed", severity: "help" };
+
     default:
       return { label: "Unknown", severity: "contrast" }; // Fallback case
   }

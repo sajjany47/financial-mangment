@@ -8,6 +8,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Password } from "primereact/password";
 import { Checkbox } from "primereact/checkbox";
+import { FileUpload } from "primereact/fileupload";
 
 export const InputField = ({ field, form: { touched, errors }, ...props }) => {
   return (
@@ -24,14 +25,51 @@ export const InputField = ({ field, form: { touched, errors }, ...props }) => {
         id={field.name}
         {...field}
         {...props}
-        value={field.value ? field.value : ""}
+        // value={field.value ? field.value : ""}
         placeholder={`Enter ${props.label}`}
+        style={{ width: "100%" }}
         className={`w-full mb-1 ${props.customStyle}  ${
           Boolean(getIn(errors, field.name)) &&
           getIn(touched, field.name) &&
           "p-invalid"
         }`}
       />
+      {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
+        <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
+      )}
+    </div>
+  );
+};
+
+export const UploadField = ({ field, form: { touched, errors }, ...props }) => {
+  return (
+    <div className="flex align-items-start justify-content-center flex-column">
+      {props.label && (
+        <label htmlFor={field.name} className="block text-900 font-medium mb-2">
+          {props.label}{" "}
+          {props.requiredlabel === "true" && (
+            <span className="text-red-400">*</span>
+          )}
+        </label>
+      )}
+      <FileUpload
+        id={field.name}
+        {...field}
+        {...props}
+        accept={props.accept ? props.accept : "image/*,application/pdf"}
+        customUpload
+        maxFileSize={10000000}
+        emptyTemplate={
+          <p className="m-0">Drag and drop files to here to upload.</p>
+        }
+        style={{ width: "100%" }}
+        className={`w-full mb-1 ${props.customStyle}  ${
+          Boolean(getIn(errors, field.name)) &&
+          getIn(touched, field.name) &&
+          "p-invalid"
+        }`}
+      />
+
       {Boolean(getIn(errors, field.name)) && getIn(touched, field.name) && (
         <small className="text-red-400 mb-1">{getIn(errors, field.name)}</small>
       )}
@@ -57,6 +95,7 @@ export const DropdownField = ({
       id={field.name}
       {...field}
       {...props}
+      style={{ width: "100%" }}
       placeholder={`Select ${props.label}`}
       className={`w-full mb-1 ${props.customStyle} ${
         Boolean(getIn(errors, field.name)) &&
@@ -269,17 +308,13 @@ export const PasswordFiled = ({
   </div>
 );
 
-export const CheckField = ({
-  field,
-  form: { touched, errors, setFieldValue },
-  ...props
-}) => (
-  <div className="flex align-items-start justify-content-center flex-column">
+export const CheckField = ({ field, form: { touched, errors }, ...props }) => (
+  <div className="flex align-items-start justify-content-start flex-row gap-2">
     <Checkbox
       inputId={field.name}
       {...field}
       {...props}
-      onChange={(e) => setFieldValue(field.name, e.checked)}
+      // onChange={(e) => setFieldValue(field.name, e.checked)}
       checked={field.value}
     />
     <label htmlFor={field.name} className="block text-900 font-medium mb-2">
@@ -293,3 +328,12 @@ export const CheckField = ({
     )}
   </div>
 );
+
+export const Currency = (data) => {
+  const a = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "INR",
+  }).format(data ? data : 0);
+
+  return a;
+};

@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -10,29 +11,22 @@ import {
 import * as Yup from "yup";
 import { city, countryList, state } from "../AddUser/AddUserService";
 import Loader from "../../../component/Loader";
-import { branchDatatable, createBranch } from "./BranchService";
+import { branchDatatable, createBranch, updateBranch } from "./BranchService";
 import Swal from "sweetalert2";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useDispatch, useSelector } from "react-redux";
-import { setSearch } from "../../../store/reducer/searchReducer";
-import { Dropdown } from "primereact/dropdown";
-import { capitalizeFirstLetter } from "../../../shared/constant";
-import { InputText } from "primereact/inputtext";
-import {
-  ActiveStatus,
-  PAGE_ROW,
-  PAGINATOR_DROPDOWN_OPTIONS,
-} from "../../../shared/Config";
-import { Paginator } from "primereact/paginator";
 import { Tag } from "primereact/tag";
+import BranchSearch from "./BranchSearch";
+import CPaginator from "../../../component/CPaginator";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
 const createBranchSchema = Yup.object().shape({
   _id: Yup.string(),
   name: Yup.string().required("Name is required"),
-  country: Yup.object().required("Country is required"),
-  state: Yup.object().required("State is required"),
-  city: Yup.object().required("City is required"),
+  country: Yup.string().required("Country is required"),
+  state: Yup.string().required("State is required"),
+  city: Yup.string().required("City is required"),
   email: Yup.string().required("Email is required"),
   phone: Yup.string().required("Phone is required"),
   address: Yup.string().required("Address is required"),
@@ -47,8 +41,11 @@ const Branch = () => {
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
   const [branchList, setBranchList] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [actionType, setActionType] = useState("add");
+  const [selectData, setSelectData] = useState({});
+  const [searchShow, setSearchShow] = useState(false);
 
   useEffect(() => {
     if (searchKey?.page === "branch") {
@@ -73,7 +70,13 @@ const Branch = () => {
   useEffect(() => {
     countryList()
       .then((res) => {
-        setCountryData(res.data);
+        setCountryData(
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }))
+        );
       })
       .catch(() => {});
 
@@ -81,46 +84,29 @@ const Branch = () => {
   }, []);
 
   useEffect(() => {
-    getEmployeeList();
+    getBranchList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchKey]);
 
-  const getEmployeeList = () => {
-    const filters = searchKey?.filterOptions;
+  const getBranchList = () => {
     setLoading(true);
     let reqData = {
       page: searchKey?.pageNumber,
       limit: searchKey?.rows,
       sort:
-        searchKey?.sortField && searchKey?.sortOrder
+        searchKey.hasOwnProperty("sortField") &&
+        searchKey.hasOwnProperty("sortOrder")
           ? { [searchKey.sortField]: searchKey.sortOrder }
           : { name: 1 },
     };
 
-    if (Object.keys(filters).length > 0) {
-      if (filters.code !== "" && filters?.code !== undefined) {
-        reqData.code = filters.code;
-      }
-      if (filters.name !== "" && filters?.name !== undefined) {
-        reqData.name = filters.name;
-      }
-      if (filters.country !== "" && filters?.country !== undefined) {
-        reqData.country = filters.country;
-      }
-      if (filters.state !== "" && filters.state !== undefined) {
-        reqData.state = filters.state;
-      }
-      if (filters.city !== "" && filters.city !== undefined) {
-        reqData.city = filters.city;
-      }
-      if (filters.isActive !== "" && filters.isActive !== undefined) {
-        reqData.isActive = filters.isActive === "active" ? true : false;
-      }
+    if (Object.keys(searchKey?.filterOptions).length > 0) {
+      reqData = { ...reqData, ...searchKey?.filterOptions };
     }
     branchDatatable(reqData)
       .then((res) => {
         setBranchList(res.data);
-        setTotalCount(res.count);
+        setTotal(res.count);
         setLoading(false);
       })
       .catch(() => {
@@ -128,203 +114,164 @@ const Branch = () => {
       });
   };
   const stateList = (country) => {
-    state(country)
+    state(Number(country))
       .then((res) => {
-        setStateData(res.data);
+        setStateData(
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }))
+        );
       })
       .catch(() => {});
   };
 
   const cityList = (country, state) => {
-    city(country, state)
+    city(Number(country), Number(state))
       .then((res) => {
-        setCityData(res.data);
+        setCityData(
+          res.data.map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }))
+        );
       })
       .catch(() => {});
   };
 
-  const initialValues = {
-    name: "",
-    phone: "",
-    email: "",
-    code: "",
-    address: "",
-    state: "",
-    country: "",
-    city: "",
-    pincode: "",
-  };
+  const initialValues =
+    actionType === "add"
+      ? {
+          name: "",
+          phone: "",
+          email: "",
+          code: "",
+          address: "",
+          state: "",
+          country: "",
+          city: "",
+          pincode: "",
+        }
+      : {
+          name: selectData.name,
+          phone: selectData.phone,
+          email: selectData.email,
+          code: selectData.code,
+          address: selectData.address,
+          state: selectData.state,
+          country: selectData.country,
+          city: selectData.city,
+          pincode: selectData.pincode,
+        };
 
   const handelSate = (setFieldValue, e) => {
+    setStateData([]);
+    setCityData([]);
     setFieldValue("state", "");
     setFieldValue("city", "");
-    setFieldValue("country", e.value);
-    stateList(e.value.iso2);
+    setFieldValue("country", e);
+    stateList(e);
   };
 
   const handelCityList = (setFieldValue, e, value) => {
+    setCityData([]);
     setFieldValue("city", "");
-    setFieldValue("state", e.value);
-    cityList(value.country.iso2, e.value.iso2);
+    setFieldValue("state", e);
+    cityList(value.country, e);
   };
 
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Branch List"}</span>
-        <Button
-          label="Add Branch"
-          icon="pi pi-plus"
-          onClick={() => setVisible(true)}
-        />
+        <div className="flex gap-2">
+          {searchShow ? (
+            <Button
+              icon="pi pi-times"
+              severity="help"
+              label="Hide"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+            />
+          ) : (
+            <Button
+              label="Search"
+              icon="pi pi-search"
+              onClick={() => {
+                setSearchShow(!searchShow);
+              }}
+              severity="secondary"
+            />
+          )}
+
+          <Button
+            label="Add Branch"
+            icon="pi pi-plus"
+            onClick={() => {
+              setVisible(true);
+              setActionType("add");
+            }}
+          />
+        </div>
       </div>
     );
   };
-  const actionBodyTemplate = () => {
-    return <Button icon="pi pi-pencil" rounded text aria-label="Filter" />;
+  const actionBodyTemplate = (item) => {
+    return (
+      <Button
+        icon="pi pi-pencil"
+        rounded
+        text
+        aria-label="Filter"
+        onClick={() => {
+          setVisible(true);
+          setSelectData(item);
+          setActionType("edit");
+          stateList(item.country);
+          cityList(item.country, item.state);
+        }}
+      />
+    );
   };
 
   const handelSubmit = (values) => {
-    setLoading(true);
+    // setLoading(true);
+    const countryName = countryData.find((item) => item.id === values.country);
+    const stateName = stateData.find((item) => item.id === values.state);
+    const cityName = cityData.find((item) => item.id === values.city);
+
     const reqData = {
       ...values,
-      country: values.country.id,
-      state: values.state.id,
-      city: values.city.id,
+      countryName: countryName.name,
+      stateName: stateName.name,
+      cityName: cityName.name,
     };
-    createBranch(reqData)
-      .then((res) => {
-        Swal.fire({ title: res.message, icon: "success" });
-        setLoading(false);
-        setVisible(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
-
-  const statusItemTemplate = (rowData, type) => {
-    return (
-      <>
-        {type === "isActive" ? (
-          <>
-            {rowData.value === "active" ? (
-              <Tag severity="success" value="Active" rounded />
-            ) : (
-              <Tag severity="danger" value="Inactive" rounded />
-            )}
-          </>
-        ) : type === "country" ? (
-          rowData.label
-        ) : (
-          ""
-        )}
-      </>
-    );
-  };
-
-  const dropdownFilterTemplate = (options) => {
-    const filters = searchKey?.filterOptions;
-
-    return (
-      <>
-        <Dropdown
-          value={filters[options.field] || ""}
-          onChange={(e) => onFilter(e, options.field)}
-          options={
-            options.field === "isActive"
-              ? ActiveStatus
-              : options.field === "country"
-              ? countryData.map((item) => ({
-                  label: item.name,
-                  value: item.id,
-                }))
-              : []
-          }
-          // showFilterClear={true}
-
-          showClear={filters[options?.field] !== undefined ? true : false}
-          itemTemplate={(e) => statusItemTemplate(e, options.field)}
-          placeholder={`${capitalizeFirstLetter(options.field)}`}
-        />
-      </>
-    );
-  };
-
-  const inputFilterTemplate = (options) => {
-    const filters = searchKey?.filterOptions;
-
-    return (
-      <>
-        <InputText
-          value={filters[options.field] || ""}
-          onChange={(e) => onFilter(e, options.field)}
-          placeholder={`${capitalizeFirstLetter(options.field)}`}
-        />
-      </>
-    );
-  };
-
-  const onFilter = (event, field) => {
-    let updatedFilters = { ...searchKey?.filterOptions };
-    updatedFilters[field] = event.target.value;
-    dispatch(
-      setSearch({
-        ...searchKey,
-        pageNumber: 1,
-        firstPage: 0,
-        filterOptions: updatedFilters,
-      })
-    );
-  };
-
-  const onPageChange = (event) => {
-    dispatch(
-      setSearch({
-        ...searchKey,
-        pageNumber: Number(event.page) + 1,
-        firstPage: event.first,
-        rows: event.rows,
-      })
-    );
-  };
-
-  const paginatorTemplate = {
-    layout: "RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink",
-    RowsPerPageDropdown: (options) => {
-      return (
-        <>
-          <span
-            className="mx-1"
-            style={{
-              color: "var(--text-color)",
-              userSelect: "none",
-            }}
-          >
-            Items per page:{" "}
-          </span>
-          <Dropdown
-            value={options.value}
-            options={PAGINATOR_DROPDOWN_OPTIONS}
-            onChange={options.onChange}
-          />
-        </>
-      );
-    },
-    CurrentPageReport: (options) => {
-      return (
-        <span
-          style={{
-            color: "var(--text-color)",
-            userSelect: "none",
-            width: "120px",
-            textAlign: "center",
-          }}
-        >
-          {options.first} - {options.last} of {options.totalRecords}
-        </span>
-      );
-    },
+    if (actionType === "add") {
+      createBranch(reqData)
+        .then((res) => {
+          Swal.fire({ title: res.message, icon: "success" });
+          setLoading(false);
+          setVisible(false);
+          getBranchList();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } else {
+      updateBranch({ ...reqData, _id: selectData._id })
+        .then((res) => {
+          Swal.fire({ title: res.message, icon: "success" });
+          setLoading(false);
+          setVisible(false);
+          getBranchList();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const onSort = (e) => {
@@ -344,11 +291,24 @@ const Branch = () => {
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
   };
+
+  const statusTemplate = (item) => {
+    return (
+      <>
+        {item.isActive ? (
+          <Tag severity="success" value="Active" rounded />
+        ) : (
+          <Tag severity="danger" value="Inactive" rounded />
+        )}
+      </>
+    );
+  };
   return (
     <>
       {loading && <Loader />}
 
-      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
+      {searchShow && <BranchSearch />}
+      <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={branchList}
           header={header}
@@ -360,79 +320,50 @@ const Branch = () => {
           sortField={searchKey.sortField}
         >
           <Column field="" header="SLNo." body={rowNumberTemplate} />
-          <Column
-            field="code"
-            header="Code"
-            sortable
-            filter
-            showFilterMenu={false}
-            filterElement={inputFilterTemplate}
-          />
-          <Column
-            field="name"
-            header="Name"
-            sortable
-            filter
-            showFilterMenu={false}
-            filterElement={inputFilterTemplate}
-          />
+          <Column field="code" header="Code" sortable />
+          <Column field="name" header="Name" sortable />
           <Column
             field="isActive"
             header="Status"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={dropdownFilterTemplate}
+            body={statusTemplate}
           />
           <Column
-            field="country"
+            field="countryName"
             header="Country"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={dropdownFilterTemplate}
+            sortField="countryName"
           />
           <Column
-            field="state"
-            header="state"
+            field="stateName"
+            header="State"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={dropdownFilterTemplate}
+            sortField="stateName"
           />
           <Column
-            field="city"
+            field="cityName"
             header="City"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={dropdownFilterTemplate}
+            sortField="cityName"
           />
           <Column
-            field="phone"
-            header="Phone"
+            field="pincode"
+            header="Pincode"
             sortable
-            filter
-            showFilterMenu={false}
-            filterElement={inputFilterTemplate}
+            sortField="pincode"
           />
+          <Column field="phone" header="Phone" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
-        <Paginator
-          first={searchKey?.firstPage}
-          rows={searchKey?.rows}
-          totalRecords={totalCount}
-          rowsPerPageOptions={PAGE_ROW}
-          template={paginatorTemplate}
-          onPageChange={onPageChange}
-        />
+        <CPaginator totalRecords={total} />
       </div>
       <Dialog
-        header="Add Branch"
+        header={actionType === "add" ? "Add Branch" : "Edit Branch"}
         visible={visible}
         style={{ width: "50vw" }}
         onHide={() => {
           setVisible(false);
+          getBranchList();
         }}
       >
         <Formik
@@ -478,11 +409,11 @@ const Branch = () => {
                         label="Country"
                         component={DropdownField}
                         name="country"
-                        optionLabel="name"
-                        optionValue="iso2"
                         options={countryData}
                         filter
-                        onChange={(e) => handelSate(setFieldValue, e)}
+                        onChange={(e) => {
+                          handelSate(setFieldValue, e.target.value);
+                        }}
                       />
                     </div>
                     <div className="col-12 md:col-4">
@@ -491,11 +422,9 @@ const Branch = () => {
                         filter
                         component={DropdownField}
                         name="state"
-                        optionLabel="name"
-                        optionValue="iso2"
                         options={stateData}
                         onChange={(e) =>
-                          handelCityList(setFieldValue, e, values)
+                          handelCityList(setFieldValue, e.target.value, values)
                         }
                       />
                     </div>
@@ -506,8 +435,6 @@ const Branch = () => {
                         name="city"
                         filter
                         options={cityData}
-                        optionLabel="name"
-                        optionValue="id"
                       />
                     </div>
                     <div className="col-12 md:col-4">

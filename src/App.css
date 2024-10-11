@@ -55,7 +55,7 @@ input[type="file"] {
 }
 
 .swal2-container {
-  z-index: 9999 !important;
+  z-index: 99999 !important;
 }
 
 .topbar-sticky {
@@ -64,7 +64,7 @@ input[type="file"] {
   right: 0;
   z-index: 1;
 }
-.p-menubar-button{
+.p-menubar-button {
   display: none;
 }
 .layout-container {
@@ -83,7 +83,6 @@ input[type="file"] {
   position: fixed;
   transition: width 0.3s; /* Smooth transition for collapse */
   z-index: 1000; /* Ensure it is above the main content */
-
 }
 
 .topbar {
@@ -98,6 +97,9 @@ input[type="file"] {
   padding: 20px; /* Content padding */
   height: calc(100vh - 60px); /* Available height for content */
   overflow-y: auto; /* Scrollable content */
+}
+.p-stepper-header {
+  pointer-events: none;
 }
 
 .main-content {

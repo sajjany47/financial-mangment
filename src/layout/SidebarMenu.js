@@ -15,13 +15,20 @@ const sidebarMenu = {
       submenu: [{ title: "Branch", route: "/branch/list" }],
     },
     {
+      title: "EMI",
+      icon: "pi pi-calculator",
+      submenu: [{ title: "Calculator", route: "/emi/calculator" }],
+    },
+    {
       title: "Loan",
       icon: "pi pi-file",
       submenu: [
-        { title: "New Applications", route: "/loan-applications/new" },
-        { title: "In Progress", route: "/loan-applications/in-progress" },
-        { title: "Approved", route: "/loan-applications/approved" },
-        { title: "Rejected", route: "/loan-applications/rejected" },
+        { title: "Lead", route: "/lead/list" },
+        { title: "Application", route: "/applications/list" },
+        { title: "In Progress", route: "/applications/progress" },
+        { title: "Approved", route: "/applications/approved" },
+        { title: "Disbursed", route: "/applications/disbursed" },
+        { title: "Rejected", route: "/applications/rejected" },
       ],
     },
     {
@@ -65,10 +72,10 @@ const sidebarMenu = {
       title: "Settings",
       icon: "pi pi-cog",
       submenu: [
-        { title: "General Settings", route: "/settings/general" },
-        { title: "User Management", route: "/settings/users" },
-        { title: "Roles & Permissions", route: "/settings/roles" },
-        { title: "Security Settings", route: "/settings/security" },
+        { title: "Charges", route: "/settings/charges" },
+        { title: "Documents", route: "/settings/document" },
+        { title: "Document Type", route: "/settings/document-type" },
+        { title: "Loan Type", route: "/settings/loan-type" },
       ],
     },
     {

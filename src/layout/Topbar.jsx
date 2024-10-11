@@ -24,7 +24,11 @@ export default function Topbar(props) {
 
   const dispatch = useDispatch();
   const menuRef = useRef();
-  const items = filterPath.map((e) => ({ label: capitalizeFirstLetter(e) }));
+  const items = filterPath.map((e) => ({
+    label: capitalizeFirstLetter(
+      e.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
+    ),
+  }));
   // [
   //   { label: "Electronics" },
   //   { label: "Computer" },

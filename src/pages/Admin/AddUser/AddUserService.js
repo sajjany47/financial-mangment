@@ -55,13 +55,13 @@ export const employeeDataTable = async (payload) => {
 };
 
 export const countryList = async () => {
-  const response = await Instance.get(`/user/country`, headerWithToken());
+  const response = await Instance.get(`/regional/country`, headerWithToken());
   return response.data;
 };
 
 export const state = async (payload) => {
   const response = await Instance.get(
-    `user/state/${payload}`,
+    `/regional/state/${payload}`,
     headerWithToken()
   );
   return response.data;
@@ -69,7 +69,7 @@ export const state = async (payload) => {
 
 export const city = async (country, state) => {
   const response = await Instance.get(
-    `user/city?country=${country}&state=${state}`,
+    `/regional/city?country=${country}&state=${state}`,
     headerWithToken()
   );
   return response.data;
