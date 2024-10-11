@@ -20,6 +20,7 @@ import { loanTypeGetList } from "../setting/SettingService";
 import CPaginator from "../../../component/CPaginator";
 import {
   AddLoanPath,
+  applicationRenderStatus,
   EditLoanPath,
   LoanApplicationSteps,
   LoanApplicationStepsEnum,
@@ -263,13 +264,16 @@ const LoanList = (props) => {
         },
         {
           label: "Status Change",
-          visible: selectedItem.status !== LoanApplicationStepsEnum.INCOMPLETED,
+          visible:
+            selectedItem.status !== LoanApplicationStepsEnum.INCOMPLETED &&
+            props.type !== applicationRenderStatus.disbursed,
           command: () => {
             setStatusVisible(true);
           },
         },
         {
           label: "Application Delete",
+          visible: props.type !== applicationRenderStatus.disbursed,
           command: () => {
             confirm();
           },

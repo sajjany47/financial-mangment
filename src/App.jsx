@@ -29,6 +29,9 @@ import PLoanEdit from "./pages/Admin/Loan/personal/PLoanEdit";
 import Charges from "./pages/Admin/setting/Charges";
 import Calculator from "./pages/Admin/EMI/Calculator";
 import Disbursed from "./pages/Admin/Loan/Disbursed";
+import ActiveLoan from "./pages/Admin/Loan_Management/ActiveLoan";
+import DeliquentLoan from "./pages/Admin/Loan_Management/DeliquentLoan";
+import ClosedLoan from "./pages/Admin/Loan_Management/ClosedLoan";
 
 function App() {
   let isRefreshing = false;
@@ -128,6 +131,9 @@ function App() {
             <Route path="/settings/document-type" element={<DocumentType />} />
             <Route path="/settings/loan-type" element={<LoanType />} />
             <Route path="/settings/charges" element={<Charges />} />
+            <Route path="/loans/active" element={<ActiveLoan />} />
+            <Route path="/loans/delinquent" element={<DeliquentLoan />} />
+            <Route path="/loans/closed" element={<ClosedLoan />} />
           </Route>
         </Routes>
       </BrowserRouter>

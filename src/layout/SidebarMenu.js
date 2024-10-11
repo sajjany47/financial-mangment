@@ -44,7 +44,6 @@ const sidebarMenu = {
       icon: "pi pi-ticket",
       submenu: [
         { title: "Active Loans", route: "/loans/active" },
-        { title: "Pending Payments", route: "/loans/pending-payments" },
         { title: "Delinquent Loans", route: "/loans/delinquent" },
         { title: "Closed Loans", route: "/loans/closed" },
       ],
