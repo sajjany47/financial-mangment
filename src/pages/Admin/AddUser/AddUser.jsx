@@ -8,6 +8,7 @@ import AccountDetails from "./AccountDetails";
 import { useSelector } from "react-redux";
 import { countryList, getDetails } from "./AddUserService";
 import Loader from "../../../component/Loader";
+import AddressDetails from "./AddressDetails";
 
 const AddUser = () => {
   const stepperRef = useRef(null);
@@ -65,6 +66,9 @@ const AddUser = () => {
         >
           <StepperPanel header="Basic">
             <BasicDetails next={next} countryData={countryData} />
+          </StepperPanel>
+          <StepperPanel header="Communication">
+            <AddressDetails next={next} back={back} />
           </StepperPanel>
           <StepperPanel header="Education & Experience">
             <EducationDetails next={next} back={back} />

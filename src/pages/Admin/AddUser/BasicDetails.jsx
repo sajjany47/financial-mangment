@@ -5,7 +5,6 @@ import {
   DropdownField,
   InputField,
   RadioField,
-  TextAreaInputField,
 } from "../../../component/FieldType";
 import {
   DropdownPosition,
@@ -60,13 +59,9 @@ const adminSignUpSchema30 = Yup.object().shape({
 
   branch: Yup.string().required("Branch is required"),
 
-  address: Yup.string().required("Address is required"),
   state: Yup.string().required("State is required"),
   country: Yup.string().required("Country is required"),
   city: Yup.string().required("City is required"),
-  pincode: Yup.string()
-    .matches(/^\d{6}$/, "Enter valid pincode")
-    .required("Pincode is required"),
 });
 const BasicDetails = (props) => {
   const dispatch = useDispatch();
@@ -106,11 +101,10 @@ const BasicDetails = (props) => {
           email: getUserData.email,
           dob: new Date(getUserData.dob),
           position: getUserData.position,
-          address: getUserData.address,
+
           state: Number(getUserData.state),
           country: Number(getUserData.country),
-          city: Number(getUserData.city),
-          pincode: getUserData.pincode,
+
           branch: getUserData.branch,
           fresherOrExperience: getUserData.fresherOrExperience,
           userImage: getUserData.userImage,
@@ -123,11 +117,11 @@ const BasicDetails = (props) => {
           email: "",
           dob: "",
           position: "",
-          address: "",
+
           state: "",
           country: "",
           city: "",
-          pincode: "",
+
           branch: "",
           userImage: "",
           userImagePre: "",
@@ -199,7 +193,7 @@ const BasicDetails = (props) => {
         dataType: "basic",
         id: getUserData._id,
         profileRatio:
-          getUserData.profileRatio <= 30 ? 30 : getUserData.profileRatio,
+          getUserData.profileRatio <= 20 ? 20 : getUserData.profileRatio,
       })
         .then((res) => {
           setLoading(false);
@@ -287,85 +281,86 @@ const BasicDetails = (props) => {
                     />
                   </div>
 
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Address"
-                      component={TextAreaInputField}
-                      name="address"
-                      rows={2}
-                      cols={10}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Country"
-                      component={DropdownField}
-                      name="country"
-                      options={props.countryData.map((item) => ({
-                        label: item.name,
-                        value: item.id,
-                      }))}
-                      filter
-                      onChange={(e) => {
-                        setFieldValue("branch", "");
-                        handelSate(setFieldValue, e.target.value);
-                        getBranchList({ country: e.target.value });
-                      }}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="State"
-                      filter
-                      component={DropdownField}
-                      name="state"
-                      options={stateData}
-                      onChange={(e) => {
-                        setFieldValue("branch", "");
-                        handelCityList(setFieldValue, e.target.value, values);
-                        getBranchList({
-                          country: Number(values.country),
-                          state: Number(e.target.value),
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="City"
-                      component={DropdownField}
-                      name="city"
-                      filter
-                      options={cityData}
-                      onChange={(e) => {
-                        setFieldValue("branch", "");
-                        setFieldValue("city", e.target.value);
-                        getBranchList({
-                          country: Number(values.country),
-                          state: Number(values.state),
-                          city: Number(e.targte.value),
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Pincode"
-                      component={InputField}
-                      name="pincode"
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Branch Name"
-                      component={DropdownField}
-                      name="branch"
-                      filter
-                      options={branch}
-                      // optionLabel={"name"}
-                      // optionValue={"_id"}
-                    />
-                  </div>
+                  {values.position !== Position.ADMIN &&
+                    values.position !== "" && (
+                      <>
+                        <div className="col-12 md:col-3">
+                          <Field
+                            label="Country"
+                            component={DropdownField}
+                            name="country"
+                            options={props.countryData.map((item) => ({
+                              label: item.name,
+                              value: item.id,
+                            }))}
+                            filter
+                            onChange={(e) => {
+                              setFieldValue("branch", "");
+                              handelSate(setFieldValue, e.target.value);
+                              getBranchList({ country: e.target.value });
+                            }}
+                          />
+                        </div>
+                        <div className="col-12 md:col-3">
+                          <Field
+                            label="State"
+                            filter
+                            component={DropdownField}
+                            name="state"
+                            options={stateData}
+                            onChange={(e) => {
+                              setFieldValue("branch", "");
+                              handelCityList(
+                                setFieldValue,
+                                e.target.value,
+                                values
+                              );
+                              getBranchList({
+                                country: Number(values.country),
+                                state: Number(e.target.value),
+                              });
+                            }}
+                          />
+                        </div>
+                      </>
+                    )}
+                  {values.position !== Position.ADMIN &&
+                    values.position !== "" &&
+                    values.position !== Position.SM && (
+                      <div className="col-12 md:col-3">
+                        <Field
+                          label="City"
+                          component={DropdownField}
+                          name="city"
+                          filter
+                          options={cityData}
+                          onChange={(e) => {
+                            setFieldValue("branch", "");
+                            setFieldValue("city", e.target.value);
+                            getBranchList({
+                              country: Number(values.country),
+                              state: Number(values.state),
+                              city: Number(e.targte.value),
+                            });
+                          }}
+                        />
+                      </div>
+                    )}
+
+                  {values.position !== Position.ADMIN &&
+                    values.position !== "" &&
+                    values.position !== Position.SM &&
+                    values.position !== Position.CM && (
+                      <div className="col-12 md:col-3">
+                        <Field
+                          label="Branch Name"
+                          component={DropdownField}
+                          name="branch"
+                          filter
+                          options={branch}
+                        />
+                      </div>
+                    )}
 
                   <div className="col-12 md:col-3 ">
                     <label

@@ -112,7 +112,7 @@ const PLoanBasic = (props) => {
           name: getLoanData.name,
           mobile: getLoanData.mobile,
           email: getLoanData.email,
-          dob: new Date(getLoanData.dob),
+          dob: getLoanData?.dob ? new Date(getLoanData.dob) : "",
           branch: getLoanData.branch,
           loanType: getLoanData.loanType,
           fatherName: getLoanData.fatherName,
