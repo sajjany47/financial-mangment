@@ -57,7 +57,12 @@ const adminSignUpSchema30 = Yup.object().shape({
     ])
     .required("Position is required"),
 
-  branch: Yup.string().required("Branch is required"),
+  branch: Yup.string().when("position", {
+    is: (val) =>
+      val !== Position.ADMIN || val !== Position.SM || val !== Position.CM,
+    then: () => Yup.string().required("Branch is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
 
   state: Yup.string().required("State is required"),
   country: Yup.string().required("Country is required"),
@@ -117,11 +122,9 @@ const BasicDetails = (props) => {
           email: "",
           dob: "",
           position: "",
-
           state: "",
           country: "",
           city: "",
-
           branch: "",
           userImage: "",
           userImagePre: "",
@@ -185,11 +188,29 @@ const BasicDetails = (props) => {
   };
   const handelSubmit = (values) => {
     setLoading(true);
-
+    let reqData = { ...values, dataType: "basic" };
+    if (values.position === Position.ADMIN) {
+      reqData.country = null;
+      reqData.state = null;
+      reqData.city = null;
+      reqData.branch = null;
+    }
+    if (values.position === Position.SM) {
+      reqData.country = values.country;
+      reqData.state = values.state;
+      reqData.city = null;
+      reqData.branch = null;
+    }
+    if (values.position === Position.CM) {
+      reqData.country = values.country;
+      reqData.state = values.state;
+      reqData.city = values.city;
+      reqData.branch = null;
+    }
     // eslint-disable-next-line react/prop-types
     if (addUserData.type === "edit") {
       userUpdate({
-        ...values,
+        ...reqData,
         dataType: "basic",
         id: getUserData._id,
         profileRatio:
@@ -207,7 +228,7 @@ const BasicDetails = (props) => {
           setLoading(false);
         });
     } else {
-      userCreate({ ...values, userImage: values.userImage.name })
+      userCreate({ ...reqData })
         .then((res) => {
           dispatch(
             setAddUser({
@@ -361,7 +382,25 @@ const BasicDetails = (props) => {
                         />
                       </div>
                     )}
-
+                  <div className="col-12 md:col-4">
+                    <Field
+                      label="Fresher or Experience"
+                      component={RadioField}
+                      name={`fresherOrExperience`}
+                      radiolist={[
+                        {
+                          label: "Experience",
+                          value: fresherOrExperience.EXPERIENCE,
+                          id: "1",
+                        },
+                        {
+                          label: "Fresher",
+                          value: fresherOrExperience.FRESHER,
+                          id: "2",
+                        },
+                      ]}
+                    />
+                  </div>
                   <div className="col-12 md:col-3 ">
                     <label
                       htmlFor="userImage"
@@ -387,25 +426,6 @@ const BasicDetails = (props) => {
                       alt="Image"
                       width="260"
                       height="260"
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Fresher or Experience"
-                      component={RadioField}
-                      name={`fresherOrExperience`}
-                      radiolist={[
-                        {
-                          label: "Experience",
-                          value: fresherOrExperience.EXPERIENCE,
-                          id: "1",
-                        },
-                        {
-                          label: "Fresher",
-                          value: fresherOrExperience.FRESHER,
-                          id: "2",
-                        },
-                      ]}
                     />
                   </div>
                 </div>
