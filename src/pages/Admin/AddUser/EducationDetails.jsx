@@ -189,7 +189,7 @@ const EducationDetails = (props) => {
     const finalReqData =
       actionType === "add"
         ? { ...reqData, id: employeeData._id }
-        : { ...reqData, productId: selectedData._id };
+        : { ...reqData, productId: selectedData._id, id: employeeData._id };
 
     userEducationDetailsUpdate(finalReqData)
       .then((res) => {

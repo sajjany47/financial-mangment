@@ -292,7 +292,7 @@ const DocumentDetails = (props) => {
                 </div>
               </div>
             </div>
-            <div className="flex pt-4 justify-content-between">
+            <div className="flex pt-4 justify-content-between mb-3">
               <Button
                 label="Back"
                 severity="secondary"

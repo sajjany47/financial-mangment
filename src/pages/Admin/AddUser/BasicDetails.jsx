@@ -203,29 +203,11 @@ const BasicDetails = (props) => {
   };
   const handelSubmit = (values) => {
     setLoading(true);
-    let reqData = { ...values, dataType: "basic" };
-    if (values.position === Position.ADMIN) {
-      reqData.country = null;
-      reqData.state = null;
-      reqData.city = null;
-      reqData.branch = null;
-    }
-    if (values.position === Position.SM) {
-      reqData.country = values.country;
-      reqData.state = values.state;
-      reqData.city = null;
-      reqData.branch = null;
-    }
-    if (values.position === Position.CM) {
-      reqData.country = values.country;
-      reqData.state = values.state;
-      reqData.city = values.city;
-      reqData.branch = null;
-    }
+
     // eslint-disable-next-line react/prop-types
     if (addUserData.type === "edit") {
       userUpdate({
-        ...reqData,
+        ...values,
         dataType: "basic",
         id: getUserData._id,
         profileRatio:
@@ -243,7 +225,7 @@ const BasicDetails = (props) => {
           setLoading(false);
         });
     } else {
-      userCreate({ ...reqData })
+      userCreate({ ...values })
         .then((res) => {
           dispatch(
             setAddUser({
