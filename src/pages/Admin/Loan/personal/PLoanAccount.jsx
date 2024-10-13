@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import Loader from "../../../../component/Loader";
 import { InputField } from "../../../../component/FieldType";
-import { findIFSC } from "../../AddUser/AddUserService";
 import { applicationDetails, applicationUpdate } from "../LoanService";
+import { findIFSC } from "../../Employee/AddUserService";
 
 const PLoanAccount = (props) => {
   const navigate = useNavigate();

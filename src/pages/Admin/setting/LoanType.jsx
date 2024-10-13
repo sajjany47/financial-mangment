@@ -14,7 +14,7 @@ import {
   MultiDropdownField,
   RadioField,
 } from "../../../component/FieldType";
-import { countryList } from "../AddUser/AddUserService";
+import { countryList } from "../Employee/AddUserService";
 
 const loanTypeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),

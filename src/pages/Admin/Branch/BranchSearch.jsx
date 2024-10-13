@@ -2,11 +2,11 @@ import { Field, Form, Formik } from "formik";
 import { DropdownField, InputField } from "../../../component/FieldType";
 import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
-import { city, countryList, state } from "../AddUser/AddUserService";
 import { cleanObject } from "../../../shared/constant";
 import { ActiveStatus } from "../../../shared/Config";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../../store/reducer/searchReducer";
+import { city, countryList, state } from "../Employee/AddUserService";
 
 const BranchSearch = () => {
   const searchKey = useSelector((state) => state?.search?.value);

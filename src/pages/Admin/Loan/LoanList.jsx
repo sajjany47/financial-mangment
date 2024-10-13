@@ -15,7 +15,6 @@ import {
   applicationUpdate,
 } from "./LoanService";
 import { Dropdown } from "primereact/dropdown";
-import { countryList } from "../AddUser/AddUserService";
 import { loanTypeGetList } from "../setting/SettingService";
 import CPaginator from "../../../component/CPaginator";
 import {
@@ -40,6 +39,7 @@ import * as Yup from "yup";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import LoanSearch from "./LoanSearch";
+import { countryList } from "../Employee/AddUserService";
 
 const ApplicationStatusSchema = Yup.object().shape({
   status: Yup.string().required("Application status is required"),

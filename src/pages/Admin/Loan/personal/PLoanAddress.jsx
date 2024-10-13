@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { Panel } from "primereact/panel";
-import { city, countryList, state } from "../../AddUser/AddUserService";
 import Loader from "../../../../component/Loader";
 import {
   CheckField,
@@ -15,6 +14,7 @@ import { ResidenceTypes } from "../../../../shared/Config";
 import { applicationDetails, applicationUpdate } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import { city, countryList, state } from "../../Employee/AddUserService";
 
 const addressValidationSchema = Yup.object().shape({
   permanentHouseOrBuildingNumber: Yup.string().required(

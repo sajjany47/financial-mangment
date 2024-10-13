@@ -3,9 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import PasswordChange from "./layout/PasswordChange";
 import Layout from "./layout/Layout";
-import CustomerList from "./pages/Admin/AddUser/CustomerList";
-import EmployeeList from "./pages/Admin/AddUser/EmployeeList";
-import AddEmployee from "./pages/Admin/AddUser/AddEmployee";
 import Branch from "./pages/Admin/Branch/Branch";
 import { useEffect } from "react";
 import { Instance } from "./shared/constant";
@@ -15,7 +12,6 @@ import {
   REFRESH_TOKEN_STORAGE_KEY,
 } from "./shared/Config";
 import Swal from "sweetalert2";
-import EditEmployee from "./pages/Admin/AddUser/EditEmployee";
 import Lead from "./pages/Admin/Loan/Lead";
 import NewApplication from "./pages/Admin/Loan/NewApplication";
 import PLoanAdd from "./pages/Admin/Loan/personal/PLoanAdd";
@@ -32,6 +28,10 @@ import Disbursed from "./pages/Admin/Loan/Disbursed";
 import ActiveLoan from "./pages/Admin/Loan_Management/ActiveLoan";
 import DeliquentLoan from "./pages/Admin/Loan_Management/DeliquentLoan";
 import ClosedLoan from "./pages/Admin/Loan_Management/ClosedLoan";
+import CustomerList from "./pages/Admin/Customer/CustomerList";
+import EmployeeList from "./pages/Admin/Employee/EmployeeList";
+import AddEmployee from "./pages/Admin/Employee/AddEmployee";
+import EditEmployee from "./pages/Admin/Employee/EditEmployee";
 
 function App() {
   let isRefreshing = false;
