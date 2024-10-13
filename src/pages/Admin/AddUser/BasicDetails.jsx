@@ -258,7 +258,6 @@ const BasicDetails = (props) => {
       >
         {({ handleSubmit, setFieldValue, errors, touched, values }) => (
           <Form onSubmit={handleSubmit}>
-            {console.log(errors)}
             <div className="flex flex-column ">
               <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
                 <div className="grid p-3">
@@ -359,7 +358,7 @@ const BasicDetails = (props) => {
                             getBranchList({
                               country: Number(values.country),
                               state: Number(values.state),
-                              city: Number(e.targte.value),
+                              city: Number(e.target.value),
                             });
                           }}
                         />
