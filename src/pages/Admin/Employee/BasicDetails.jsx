@@ -121,10 +121,9 @@ const BasicDetails = (props) => {
           email: getUserData.email,
           dob: new Date(getUserData.dob),
           position: getUserData.position,
-
-          state: Number(getUserData.state),
-          country: Number(getUserData.country),
-
+          state: getUserData?.state ? Number(getUserData.state) : "",
+          country: getUserData?.country ? Number(getUserData.country) : "",
+          city: getUserData?.city ? Number(getUserData.city) : "",
           branch: getUserData.branch,
           fresherOrExperience: getUserData.fresherOrExperience,
           userImage: getUserData.userImage,
@@ -380,6 +379,7 @@ const BasicDetails = (props) => {
                       </div>
                     )}
                   <div className="col-12 md:col-4">
+                    {console.log(values.branch)}
                     <Field
                       label="Fresher or Experience"
                       component={RadioField}

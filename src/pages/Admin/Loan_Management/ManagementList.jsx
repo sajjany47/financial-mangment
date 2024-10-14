@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import Loader from "../../../component/Loader";
@@ -9,6 +10,8 @@ import CPaginator from "../../../component/CPaginator";
 import { Button } from "primereact/button";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Menu } from "primereact/menu";
+import { datatable } from "./ManageService";
+import LoanSearch from "../Loan/LoanSearch";
 
 const ManagementList = (props) => {
   const menuRef = useRef();
@@ -21,12 +24,6 @@ const ManagementList = (props) => {
   const [selectedItem, setSelectedItem] = useState({});
   const [searchShow, setSearchShow] = useState(false);
 
-  useEffect(() => {
-    console.log(userDetails);
-    console.log(selectedItem);
-    setTotal(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   useEffect(() => {
     if (searchKey?.page === props.type) {
       dispatch(setSearch({ ...searchKey }));
@@ -46,6 +43,41 @@ const ManagementList = (props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    getApplicationList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKey]);
+
+  const getApplicationList = () => {
+    setLoading(true);
+    let reqData = {
+      page: searchKey?.pageNumber,
+      limit: searchKey?.rows,
+      sort:
+        searchKey.hasOwnProperty("sortField") &&
+        searchKey.hasOwnProperty("sortOrder")
+          ? { [searchKey.sortField]: searchKey.sortOrder }
+          : { name: 1 },
+      applicationStaus: props.type,
+    };
+    if (Object.keys(searchKey?.filterOptions).length > 0) {
+      reqData = {
+        ...reqData,
+        ...searchKey?.filterOptions,
+      };
+    }
+
+    datatable(reqData)
+      .then((res) => {
+        setList(res.data);
+        setTotal(res.count);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const menuTemplate = [
     {
       //   label: "Profile",
@@ -138,6 +170,7 @@ const ManagementList = (props) => {
         id="popup_menu_right"
         popupAlignment="right"
       />
+      {searchShow && <LoanSearch />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}
