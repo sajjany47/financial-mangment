@@ -13,6 +13,10 @@ import { Menu } from "primereact/menu";
 import { datatable } from "./ManageService";
 import LoanSearch from "../Loan/LoanSearch";
 import { Position } from "../../../shared/Config";
+import { Dialog } from "primereact/dialog";
+import moment from "moment";
+import { Currency } from "../../../component/FieldType";
+import { Tag } from "primereact/tag";
 
 const ManagementList = (props) => {
   const menuRef = useRef();
@@ -24,6 +28,8 @@ const ManagementList = (props) => {
   const [total, setTotal] = useState(0);
   const [selectedItem, setSelectedItem] = useState({});
   const [searchShow, setSearchShow] = useState(false);
+  const [emiDialoge, setEmiDialoge] = useState(false);
+  const [emiData, setEmiData] = useState([]);
 
   useEffect(() => {
     if (searchKey?.page === props.type) {
@@ -85,7 +91,9 @@ const ManagementList = (props) => {
       items: [
         {
           label: "View Application",
-          command: () => {},
+          command: () => {
+            console.log(selectedItem);
+          },
         },
         {
           label: "Assign Agent",
@@ -168,29 +176,62 @@ const ManagementList = (props) => {
 
   const emiTemplate = (rowData) => {
     return (
-      <div className="surface-0">
-        <ul className="list-none p-0 m-0">
-          <li className="flex align-items-center py-3 px-2 flex-wrap justify-content-between">
-            <div className="text-500 w-6 md:w-2 font-medium">Paid EMI</div>
-            <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-              {rowData.paidEmi}
-            </div>
-          </li>
-          <li className="flex align-items-center py-3 px-2 flex-wrap justify-content-between">
-            <div className="text-500 w-6 md:w-2 font-medium">Unpaid EMI</div>
-            <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-              {rowData.unpaidEmi}
-            </div>
-          </li>
-          <li className="flex align-items-center py-3 px-2 flex-wrap justify-content-between">
-            <div className="text-500 w-6 md:w-2 font-medium">OverDue EMI</div>
-            <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-              {rowData.overDueEmi}
-            </div>
-          </li>
-        </ul>
+      <div
+        className="surface-0"
+        onClick={() => {
+          setEmiDialoge(true);
+          setEmiData(rowData.emiDetails);
+        }}
+        style={{ cursor: "pointer" }}
+      >
+        <div className="flex  justify-content-between">
+          <div className="text-500 font-medium">Paid EMI</div>
+          <div className="text-900 text-primary">{rowData.paidEmi}</div>
+        </div>
+        <div className="flex  justify-content-between">
+          <div className="text-500 font-medium">Unpaid EMI</div>
+          <div className="text-900 text-primary">{rowData.unpaidEmi}</div>
+        </div>
+        <div className="flex  justify-content-between">
+          <div className="text-500 font-medium">OverDue EMI</div>
+          <div className="text-900 text-primary">{rowData.overDueEmi}</div>
+        </div>
       </div>
     );
+  };
+
+  const forecloseTemplate = (item, rowIndex) => {
+    return (
+      <>
+        {rowIndex.rowIndex > 5
+          ? Currency(item?.foreclosureAmount)
+          : Currency(0)}
+      </>
+    );
+  };
+  const statusTemplate = (item) => {
+    return (
+      <>
+        {item.isPaid ? (
+          <Tag severity="success" value="Yes" rounded />
+        ) : (
+          <Tag severity="danger" value="No" rounded />
+        )}
+      </>
+    );
+  };
+
+  const rowClass = (data) => {
+    return {
+      // "bg-primary": data.isPaid === false,
+      "bg-teal-100 text-teal-900":
+        data.isPaid && new Date(data.emiDate) <= new Date(data?.paymentDate),
+      "bg-red-100 text-red-900":
+        new Date(data.emiDate) < new Date() && !data.isPaid,
+      "surface-300 text-red-900":
+        data.isPaid && new Date(data.emiDate) > new Date(data?.paymentDate),
+      // new Date(data.emiDate) > new Date(),
+    };
   };
   return (
     <>
@@ -244,6 +285,62 @@ const ManagementList = (props) => {
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
+
+      <Dialog
+        header={"Emi Details"}
+        visible={emiDialoge}
+        style={{ width: "60vw" }}
+        onHide={() => {
+          setEmiDialoge(false);
+          setEmiData([]);
+        }}
+      >
+        <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
+          <DataTable
+            value={emiData}
+            // tableStyle={{ minWidth: "60rem" }}
+            dataKey="_id"
+            emptyMessage="No data found."
+            filterDisplay="row"
+            scrollable
+            scrollHeight="400px"
+            style={{ minWidth: "55rem" }}
+            rowClassName={rowClass}
+          >
+            <Column
+              field="emiDate"
+              header="Date"
+              body={(item) => <>{moment(item?.emiDate).format("DD-MM-YYYY")}</>}
+            />
+            <Column
+              field="emiAmount"
+              header="EMI Amount"
+              body={(item) => <>{Currency(item?.emiAmount)}</>}
+            />
+            <Column field="isPaid" header="Paid" body={statusTemplate} />
+            <Column
+              field="interestPaid"
+              header="Interest Paid"
+              body={(item) => <>{Currency(item?.interestPaid)}</>}
+            />
+            <Column
+              field="principalPaid"
+              header=" Principle Paid"
+              body={(item) => <> {Currency(item?.principalPaid)}</>}
+            />
+            <Column
+              field="remainingOutstanding"
+              header="Outstanding"
+              body={(item) => <>{Currency(item?.remainingOutstanding)}</>}
+            />
+            <Column
+              field="foreclosureAmount"
+              header="Foreclosure"
+              body={forecloseTemplate}
+            />
+          </DataTable>
+        </div>
+      </Dialog>
     </>
   );
 };
