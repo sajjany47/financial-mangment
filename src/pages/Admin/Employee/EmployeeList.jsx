@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { setAddUser } from "../../../store/reducer/AddUserReducer";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { employeeDataTable } from "./AddUserService";
 import Loader from "../../../component/Loader";
 import { Tag } from "primereact/tag";
@@ -13,8 +13,12 @@ import { RoleSeverityColor } from "../../../shared/Config";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import CPaginator from "../../../component/CPaginator";
 import EmployeeSearch from "./EmployeeSearch";
+import { Dialog } from "primereact/dialog";
+import { Menu } from "primereact/menu";
+import PasswordChange from "../../../layout/PasswordChange";
 
 const EmployeeList = () => {
+  const menuRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const searchKey = useSelector((state) => state?.search?.value);
@@ -22,6 +26,8 @@ const EmployeeList = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [searchShow, setSearchShow] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [selectData, setSelectData] = useState({});
 
   useEffect(() => {
     if (searchKey?.page === "employee") {
@@ -114,15 +120,15 @@ const EmployeeList = () => {
     return (
       <>
         <Button
-          icon="pi pi-pencil"
+          icon="pi pi-ellipsis-v"
           rounded
           text
           aria-label="Filter"
-          onClick={() => {
-            navigate("/employee/edit");
-            dispatch(
-              setAddUser({ type: "edit", role: "employee", id: item._id })
-            );
+          aria-controls="popup_menu_right"
+          aria-haspopup
+          onClick={(event) => {
+            menuRef.current.toggle(event);
+            setSelectData(item);
           }}
         />
       </>
@@ -163,10 +169,40 @@ const EmployeeList = () => {
       </>
     );
   };
+  const menuTemplate = [
+    {
+      //   label: "Profile",
+      items: [
+        {
+          label: "Edit Employee",
+          command: () => {
+            navigate("/employee/edit");
+            dispatch(
+              setAddUser({ type: "edit", role: "employee", id: selectData._id })
+            );
+          },
+        },
+        {
+          label: "Change Password",
+
+          command: () => {
+            setVisible(true);
+          },
+        },
+      ],
+    },
+  ];
 
   return (
     <>
       {loading && <Loader />}
+      <Menu
+        model={menuTemplate}
+        popup
+        ref={menuRef}
+        id="popup_menu_right"
+        popupAlignment="right"
+      />
       {searchShow && <EmployeeSearch />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
@@ -202,6 +238,16 @@ const EmployeeList = () => {
         </DataTable>
         <CPaginator totalRecords={totalCount} />
       </div>
+      <Dialog
+        header={"Reset Password"}
+        visible={visible}
+        style={{ width: "30vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <PasswordChange type={"employee"} id={selectData._id} />
+      </Dialog>
     </>
   );
 };

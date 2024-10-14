@@ -41,32 +41,29 @@ const PasswordChange = (props) => {
     >
       {({ handleSubmit }) => (
         <Form onSubmit={handleSubmit}>
-          <div className="flex align-items-center justify-content-center">
-            <div className="surface-card p-3 border-round w-full lg:w-6">
-              <div className="text-center mb-5">
-                <img
-                  src="https://img.freepik.com/free-vector/mobile-login-concept-illustration_114360-83.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1721898000&semt=sph"
-                  alt="hyper"
-                  height={50}
-                  className="mb-3"
-                />
-                <div className="text-900 text-3xl font-medium mb-3">
-                  Reset Password
+          <div className="flex flex-column ">
+            <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+              <div className="grid p-3">
+                <div className="col-12 md:col-12">
+                  <Field
+                    label="Password"
+                    component={InputField}
+                    name={"password"}
+                    type="password"
+                  />
+                </div>
+                <div className="col-12 md:col-12">
+                  <Field
+                    label="Confirm Password"
+                    component={InputField}
+                    name={"confirmPassword"}
+                    type="password"
+                  />
+                </div>
+                <div className="col-12 md:col-12">
+                  <Button label="Reset Password" className="w-full mt-2" />
                 </div>
               </div>
-              <Field
-                label="Password"
-                component={InputField}
-                name={"password"}
-                type="password"
-              />
-              <Field
-                label="Confirm Password"
-                component={InputField}
-                name={"confirmPassword"}
-                type="password"
-              />
-              <Button label="Reset Password" className="w-full mt-2" />
             </div>
           </div>
         </Form>
