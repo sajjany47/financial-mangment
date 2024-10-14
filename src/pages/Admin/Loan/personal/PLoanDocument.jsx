@@ -65,7 +65,7 @@ const PLoanDocument = (props) => {
         setLoading(false);
       });
   };
-  const initialValues =
+  let initialValues =
     loanDetails.type === "edit"
       ? {
           ...selectedData,
@@ -102,6 +102,7 @@ const PLoanDocument = (props) => {
           getDetails();
           setVisible(false);
           setActionType("add");
+          setSelectedData({});
           // props.next();
         })
         .catch(() => {
@@ -123,6 +124,7 @@ const PLoanDocument = (props) => {
           });
           setVisible(false);
           setActionType("add");
+          setSelectedData({});
           // props.next();
         })
         .catch(() => {
@@ -277,8 +279,8 @@ const PLoanDocument = (props) => {
                                 {
                                   item.document.find(
                                     (a) =>
-                                      a._id === elm[elm.entity].documentType
-                                  ).name
+                                      a._id === elm[elm.entity]?.documentType
+                                  )?.name
                                 }
                               </span>
                               <div className="text-900 font-medium text-xl">
@@ -360,6 +362,7 @@ const PLoanDocument = (props) => {
         onHide={() => {
           setVisible(false);
           setActionType("add");
+          setSelectedData({});
         }}
       >
         <Formik
