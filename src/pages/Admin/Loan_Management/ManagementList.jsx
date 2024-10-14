@@ -12,6 +12,7 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import { Menu } from "primereact/menu";
 import { datatable } from "./ManageService";
 import LoanSearch from "../Loan/LoanSearch";
+import { Position } from "../../../shared/Config";
 
 const ManagementList = (props) => {
   const menuRef = useRef();
@@ -71,7 +72,7 @@ const ManagementList = (props) => {
     datatable(reqData)
       .then((res) => {
         setList(res.data);
-        setTotal(res.count);
+        setTotal(res.total);
         setLoading(false);
       })
       .catch(() => {
@@ -88,7 +89,12 @@ const ManagementList = (props) => {
         },
         {
           label: "Assign Agent",
-          visible: props.type === "delinquentLoan",
+          visible:
+            props.type === "delinquentLoan" &&
+            (userDetails.position === Position.ADMIN ||
+              userDetails.position === Position.SM ||
+              userDetails.position === Position.CM ||
+              userDetails.position === Position.BM),
           command: () => {},
         },
       ],
@@ -159,6 +165,33 @@ const ManagementList = (props) => {
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
   };
+
+  const emiTemplate = (rowData) => {
+    return (
+      <div className="surface-0">
+        <ul className="list-none p-0 m-0">
+          <li className="flex align-items-center py-3 px-2 flex-wrap justify-content-between">
+            <div className="text-500 w-6 md:w-2 font-medium">Paid EMI</div>
+            <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+              {rowData.paidEmi}
+            </div>
+          </li>
+          <li className="flex align-items-center py-3 px-2 flex-wrap justify-content-between">
+            <div className="text-500 w-6 md:w-2 font-medium">Unpaid EMI</div>
+            <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+              {rowData.unpaidEmi}
+            </div>
+          </li>
+          <li className="flex align-items-center py-3 px-2 flex-wrap justify-content-between">
+            <div className="text-500 w-6 md:w-2 font-medium">OverDue EMI</div>
+            <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+              {rowData.overDueEmi}
+            </div>
+          </li>
+        </ul>
+      </div>
+    );
+  };
   return (
     <>
       {loading && <Loader />}
@@ -187,7 +220,7 @@ const ManagementList = (props) => {
           <Column field="applicationNumber" header="Application Number" />
           <Column field="name" header="Name" sortable />
           <Column field="mobile" header="Mobile" sortable />
-          <Column field="mobile" header="EMI Details" sortable />
+          <Column field="" header="EMI Details" body={emiTemplate} />
           <Column
             field="branchDetails.name"
             header="Branch"
@@ -201,10 +234,12 @@ const ManagementList = (props) => {
             sortField="branchDetails.name"
           />
           {props.type === "delinquentLoan" && (
-            <Column field="mobile" header="Assign Agent" sortable />
+            <>
+              <Column field="mobile" header="Assign Agent" sortable />
+              <Column field="remark" header="Remark" />
+            </>
           )}
 
-          <Column field="remark" header="Remark" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />
