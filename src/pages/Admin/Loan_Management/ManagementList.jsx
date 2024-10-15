@@ -10,13 +10,20 @@ import CPaginator from "../../../component/CPaginator";
 import { Button } from "primereact/button";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Menu } from "primereact/menu";
-import { datatable } from "./ManageService";
+import {
+  BranchAgentList,
+  datatable,
+  RemarkAndAgentUpdate,
+} from "./ManageService";
 import LoanSearch from "../Loan/LoanSearch";
 import { Position } from "../../../shared/Config";
 import { Dialog } from "primereact/dialog";
 import moment from "moment";
 import { Currency } from "../../../component/FieldType";
 import { Tag } from "primereact/tag";
+import { Dropdown } from "primereact/dropdown";
+import Swal from "sweetalert2";
+import { InputTextarea } from "primereact/inputtextarea";
 
 const ManagementList = (props) => {
   const menuRef = useRef();
@@ -30,6 +37,11 @@ const ManagementList = (props) => {
   const [searchShow, setSearchShow] = useState(false);
   const [emiDialoge, setEmiDialoge] = useState(false);
   const [emiData, setEmiData] = useState([]);
+  const [agentList, setAgentList] = useState([]);
+  const [selectAgent, setSelectAgent] = useState("");
+  const [addRemark, setAddRemark] = useState("");
+  const [actionType, setActionType] = useState("");
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (searchKey?.page === props.type) {
@@ -55,6 +67,14 @@ const ManagementList = (props) => {
     getApplicationList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchKey]);
+
+  const branchAgentList = (branchId) => {
+    BranchAgentList(branchId).then((res) => {
+      setAgentList(
+        res.data.map((item) => ({ label: item.name, value: item._id }))
+      );
+    });
+  };
 
   const getApplicationList = () => {
     setLoading(true);
@@ -96,6 +116,21 @@ const ManagementList = (props) => {
           },
         },
         {
+          label: "Add Remark",
+          visible: props.type !== "closedLoan",
+          command: () => {
+            setActionType("remark");
+            setVisible(true);
+          },
+        },
+        {
+          label: "Loan Payment",
+          visible: props.type !== "closedLoan",
+          command: () => {
+            console.log(selectedItem);
+          },
+        },
+        {
           label: "Assign Agent",
           visible:
             props.type === "delinquentLoan" &&
@@ -103,7 +138,11 @@ const ManagementList = (props) => {
               userDetails.position === Position.SM ||
               userDetails.position === Position.CM ||
               userDetails.position === Position.BM),
-          command: () => {},
+          command: () => {
+            setActionType("agent");
+            branchAgentList(selectedItem.branchDetails._id);
+            setVisible(true);
+          },
         },
       ],
     },
@@ -233,6 +272,29 @@ const ManagementList = (props) => {
       // new Date(data.emiDate) > new Date(),
     };
   };
+
+  const handelSubmit = () => {
+    setLoading(true);
+    let reqData =
+      actionType === "agent"
+        ? {
+            loanId: selectedItem._id,
+            assignAgent: selectAgent,
+          }
+        : { loanId: selectedItem._id, agentRemark: addRemark };
+
+    RemarkAndAgentUpdate(reqData)
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({ title: res.message, icon: "success" });
+        setAddRemark("");
+        setSelectAgent("");
+        setActionType("");
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   return (
     <>
       {loading && <Loader />}
@@ -275,12 +337,11 @@ const ManagementList = (props) => {
             sortField="branchDetails.name"
           />
           {props.type === "delinquentLoan" && (
-            <>
-              <Column field="mobile" header="Assign Agent" sortable />
-              <Column field="remark" header="Remark" />
-            </>
+            <Column field="mobile" header="Assign Agent" sortable />
           )}
-
+          {props.type === "delinquentLoan" && (
+            <Column field="remark" header="Remark" />
+          )}
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />
@@ -339,6 +400,62 @@ const ManagementList = (props) => {
               body={forecloseTemplate}
             />
           </DataTable>
+        </div>
+      </Dialog>
+
+      <Dialog
+        header={actionType === "agent" ? "Select Select Agent" : "Add Remark"}
+        visible={visible}
+        style={{ width: actionType === "loanType" ? "50vw" : "25vw" }}
+        onHide={() => {
+          setVisible(false);
+          setAddRemark("");
+          setSelectAgent("");
+          setActionType("");
+        }}
+      >
+        <div className="surface-0">
+          <div className="grid">
+            {actionType === "agent" ? (
+              <div className="col-12 md:col-12 m-2 ">
+                <Dropdown
+                  filter
+                  value={selectAgent}
+                  onChange={(e) => setSelectAgent(e.value)}
+                  options={agentList}
+                  placeholder="Select a agent"
+                  className="w-full"
+                />
+              </div>
+            ) : (
+              <div className="col-12 md:col-12 m-2 ">
+                <InputTextarea
+                  value={addRemark}
+                  onChange={(e) => setAddRemark(e.target.value)}
+                  rows={5}
+                  cols={30}
+                  placeholder="Add Remark"
+                />
+              </div>
+            )}
+
+            <div className="col-12 md:col-12 m-2 ">
+              <Button
+                label="Submit"
+                className="w-full"
+                onClick={handelSubmit}
+                disabled={
+                  actionType === "agent"
+                    ? selectAgent === ""
+                      ? true
+                      : false
+                    : addRemark !== ""
+                    ? false
+                    : true
+                }
+              />
+            </div>
+          </div>
         </div>
       </Dialog>
     </>

@@ -8,3 +8,19 @@ export const datatable = async (payload) => {
   );
   return response.data;
 };
+
+export const RemarkAndAgentUpdate = async (payload) => {
+  const response = await Instance.post(
+    `/loan/remark-agent-update`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+export const BranchAgentList = async (branchId) => {
+  const response = await Instance.get(
+    `/loan/manage/branch-agent/${branchId}`,
+    headerWithToken()
+  );
+  return response.data;
+};
