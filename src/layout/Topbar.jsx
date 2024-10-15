@@ -3,7 +3,7 @@ import { Menubar } from "primereact/menubar";
 import { Avatar } from "primereact/avatar";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Menu } from "primereact/menu";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/UserReducer";
 import { logout } from "./UserService";
@@ -14,6 +14,8 @@ import {
   REFRESH_TOKEN_STORAGE_KEY,
 } from "../shared/Config";
 import { capitalizeFirstLetter } from "../shared/constant";
+import { Dialog } from "primereact/dialog";
+import PasswordChange from "./PasswordChange";
 
 export default function Topbar(props) {
   const navigate = useNavigate();
@@ -24,6 +26,8 @@ export default function Topbar(props) {
 
   const dispatch = useDispatch();
   const menuRef = useRef();
+  const [visible, setVisible] = useState(false);
+
   const items = filterPath.map((e) => ({
     label: capitalizeFirstLetter(
       e.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
@@ -79,6 +83,13 @@ export default function Topbar(props) {
       //   label: "Profile",
       items: [
         {
+          label: "Password",
+          icon: "pi pi-clipboard",
+          command: () => {
+            setVisible(true);
+          },
+        },
+        {
           label: "Settings",
           icon: "pi pi-cog",
         },
@@ -99,20 +110,36 @@ export default function Topbar(props) {
     },
   ];
 
+  const dislogeClose = () => {
+    setVisible(false);
+  };
+
   return (
-    <div className="card mb-3 topbar">
-      <Menubar
-        start={start}
-        end={end}
-        style={{ marginLeft: props.marginValue }}
-      />
-      <Menu
-        model={menuTemplate}
-        popup
-        ref={menuRef}
-        id="popup_menu_left"
-        className="w-full md:w-15rem"
-      />
-    </div>
+    <>
+      <div className="card mb-3 topbar">
+        <Menubar
+          start={start}
+          end={end}
+          style={{ marginLeft: props.marginValue }}
+        />
+        <Menu
+          model={menuTemplate}
+          popup
+          ref={menuRef}
+          id="popup_menu_left"
+          className="w-full md:w-15rem"
+        />
+      </div>
+      <Dialog
+        header={"Reset Password"}
+        visible={visible}
+        style={{ width: "30vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <PasswordChange type={"user"} dislogeClose={dislogeClose} />
+      </Dialog>
+    </>
   );
 }

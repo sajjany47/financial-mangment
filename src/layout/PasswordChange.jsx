@@ -10,17 +10,32 @@ import Swal from "sweetalert2";
 const PasswordChange = (props) => {
   const userDetails = useSelector((state) => state.user.user);
   const validationSchema = Yup.object({
-    password: Yup.string().required("Password is required"),
+    oldPassword: Yup.string().when("type", {
+      is: (val) => val === "user",
+      then: () => Yup.string().required("Old Password is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+
+    newpassword: Yup.string().required("Password is required"),
     confirmPassword: Yup.string().oneOf(
-      [Yup.ref("password"), null],
+      [Yup.ref("newpassword"), null],
       "password must match"
     ),
   });
   const handelSubmit = (values) => {
-    const reqData = {
-      password: values.password,
-      id: props.type === "user" ? userDetails.data._id : props.id,
-    };
+    const reqData =
+      props.type === "employee"
+        ? {
+            password: values.newpassword,
+            id: props.id,
+            type: props.type,
+          }
+        : {
+            oldPassword: values.oldPassword,
+            password: values.newpassword,
+            id: userDetails.data._id,
+            type: props.type,
+          };
     userPasswordReset(reqData)
       .then((res) => {
         Swal.fire({
@@ -35,7 +50,12 @@ const PasswordChange = (props) => {
   };
   return (
     <Formik
-      initialValues={{ password: "", confirmPassword: "" }}
+      initialValues={{
+        type: props.type,
+        oldPassword: "",
+        newpassword: "",
+        confirmPassword: "",
+      }}
       onSubmit={handelSubmit}
       validationSchema={validationSchema}
     >
@@ -44,11 +64,22 @@ const PasswordChange = (props) => {
           <div className="flex flex-column ">
             <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
               <div className="grid p-3">
+                {props.type === "user" && (
+                  <div className="col-12 md:col-12">
+                    <Field
+                      label="Old Password"
+                      component={InputField}
+                      name={"oldPassword"}
+                      type="password"
+                    />
+                  </div>
+                )}
+
                 <div className="col-12 md:col-12">
                   <Field
-                    label="Password"
+                    label="New Password"
                     component={InputField}
-                    name={"password"}
+                    name={"newpassword"}
                     type="password"
                   />
                 </div>

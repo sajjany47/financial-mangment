@@ -193,6 +193,10 @@ const EmployeeList = () => {
     },
   ];
 
+  const dislogeClose = () => {
+    setVisible(false);
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -246,7 +250,11 @@ const EmployeeList = () => {
           setVisible(false);
         }}
       >
-        <PasswordChange type={"employee"} id={selectData._id} />
+        <PasswordChange
+          type={"employee"}
+          id={selectData._id}
+          dislogeClose={dislogeClose}
+        />
       </Dialog>
     </>
   );
