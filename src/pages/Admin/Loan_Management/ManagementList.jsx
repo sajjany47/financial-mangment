@@ -360,12 +360,11 @@ const ManagementList = (props) => {
             sortable
             sortField="branchDetails.name"
           />
-
-          <Column field="assignAgent" header="Assign Agent" />
-
           {props.type === "delinquentLoan" && (
-            <Column field="remark" header="Remark" body={remarkTemplate} />
+            <Column field="assignAgent" header="Assign Agent" />
           )}
+          <Column field="remark" header="Remark" body={remarkTemplate} />
+
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />
