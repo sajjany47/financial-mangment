@@ -24,6 +24,7 @@ import { Tag } from "primereact/tag";
 import { Dropdown } from "primereact/dropdown";
 import Swal from "sweetalert2";
 import { InputTextarea } from "primereact/inputtextarea";
+import { capitalizeFirstLetter } from "../../../shared/constant";
 
 const ManagementList = (props) => {
   const menuRef = useRef();
@@ -71,7 +72,12 @@ const ManagementList = (props) => {
   const branchAgentList = (branchId) => {
     BranchAgentList(branchId).then((res) => {
       setAgentList(
-        res.data.map((item) => ({ label: item.name, value: item._id }))
+        res.data.map((item) => ({
+          label: `${item.name} (${capitalizeFirstLetter(
+            item.position.replace(/-/g, " ")
+          )}-${item.branchDetails.code})`,
+          value: item._id,
+        }))
       );
     });
   };
@@ -278,15 +284,20 @@ const ManagementList = (props) => {
     let reqData =
       actionType === "agent"
         ? {
-            loanId: selectedItem._id,
             assignAgent: selectAgent,
           }
-        : { loanId: selectedItem._id, agentRemark: addRemark };
+        : { agentRemark: addRemark };
 
-    RemarkAndAgentUpdate(reqData)
+    RemarkAndAgentUpdate({
+      ...reqData,
+      type: actionType,
+      loanId: selectedItem._id,
+    })
       .then((res) => {
         setLoading(false);
         Swal.fire({ title: res.message, icon: "success" });
+        setVisible(false);
+        getApplicationList();
         setAddRemark("");
         setSelectAgent("");
         setActionType("");
@@ -294,6 +305,9 @@ const ManagementList = (props) => {
       .catch(() => {
         setLoading(false);
       });
+  };
+  const remarkTemplate = (data) => {
+    return <>{data?.agentRemark ? data.agentRemark.length : null}</>;
   };
   return (
     <>
@@ -336,11 +350,11 @@ const ManagementList = (props) => {
             sortable
             sortField="branchDetails.name"
           />
+
+          <Column field="assignAgent" header="Assign Agent" />
+
           {props.type === "delinquentLoan" && (
-            <Column field="mobile" header="Assign Agent" />
-          )}
-          {props.type === "delinquentLoan" && (
-            <Column field="remark" header="Remark" />
+            <Column field="remark" header="Remark" body={remarkTemplate} />
           )}
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
@@ -406,7 +420,7 @@ const ManagementList = (props) => {
       <Dialog
         header={actionType === "agent" ? "Select Select Agent" : "Add Remark"}
         visible={visible}
-        style={{ width: actionType === "loanType" ? "50vw" : "25vw" }}
+        style={{ width: "30vw" }}
         onHide={() => {
           setVisible(false);
           setAddRemark("");
@@ -435,6 +449,7 @@ const ManagementList = (props) => {
                   rows={5}
                   cols={30}
                   placeholder="Add Remark"
+                  className="w-full"
                 />
               </div>
             )}

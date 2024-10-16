@@ -11,7 +11,7 @@ export const datatable = async (payload) => {
 
 export const RemarkAndAgentUpdate = async (payload) => {
   const response = await Instance.post(
-    `/loan/remark-agent-update`,
+    `/loan/manage/remark-agent-update`,
     payload,
     headerWithToken()
   );
