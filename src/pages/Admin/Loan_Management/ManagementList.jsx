@@ -25,10 +25,12 @@ import { Dropdown } from "primereact/dropdown";
 import Swal from "sweetalert2";
 import { InputTextarea } from "primereact/inputtextarea";
 import { capitalizeFirstLetter } from "../../../shared/constant";
+import { useNavigate } from "react-router-dom";
 
 const ManagementList = (props) => {
   const menuRef = useRef();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userDetails = useSelector((state) => state.user.user.data);
   const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
@@ -307,7 +309,15 @@ const ManagementList = (props) => {
       });
   };
   const remarkTemplate = (data) => {
-    return <>{data?.agentRemark ? data.agentRemark.length : null}</>;
+    return (
+      <div
+        onClick={() => navigate("/remark/details", { state: { data: data } })}
+        style={{ cursor: "pointer" }}
+        className="hover:text-primary"
+      >
+        {data?.agentRemark ? data.agentRemark.length : null}
+      </div>
+    );
   };
   return (
     <>

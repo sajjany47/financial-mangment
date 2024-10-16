@@ -24,3 +24,11 @@ export const BranchAgentList = async (branchId) => {
   );
   return response.data;
 };
+
+export const AgentRemarkDetails = async (loanId) => {
+  const response = await Instance.get(
+    `/loan/manage/remark/${loanId}`,
+    headerWithToken()
+  );
+  return response.data;
+};
