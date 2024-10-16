@@ -337,7 +337,7 @@ const ManagementList = (props) => {
             sortField="branchDetails.name"
           />
           {props.type === "delinquentLoan" && (
-            <Column field="mobile" header="Assign Agent" sortable />
+            <Column field="mobile" header="Assign Agent" />
           )}
           {props.type === "delinquentLoan" && (
             <Column field="remark" header="Remark" />
