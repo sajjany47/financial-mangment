@@ -353,7 +353,6 @@ const ManagementList = (props) => {
             header="Branch"
             body={(item) => (
               <>
-                {" "}
                 {item.branchDetails.name} ({item.branchDetails.code})
               </>
             )}

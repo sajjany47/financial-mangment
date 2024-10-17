@@ -45,7 +45,7 @@ const LoanPayment = () => {
 
   const handelSubmit = (values) => {
     setLoading(true);
-    LoanPay({ ...values })
+    LoanPay({ ...values, loanId: selectData.loanId, _id: selectData._id })
       .then((res) => {
         setLoading(false);
         setVisible(false);
