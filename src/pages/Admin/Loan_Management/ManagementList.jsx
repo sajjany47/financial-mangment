@@ -135,7 +135,7 @@ const ManagementList = (props) => {
           label: "Loan Payment",
           visible: props.type !== "closedLoan",
           command: () => {
-            console.log(selectedItem);
+            navigate(`/loans/payment/${selectedItem._id}`);
           },
         },
         {

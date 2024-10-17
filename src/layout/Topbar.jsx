@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/reducer/UserReducer";
 import { logout } from "./UserService";
 import Swal from "sweetalert2";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ACCESS_TOKEN_STORAGE_KEY,
   REFRESH_TOKEN_STORAGE_KEY,
@@ -17,12 +17,13 @@ import { capitalizeFirstLetter } from "../shared/constant";
 import { Dialog } from "primereact/dialog";
 import PasswordChange from "./PasswordChange";
 
-export default function Topbar(props) {
+export default function Topbar() {
+  const id = useParams().id;
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector((state) => state.user.user);
   const path = location.pathname.split("/");
-  const filterPath = path.filter((item) => item !== "");
+  const filterPath = path.filter((item) => item !== "" && item !== id);
 
   const dispatch = useDispatch();
   const menuRef = useRef();
@@ -33,11 +34,7 @@ export default function Topbar(props) {
       e.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
     ),
   }));
-  // [
-  //   { label: "Electronics" },
-  //   { label: "Computer" },
-  //   { label: "Accessories" },
-  // ];
+
   const home = { icon: "pi pi-home", url: "http://localhost:5173/" };
   const start = <BreadCrumb model={items} home={home} />;
   const end = (
@@ -116,12 +113,8 @@ export default function Topbar(props) {
 
   return (
     <>
-      <div className="card mb-3 topbar">
-        <Menubar
-          start={start}
-          end={end}
-          style={{ marginLeft: props.marginValue }}
-        />
+      <div className="card  topbar">
+        <Menubar start={start} end={end} />
         <Menu
           model={menuTemplate}
           popup

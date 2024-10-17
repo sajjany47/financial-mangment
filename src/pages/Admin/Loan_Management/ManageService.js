@@ -32,3 +32,11 @@ export const AgentRemarkDetails = async (loanId) => {
   );
   return response.data;
 };
+
+export const PaymentDetails = async (loanId) => {
+  const response = await Instance.get(
+    `/loan/manage/payment/${loanId}`,
+    headerWithToken()
+  );
+  return response.data;
+};

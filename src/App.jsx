@@ -33,6 +33,7 @@ import EmployeeList from "./pages/Admin/Employee/EmployeeList";
 import AddEmployee from "./pages/Admin/Employee/AddEmployee";
 import EditEmployee from "./pages/Admin/Employee/EditEmployee";
 import RemarkDetails from "./pages/Admin/Loan_Management/RemarkDetails";
+import LoanPayment from "./pages/Admin/Loan_Management/LoanPayment";
 
 function App() {
   let isRefreshing = false;
@@ -135,6 +136,7 @@ function App() {
             <Route path="/loans/active" element={<ActiveLoan />} />
             <Route path="/loans/delinquent" element={<DeliquentLoan />} />
             <Route path="/loans/closed" element={<ClosedLoan />} />
+            <Route path="/loans/payment/:id" element={<LoanPayment />} />
             <Route path="/remark/details" element={<RemarkDetails />} />
           </Route>
         </Routes>
