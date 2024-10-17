@@ -40,3 +40,11 @@ export const PaymentDetails = async (loanId) => {
   );
   return response.data;
 };
+export const LoanPay = async (payload) => {
+  const response = await Instance.post(
+    `/loan/manage/pay`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};

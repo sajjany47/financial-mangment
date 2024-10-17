@@ -1,15 +1,30 @@
 import { Button } from "primereact/button";
-import { Currency } from "../../../component/FieldType";
+import {
+  Currency,
+  DropdownField,
+  InputField,
+} from "../../../component/FieldType";
 import { useEffect, useState } from "react";
-import { PaymentDetails } from "./ManageService";
+import { LoanPay, PaymentDetails } from "./ManageService";
 import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
 import moment from "moment";
+import { Dialog } from "primereact/dialog";
+import { Field, Form, Formik } from "formik";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
 
+const validationSchema = Yup.object({
+  type: Yup.string().required("Type is required"),
+  amount: Yup.string().required("Amount is required"),
+  transactionNumber: Yup.string().required("Transaction Number is required"),
+});
 const LoanPayment = () => {
   const id = useParams().id;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [selectData, setSelectData] = useState({});
 
   useEffect(() => {
     getList();
@@ -25,6 +40,23 @@ const LoanPayment = () => {
       })
       .catch(() => {
         setLoading(false);
+      });
+  };
+
+  const handelSubmit = (values) => {
+    setLoading(true);
+    LoanPay({ ...values })
+      .then((res) => {
+        setLoading(false);
+        setVisible(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
       });
   };
   return (
@@ -90,6 +122,10 @@ const LoanPayment = () => {
                       className="p-3 w-full mt-auto"
                       disabled={index !== unpaidIndex || item.isPaid}
                       severity={item.isPaid ? "success" : "primary"}
+                      onClick={() => {
+                        setSelectData(item);
+                        setVisible(true);
+                      }}
                     />
                   </div>
                 </div>
@@ -98,6 +134,74 @@ const LoanPayment = () => {
           })}
         </div>
       </div>
+      <Dialog
+        header={"Loan Payment"}
+        visible={visible}
+        style={{ width: "30vw" }}
+        onHide={() => {
+          setVisible(false);
+          setSelectData({});
+        }}
+      >
+        <Formik
+          initialValues={{
+            type: "",
+            amount: "",
+            transactionNumber: "",
+          }}
+          onSubmit={handelSubmit}
+          validationSchema={validationSchema}
+        >
+          {({ handleSubmit, setFieldValue }) => (
+            <Form onSubmit={handleSubmit}>
+              <div className="flex flex-column ">
+                <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+                  <div className="grid p-3">
+                    <div className="col-12 md:col-12">
+                      <Field
+                        label="Type"
+                        component={DropdownField}
+                        name="type"
+                        options={[
+                          { label: "EMI Pay", value: "emi" },
+                          { label: "Foreclosure", value: "foreclosure" },
+                        ]}
+                        onChange={(e) => {
+                          setFieldValue("type", e.value);
+                          setFieldValue(
+                            "amount",
+                            e.value === "emi"
+                              ? selectData.emiAmount
+                              : selectData.foreclosureAmount
+                          );
+                        }}
+                      />
+                    </div>
+                    <div className="col-12 md:col-12">
+                      <Field
+                        label="Amount"
+                        component={InputField}
+                        name="amount"
+                        disabled
+                      />
+                    </div>
+                    <div className="col-12 md:col-12">
+                      <Field
+                        label="Transaction Number"
+                        component={InputField}
+                        name="transactionNumber"
+                      />
+                    </div>
+                    <div className="col-12 md:col-12">
+                      <Button label="Submit" className="w-full mt-2" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Dialog>
     </>
   );
 };
