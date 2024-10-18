@@ -242,6 +242,7 @@ const PLoanBasic = (props) => {
                       label="Date Of Birth"
                       component={DateField}
                       name="dob"
+                      maxDate={new Date(Date.now() - 567648000000)}
                     />
                   </div>
                   <div className="col-12 md:col-3">

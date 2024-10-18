@@ -472,6 +472,7 @@ const Lead = () => {
                         label="Loan Amount"
                         component={InputField}
                         name="loanAmount"
+                        keyfilter="money"
                       />
                     </div>
                     <div className="col-12 md:col-4">
@@ -479,6 +480,7 @@ const Lead = () => {
                         label="Loan Tenure (In months)"
                         component={InputField}
                         name="loanTenure"
+                        keyfilter="int"
                       />
                     </div>
                     <div className="col-12 md:col-4">

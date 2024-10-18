@@ -231,3 +231,31 @@ export const LoantatusSeverityColor = (role) => {
       return { label: "Unknown", severity: "contrast" }; // Fallback case
   }
 };
+
+export const PayWithFore = [
+  { label: "EMI Pay", value: "emi_pay" },
+  {
+    label: "Foreclosure",
+    value: "foreclosure",
+  },
+  {
+    label: "EMI Settlement",
+    value: "emi_settlement",
+  },
+  {
+    label: "Loan Settlement",
+    value: "loan_settlement",
+  },
+];
+
+export const PayWithoutFore = [
+  { label: "EMI Pay", value: "emi_pay" },
+  {
+    label: "EMI Settlement",
+    value: "emi_settlement",
+  },
+  {
+    label: "Loan Settlement",
+    value: "loan_settlement",
+  },
+];
