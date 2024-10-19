@@ -34,7 +34,7 @@ const LoanPayment = () => {
 
   const LoanPaidList = () => {
     setLoading(true);
-    PaidDetails(id)
+    PaidDetails({ loanId: id })
       .then((res) => {
         setPaidList(res?.data);
         setLoading(false);
@@ -46,7 +46,7 @@ const LoanPayment = () => {
 
   const getList = () => {
     setLoading(true);
-    PaymentDetails(id)
+    PaymentDetails({ loanId: id })
       .then((res) => {
         setData(res?.data.filter((item) => item.isPaid === false));
         setPaidList(res?.data.filter((item) => item.isPaid === true));
@@ -106,7 +106,6 @@ const LoanPayment = () => {
   };
 
   const handelWaiver = (setFieldValue, value, fieldValue) => {
-    console.log(value);
     setFieldValue("waiverAmount", value);
     if (fieldValue.type === "emi_pay" || fieldValue.type === "emi_settlement") {
       setFieldValue(

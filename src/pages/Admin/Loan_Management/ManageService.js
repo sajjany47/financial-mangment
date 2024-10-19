@@ -33,9 +33,10 @@ export const AgentRemarkDetails = async (loanId) => {
   return response.data;
 };
 
-export const PaymentDetails = async (loanId) => {
-  const response = await Instance.get(
-    `/loan/manage/payment/${loanId}`,
+export const PaymentDetails = async (payload) => {
+  const response = await Instance.post(
+    `/loan/manage/payment`,
+    payload,
     headerWithToken()
   );
   return response.data;
@@ -49,9 +50,10 @@ export const LoanPay = async (payload) => {
   return response.data;
 };
 
-export const PaidDetails = async (loanId) => {
-  const response = await Instance.get(
-    `/loan/manage/paid-list/${loanId}`,
+export const PaidDetails = async (payload) => {
+  const response = await Instance.post(
+    `/loan/manage/paid-list`,
+    payload,
     headerWithToken()
   );
   return response.data;
