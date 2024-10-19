@@ -85,7 +85,7 @@ input[type="file"] {
   z-index: 1000; /* Ensure it is above the main content */
 }
 
-.topbar {
+/* .topbar {
   position: sticky;
   top: 0;
   right: 0;
@@ -93,11 +93,11 @@ input[type="file"] {
 }
 
 .content-wrapper {
-  margin-top: 10px; /* Offset for the topbar height */
-  padding: 20px; /* Content padding */
-  height: calc(100vh - 60px); /* Available height for content */
-  overflow-y: auto; /* Scrollable content */
-}
+  margin-top: 10px; 
+  padding: 20px; 
+  height: calc(100vh - 60px);
+  overflow-y: auto; 
+} */
 .p-stepper-header {
   pointer-events: none;
 }
