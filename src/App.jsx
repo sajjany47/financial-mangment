@@ -34,6 +34,9 @@ import AddEmployee from "./pages/Admin/Employee/AddEmployee";
 import EditEmployee from "./pages/Admin/Employee/EditEmployee";
 import RemarkDetails from "./pages/Admin/Loan_Management/RemarkDetails";
 import LoanPayment from "./pages/Admin/Loan_Management/LoanPayment";
+import History from "./pages/Admin/Payment/History";
+import Upcoming from "./pages/Admin/Payment/Upcoming";
+import Defaulter from "./pages/Admin/Payment/Defaulter";
 
 function App() {
   let isRefreshing = false;
@@ -138,6 +141,9 @@ function App() {
             <Route path="/loans/closed" element={<ClosedLoan />} />
             <Route path="/loans/payment/:id" element={<LoanPayment />} />
             <Route path="/remark/details" element={<RemarkDetails />} />
+            <Route path="/payments/history" element={<History />} />
+            <Route path="/payments/upcoming" element={<Upcoming />} />
+            <Route path="/payments/defaulter" element={<Defaulter />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -52,10 +52,9 @@ const sidebarMenu = {
       title: "Payments",
       icon: "pi pi-money-bill",
       submenu: [
-        { title: "Payment History", route: "/payments/history" },
-        { title: "Upcoming Payments", route: "/payments/upcoming" },
-        { title: "Process Payment", route: "/payments/process" },
-        { title: "Refunds", route: "/payments/refunds" },
+        { title: "History", route: "/payments/history" },
+        { title: "Upcoming", route: "/payments/upcoming" },
+        { title: "Defaulter", route: "/payments/defaulter" },
       ],
     },
     {
