@@ -3,7 +3,7 @@ import moment from "moment";
 import { Currency } from "../../../component/FieldType";
 import { Button } from "primereact/button";
 
-const PaymentScreen = ({ data, clickData }) => {
+const PaymentScreen = ({ data, clickData, type }) => {
   return (
     <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-1 mb-6 surface-0">
       <div className="grid">
@@ -18,7 +18,7 @@ const PaymentScreen = ({ data, clickData }) => {
                 >
                   <div className="text-900 font-medium text-xl mb-2">
                     {moment(item.emiDate).format("DD MMM,YYYY")} ({index + 1}/
-                    {data.length + 1} )
+                    {data.length} )
                   </div>
                   <div className="text-600">{Currency(item.emiAmount)}</div>
                   <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
@@ -48,6 +48,13 @@ const PaymentScreen = ({ data, clickData }) => {
                       <span className="text-600 ">Overdue Paid </span>
                       <span>{Currency(item.overdueAmount)}</span>
                     </li>
+                    {type === "paid" && (
+                      <li className="flex align-items-center mb-2 justify-content-between">
+                        <span className="text-600 ">Waiver Amount </span>
+                        <span>{Currency(item.waiverAmount)}</span>
+                      </li>
+                    )}
+
                     <li className="flex align-items-center mb-2 justify-content-between">
                       <span className="text-600 ">Remaining Outstanding </span>
                       <span>{Currency(item.remainingOutstanding)}</span>
@@ -60,6 +67,20 @@ const PaymentScreen = ({ data, clickData }) => {
                           : Currency(item.foreclosureAmount)}
                       </span>
                     </li>
+                    {type === "paid" && (
+                      <>
+                        <li className="flex align-items-center mb-2 justify-content-between">
+                          <span className="text-600 ">Transaction Number </span>
+                          <span>{item.transactionNumber}</span>
+                        </li>
+                        <li className="flex align-items-center mb-2 justify-content-between">
+                          <span className="text-600 ">Paid On </span>
+                          <span>
+                            {moment(item?.paidOn).format("DD MMM,YYYY")}
+                          </span>
+                        </li>
+                      </>
+                    )}
                   </ul>
                   <hr className="mb-3 mx-0 border-top-1 border-bottom-none border-300 mt-auto" />
                   <Button

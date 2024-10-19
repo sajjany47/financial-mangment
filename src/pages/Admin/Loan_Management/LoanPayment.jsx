@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { DropdownField, InputField } from "../../../component/FieldType";
 import { useEffect, useState } from "react";
-import { LoanPay, PaymentDetails } from "./ManageService";
+import { LoanPay, PaidDetails, PaymentDetails } from "./ManageService";
 import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
 import { Dialog } from "primereact/dialog";
@@ -28,8 +28,21 @@ const LoanPayment = () => {
 
   useEffect(() => {
     getList();
+    LoanPaidList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const LoanPaidList = () => {
+    setLoading(true);
+    PaidDetails(id)
+      .then((res) => {
+        setPaidList(res?.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
 
   const getList = () => {
     setLoading(true);
@@ -73,15 +86,57 @@ const LoanPayment = () => {
       setVisible(true);
     }
   };
+
+  const handelType = (setFieldValue, value) => {
+    setFieldValue("type", value);
+    if (value === "emi_pay" || value === "emi_settlement") {
+      setFieldValue(
+        "amount",
+        Number(selectData.emiAmount) + Number(selectData.overdueAmount)
+      );
+    }
+    if (value === "foreclosure" || value === "loan_settlement") {
+      let foreclosureAmount = Number(selectData.emiAmount);
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        foreclosureAmount += Number(element.overdueAmount);
+      }
+      setFieldValue("amount", Number(foreclosureAmount));
+    }
+  };
+
+  const handelWaiver = (setFieldValue, value, fieldValue) => {
+    console.log(value);
+    setFieldValue("waiverAmount", value);
+    if (fieldValue.type === "emi_pay" || fieldValue.type === "emi_settlement") {
+      setFieldValue(
+        "amount",
+        Number(selectData.emiAmount) +
+          Number(selectData.overdueAmount) -
+          Number(value)
+      );
+    }
+    if (
+      fieldValue.type === "foreclosure" ||
+      fieldValue.type === "loan_settlement"
+    ) {
+      let foreclosureAmount = Number(selectData.emiAmount);
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        foreclosureAmount += Number(element.overdueAmount);
+      }
+      setFieldValue("amount", Number(foreclosureAmount) - Number(value));
+    }
+  };
   return (
     <>
       {loading && <Loader />}
       <TabView>
         <TabPanel header="PENDING EMI">
-          <PaymentScreen data={data} clickData={clickData} />
+          <PaymentScreen data={data} clickData={clickData} type="unpaid" />
         </TabPanel>
         <TabPanel header="PAID EMI">
-          <PaymentScreen data={paidList} clickData={clickData} />
+          <PaymentScreen data={paidList} clickData={clickData} type="paid" />
         </TabPanel>
       </TabView>
 
@@ -120,13 +175,7 @@ const LoanPayment = () => {
                             : PayWithoutFore
                         }
                         onChange={(e) => {
-                          setFieldValue("type", e.value);
-                          setFieldValue(
-                            "amount",
-                            e.value === "emi_pay"
-                              ? selectData.emiAmount
-                              : selectData.foreclosureAmount
-                          );
+                          handelType(setFieldValue, e.value);
                         }}
                       />
                     </div>
@@ -145,15 +194,7 @@ const LoanPayment = () => {
                         name="waiverAmount"
                         keyfilter="money"
                         onChange={(e) => {
-                          setFieldValue("waiverAmount", e.target.value);
-                          setFieldValue(
-                            "amount",
-                            Number(
-                              values.type === "emi_pay"
-                                ? selectData.emiAmount
-                                : selectData.foreclosureAmount
-                            ) - Number(e.target.value)
-                          );
+                          handelWaiver(setFieldValue, e.target.value, values);
                         }}
                       />
                     </div>
