@@ -37,6 +37,7 @@ import LoanPayment from "./pages/Admin/Loan_Management/LoanPayment";
 import History from "./pages/Admin/Payment/History";
 import Upcoming from "./pages/Admin/Payment/Upcoming";
 import Defaulter from "./pages/Admin/Payment/Defaulter";
+import ApplicationView from "./pages/Admin/Payment/ApplicationView";
 
 function App() {
   let isRefreshing = false;
@@ -144,6 +145,10 @@ function App() {
             <Route path="/payments/history" element={<History />} />
             <Route path="/payments/upcoming" element={<Upcoming />} />
             <Route path="/payments/defaulter" element={<Defaulter />} />
+            <Route
+              path="/loans/application-view/:id"
+              element={<ApplicationView />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

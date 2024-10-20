@@ -9,6 +9,14 @@ export const getLoanDetails = async (payload) => {
   return response.data;
 };
 
+export const getLoanApplicationView = async (payload) => {
+  const response = await Instance.get(
+    `/loan/application-view/${payload}`,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const applicationCreate = async (payload) => {
   const response = await Instance.post(
     `/loan/application-create`,

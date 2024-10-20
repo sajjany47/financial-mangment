@@ -120,7 +120,7 @@ const ManagementList = (props) => {
         {
           label: "View Application",
           command: () => {
-            console.log(selectedItem);
+            navigate(`/loans/application-view/${selectedItem._id}`);
           },
         },
         {

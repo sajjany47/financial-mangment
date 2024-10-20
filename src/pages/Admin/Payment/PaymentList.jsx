@@ -143,7 +143,7 @@ const PaymentList = (props) => {
         {
           label: "View Application",
           command: () => {
-            console.log(selectedItem);
+            navigate(`/loans/application-view/${selectedItem.loanId}`);
           },
         },
         {
