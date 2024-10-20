@@ -70,6 +70,7 @@ const LoanPayment = () => {
         setLoading(false);
         setVisible(false);
         getList();
+        LoanPaidList();
         Swal.fire({
           title: res.message,
           icon: "success",

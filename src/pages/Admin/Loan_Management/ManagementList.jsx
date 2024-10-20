@@ -272,11 +272,11 @@ const ManagementList = (props) => {
     return {
       // "bg-primary": data.isPaid === false,
       "bg-teal-100 text-teal-900":
-        data.isPaid && new Date(data.emiDate) <= new Date(data?.paymentDate),
+        data.isPaid && new Date(data.emiDate) <= new Date(data?.paidOn),
       "bg-red-100 text-red-900":
         new Date(data.emiDate) < new Date() && !data.isPaid,
       "surface-300 text-red-900":
-        data.isPaid && new Date(data.emiDate) > new Date(data?.paymentDate),
+        data.isPaid && new Date(data.emiDate) > new Date(data?.paidOn),
       // new Date(data.emiDate) > new Date(),
     };
   };

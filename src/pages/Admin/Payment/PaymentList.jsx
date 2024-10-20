@@ -25,6 +25,8 @@ import {
   RemarkAndAgentUpdate,
 } from "../Loan_Management/ManageService";
 import { capitalizeFirstLetter } from "../../../shared/constant";
+import { Calendar } from "primereact/calendar";
+import { InputText } from "primereact/inputtext";
 
 const PaymentList = (props) => {
   const menuRef = useRef();
@@ -37,6 +39,14 @@ const PaymentList = (props) => {
   const [defaulterList, setDefaulterList] = useState([]);
   const [paidList, setPaidList] = useState([]);
 
+  const [dUpcomingList, setDupcomingList] = useState([]);
+  const [dDefaulterList, setDdefaulterList] = useState([]);
+  const [DPaidList, setDpaidList] = useState([]);
+
+  const [date, setDate] = useState([
+    new Date(moment().startOf("month")),
+    new Date(moment().endOf("month")),
+  ]);
   const [selectedItem, setSelectedItem] = useState({});
   const [searchShow, setSearchShow] = useState(false);
   const [agentList, setAgentList] = useState([]);
@@ -44,6 +54,7 @@ const PaymentList = (props) => {
   const [addRemark, setAddRemark] = useState("");
   const [actionType, setActionType] = useState("");
   const [visible, setVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     if (searchKey?.page === props.type) {
@@ -66,9 +77,13 @@ const PaymentList = (props) => {
   }, []);
 
   useEffect(() => {
-    props.type === "history" ? LoanPaidList() : getApplicationList();
+    props.type === "history"
+      ? LoanPaidList()
+      : props.type === "upcoming" && date[1] !== null
+      ? getApplicationList()
+      : "";
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [date]);
 
   const branchAgentList = (branchId) => {
     BranchAgentList(branchId).then((res) => {
@@ -85,20 +100,23 @@ const PaymentList = (props) => {
 
   const getApplicationList = () => {
     setLoading(true);
-    PaymentDetails({})
+    PaymentDetails(
+      props.type === "upcoming" ? { startDate: date[0], endDate: date[1] } : {}
+    )
       .then((res) => {
-        setUpcomingList(
-          res?.data.filter(
-            (item) =>
-              item.isPaid === false && new Date(item.emiDate) >= new Date()
-          )
+        const filterUpcomingList = res?.data.filter(
+          (item) =>
+            item.isPaid === false && new Date(item.emiDate) >= new Date()
         );
-        setDefaulterList(
-          res?.data.filter(
-            (item) =>
-              item.isPaid === false && new Date(item.emiDate) <= new Date()
-          )
+        setUpcomingList(filterUpcomingList);
+        setDupcomingList(filterUpcomingList);
+
+        const filterDefaulterList = res?.data.filter(
+          (item) =>
+            item.isPaid === false && new Date(item.emiDate) <= new Date()
         );
+        setDefaulterList(filterDefaulterList);
+        setDdefaulterList(filterDefaulterList);
         setLoading(false);
       })
       .catch(() => {
@@ -111,6 +129,7 @@ const PaymentList = (props) => {
     PaidDetails({})
       .then((res) => {
         setPaidList(res?.data);
+        setDpaidList(res.data);
         setLoading(false);
       })
       .catch(() => {
@@ -159,11 +178,51 @@ const PaymentList = (props) => {
       ],
     },
   ];
+  const handelSearch = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    const duplicateData =
+      props.type === "upcoming"
+        ? dUpcomingList
+        : props.type === "history"
+        ? DPaidList
+        : props.type === "defaulter"
+        ? dDefaulterList
+        : [];
+    const filteredData = duplicateData.filter((item) => {
+      return Object.values(item).some((val) => {
+        // Convert to string, check for the search term in any field
+        return val.toString().toLowerCase().includes(value);
+      });
+    });
+    props.type === "upcoming"
+      ? setUpcomingList(filteredData)
+      : props.type === "history"
+      ? setPaidList(filteredData)
+      : props.type === "defaulter"
+      ? setDefaulterList(filteredData)
+      : [];
+  };
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{props.labelName}</span>
         <div className="flex gap-2">
+          <InputText
+            value={searchValue}
+            onChange={handelSearch}
+            placeholder="Search"
+          />
+          {props.type === "upcoming" && (
+            <Calendar
+              value={date}
+              onChange={(e) => setDate(e.value)}
+              showButtonBar
+              selectionMode="range"
+              placeholder="Select Date"
+            />
+          )}
+
           {searchShow ? (
             <Button
               icon="pi pi-times"
@@ -317,6 +376,9 @@ const PaymentList = (props) => {
               </>
             )}
           />
+          {props.type === "history" && (
+            <Column field="transactionNumber" header="Transaction Number" />
+          )}
           {props.type === "defaulter" && (
             <Column field="assignAgentUsername" header="Assign Agent" />
           )}

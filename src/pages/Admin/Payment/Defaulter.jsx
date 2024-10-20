@@ -3,7 +3,7 @@ import PaymentList from "./PaymentList";
 const Defaulter = () => {
   return (
     <>
-      <PaymentList type="defaulter" />
+      <PaymentList type="defaulter" labelName={"Defaulter List"} />
     </>
   );
 };

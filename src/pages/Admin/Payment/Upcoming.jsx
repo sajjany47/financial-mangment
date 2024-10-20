@@ -3,7 +3,7 @@ import PaymentList from "./PaymentList";
 const Upcoming = () => {
   return (
     <>
-      <PaymentList type="upcoming" />
+      <PaymentList type="upcoming" labelName={"Upcoming List"} />
     </>
   );
 };
