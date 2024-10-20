@@ -1,5 +1,11 @@
+import PaymentList from "./PaymentList";
+
 const History = () => {
-  return <div>History</div>;
+  return (
+    <>
+      <PaymentList type="history" />
+    </>
+  );
 };
 
 export default History;

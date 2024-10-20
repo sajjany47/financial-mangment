@@ -1,5 +1,11 @@
+import PaymentList from "./PaymentList";
+
 const Defaulter = () => {
-  return <div>Defaulter</div>;
+  return (
+    <>
+      <PaymentList type="defaulter" />
+    </>
+  );
 };
 
 export default Defaulter;

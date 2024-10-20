@@ -1,5 +1,11 @@
+import PaymentList from "./PaymentList";
+
 const Upcoming = () => {
-  return <div>Upcoming</div>;
+  return (
+    <>
+      <PaymentList type="upcoming" />
+    </>
+  );
 };
 
 export default Upcoming;
