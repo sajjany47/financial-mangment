@@ -17,7 +17,6 @@ import { setSearch } from "../../../store/reducer/searchReducer";
 import { Position } from "../../../shared/Config";
 import { Currency } from "../../../component/FieldType";
 import Loader from "../../../component/Loader";
-import LoanSearch from "../Loan/LoanSearch";
 import {
   BranchAgentList,
   PaidDetails,
@@ -48,7 +47,6 @@ const PaymentList = (props) => {
     new Date(moment().endOf("month")),
   ]);
   const [selectedItem, setSelectedItem] = useState({});
-  const [searchShow, setSearchShow] = useState(false);
   const [agentList, setAgentList] = useState([]);
   const [selectAgent, setSelectAgent] = useState("");
   const [addRemark, setAddRemark] = useState("");
@@ -222,26 +220,6 @@ const PaymentList = (props) => {
               placeholder="Select Date"
             />
           )}
-
-          {searchShow ? (
-            <Button
-              icon="pi pi-times"
-              severity="help"
-              label="Hide"
-              onClick={() => {
-                setSearchShow(!searchShow);
-              }}
-            />
-          ) : (
-            <Button
-              label="Search"
-              icon="pi pi-search"
-              onClick={() => {
-                setSearchShow(!searchShow);
-              }}
-              severity="secondary"
-            />
-          )}
         </div>
       </div>
     );
@@ -318,7 +296,7 @@ const PaymentList = (props) => {
         id="popup_menu_right"
         popupAlignment="right"
       />
-      {searchShow && <LoanSearch />}
+
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={
