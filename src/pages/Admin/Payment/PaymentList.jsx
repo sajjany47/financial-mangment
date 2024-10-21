@@ -26,6 +26,7 @@ import {
 import { capitalizeFirstLetter } from "../../../shared/constant";
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
+import CPaginator from "../../../component/CPaginator";
 
 const PaymentList = (props) => {
   const menuRef = useRef();
@@ -284,6 +285,15 @@ const PaymentList = (props) => {
     );
   };
 
+  const pageData =
+    props.type === "upcoming"
+      ? upcomingList
+      : props.type === "history"
+      ? paidList
+      : props.type === "defaulter"
+      ? defaulterList
+      : [];
+
   return (
     <>
       {loading && <Loader />}
@@ -298,15 +308,8 @@ const PaymentList = (props) => {
 
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
-          value={
-            props.type === "upcoming"
-              ? upcomingList
-              : props.type === "history"
-              ? paidList
-              : props.type === "defaulter"
-              ? defaulterList
-              : []
-          }
+          value={pageData}
+          sortMode="multiple"
           header={header}
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="loanId"
@@ -316,7 +319,7 @@ const PaymentList = (props) => {
           {/* <Column field="" header="SLNo." body={rowNumberTemplate} /> */}
           <Column field="applicationNumber" header="Application Number" />
           <Column field="name" header="Name" sortable />
-          <Column field="mobile" header="Mobile" sortable />
+          <Column field="mobile" header="Mobile" />
           <Column
             header="Branch"
             body={(item) => (
@@ -325,7 +328,7 @@ const PaymentList = (props) => {
               </>
             )}
             sortable
-            sortField="branchDetails.name"
+            sortField="branchName"
           />
           <Column
             field="emiAmount"
@@ -333,9 +336,10 @@ const PaymentList = (props) => {
             body={(item) => <> {Currency(item?.emiAmount)}</>}
           />
           <Column
-            field="emiAmount"
+            field="emiDate"
             header="EMI Date"
             body={(item) => <>{moment(item.emiDate).format("DD MMM, YYYY")}</>}
+            sortable
           />
 
           {props.type === "defaulter" && (
@@ -365,6 +369,9 @@ const PaymentList = (props) => {
 
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
+        {props.type === "history" && (
+          <CPaginator totalRecords={pageData.length} />
+        )}
       </div>
 
       <Dialog
