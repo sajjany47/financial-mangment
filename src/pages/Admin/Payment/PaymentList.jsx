@@ -215,7 +215,6 @@ const PaymentList = (props) => {
             <Calendar
               value={date}
               onChange={(e) => setDate(e.value)}
-              showButtonBar
               selectionMode="range"
               placeholder="Select Date"
             />
