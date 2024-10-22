@@ -4,6 +4,11 @@ import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
 import moment from "moment";
 import { Currency } from "../../../component/FieldType";
+import { Fragment } from "react";
+import { FormatType } from "../../../shared/constant";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Tag } from "primereact/tag";
 
 const ApplicationView = () => {
   const id = useParams().id;
@@ -21,11 +26,101 @@ const ApplicationView = () => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const forecloseTemplate = (item) => {
+    return (
+      <>
+        {item?.foreclosureAmount === "Not applicable"
+          ? item?.foreclosureAmount
+          : Currency(item?.foreclosureAmount)}
+      </>
+    );
+  };
+
+  const statusTemplate = (item) => {
+    return (
+      <>
+        {item.isPaid ? (
+          <Tag severity="success" value="Yes" rounded />
+        ) : (
+          <Tag severity="danger" value="No" rounded />
+        )}
+      </>
+    );
+  };
   return (
     <>
       {loading && <Loader />}
       <div className="surface-0 p-1 mb-5">
         <ul className="list-none p-0 m-0">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+            <div className="text-500 w-6 md:w-2 font-medium">Loan Details</div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Branch Name</div>
+                  {data?.branch?.name} ({data?.branch?.code})
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Application Number</div>
+                  {data?.applicationNumber}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Loan Amount</div>
+                  {data?.loanAmount}
+                </div>
+
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Loan Type</div>
+                  {data?.loanType?.name}
+                </div>
+
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Status</div>
+                  {data?.status}
+                </div>
+                {data?.status === "disbursed" && (
+                  <>
+                    <div className="col-12 md:col-3">
+                      <div className="view-app">Disbursed Amount</div>
+                      {data?.disbursment?.disbursedAmount}
+                    </div>
+                    <div className="col-12 md:col-3">
+                      <div className="view-app">EMI Monthly</div>
+                      {Currency(data?.EMIMonthly)}
+                    </div>
+                    <div className="col-12 md:col-3">
+                      <div className="view-app">Interest Rate</div>
+                      {data?.interestRate}%
+                    </div>
+                    <div className="col-12 md:col-3">
+                      <div className="view-app">Transaction Number</div>
+                      {data?.transactionNumber}
+                    </div>
+                    <div className="col-12 md:col-3">
+                      <div className="view-app">Disbursed By</div>
+                      {data?.disbursedBy?.name} ({data?.disbursedBy?.username})
+                    </div>
+
+                    <div className="col-12 md:col-3">
+                      <div className="view-app">Loan Verified By</div>
+                      {data?.loanVerifiedBy
+                        ? `${data?.loanVerifiedBy?.name} (${data?.loanVerifiedBy?.username})`
+                        : ""}
+                    </div>
+                    <div className="col-12 md:col-3">
+                      <div className="view-app">Loan Status</div>
+                      {data?.isLoanActive ? (
+                        <Tag severity="success" value="Active" rounded />
+                      ) : (
+                        <Tag severity="success" value="Close" rounded />
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </li>
           <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
             <div className="text-500 w-6 md:w-2 font-medium">Basic Details</div>
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
@@ -92,6 +187,15 @@ const ApplicationView = () => {
                   <div className="view-app">Pincode</div>
                   {data?.permanentPincode}
                 </div>
+                {data?.status === "disbursed" && (
+                  <div className="col-12 md:col-3">
+                    <div className="view-app">Address Verified By</div>
+                    {data?.addressVerifiedBy
+                      ? `${data?.addressVerifiedBy?.name} (
+                    ${data?.addressVerifiedBy?.username})`
+                      : ""}
+                  </div>
+                )}
               </div>
             </div>
           </li>
@@ -129,6 +233,15 @@ const ApplicationView = () => {
                   <div className="view-app">Pincode</div>
                   {data?.residencePincode}
                 </div>
+                {data?.status === "disbursed" && (
+                  <div className="col-12 md:col-3">
+                    <div className="view-app">Address Verified By</div>
+                    {data?.addressVerifiedBy
+                      ? `${data?.addressVerifiedBy?.name} (
+                    ${data?.addressVerifiedBy?.username})`
+                      : ""}
+                  </div>
+                )}
               </div>
             </div>
           </li>
@@ -156,6 +269,15 @@ const ApplicationView = () => {
                   <div className="view-app">Monthly Income</div>
                   {Currency(data?.monthlyIncome ? data?.monthlyIncome : 0)}
                 </div>
+                {data?.status === "disbursed" && (
+                  <div className="col-12 md:col-3">
+                    <div className="view-app">Work Verified By</div>
+                    {data?.officeOrBussinessVerifiedBy
+                      ? `${data?.officeOrBussinessVerifiedBy?.name} (
+                    ${data?.officeOrBussinessVerifiedBy?.username})`
+                      : ""}
+                  </div>
+                )}
               </div>
             </div>
           </li>
@@ -191,9 +313,146 @@ const ApplicationView = () => {
                   <div className="view-app">Pincode</div>
                   {data?.workPincode}
                 </div>
+                {data?.status === "disbursed" && (
+                  <div className="col-12 md:col-3">
+                    <div className="view-app">Work Verified By</div>
+                    {data?.officeOrBussinessVerifiedBy
+                      ? `${data?.officeOrBussinessVerifiedBy?.name} (
+                    ${data?.officeOrBussinessVerifiedBy?.username})`
+                      : ""}
+                  </div>
+                )}
               </div>
             </div>
           </li>
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Dcoument Details
+            </div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                {data?.document?.map((item) => {
+                  const key = Object.keys(item).find((k) => k !== "_id");
+                  const doc = item[key];
+                  return (
+                    <Fragment key={item._id}>
+                      <div className="col-12 md:col-3">
+                        <div className="view-app">Type</div>
+                        {FormatType(key)}
+                      </div>
+                      <div className="col-12 md:col-3">
+                        <div className="view-app">Document Type</div>
+                        {doc.documentType}
+                      </div>
+                      <div className="col-12 md:col-3">
+                        <div className="view-app">Document Number</div>
+                        {doc.documentNumber}
+                      </div>
+                      {data?.status === "disbursed" && (
+                        <div className="col-12 md:col-3">
+                          <div className="view-app">Document Verified By</div>
+                          {data?.documentVerifiedBy
+                            ? `${data?.documentVerifiedBy?.name} (${data?.documentVerifiedBy?.username})`
+                            : ""}
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </div>
+            </div>
+          </li>
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Account Details
+            </div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Account Number</div>
+                  {data?.accountNumber}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Account Name</div>
+                  {data?.accountName}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Bank Name</div>
+                  {data?.bankName}
+                </div>
+
+                <div className="col-12 md:col-3">
+                  <div className="view-app">IFSC</div>
+                  {data?.ifsc}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Bank Branch Name</div>
+                  {data?.bankBranchName}
+                </div>
+              </div>
+            </div>
+          </li>
+
+          {data?.status === "disbursed" && (
+            <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+              <div className="text-500 w-6 md:w-2 font-medium">
+                EMI Schedule
+              </div>
+              <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+                <div className="grid">
+                  <div className="col-12">
+                    <DataTable
+                      value={data?.emiSchedule}
+                      // scrollable
+                      // scrollHeight="400px"
+                      // style={{ minWidth: "55rem" }}
+                    >
+                      <Column
+                        field="emiDate"
+                        header="EMI Date"
+                        body={(item) => (
+                          <>{moment(item.emiDate).format("DD MMM, YYYY")}</>
+                        )}
+                      />
+                      <Column
+                        field="emiAmount"
+                        header="EMI"
+                        body={(item) => <> {Currency(item?.emiAmount)}</>}
+                      />
+
+                      <Column
+                        field="interestPaid"
+                        header="Interest Paid"
+                        body={(item) => <>{Currency(item?.interestPaid)}</>}
+                      />
+                      <Column
+                        field="principalPaid"
+                        header=" Principle Paid"
+                        body={(item) => <> {Currency(item?.principalPaid)}</>}
+                      />
+                      <Column
+                        field="remainingOutstanding"
+                        header="Outstanding"
+                        body={(item) => (
+                          <>{Currency(item?.remainingOutstanding)}</>
+                        )}
+                      />
+                      <Column
+                        field="foreclosureAmount"
+                        header="Foreclosure"
+                        body={forecloseTemplate}
+                      />
+                      <Column
+                        field="isPaid"
+                        header="Paid"
+                        body={statusTemplate}
+                      />
+                    </DataTable>
+                  </div>
+                </div>
+              </div>
+            </li>
+          )}
         </ul>
       </div>
     </>

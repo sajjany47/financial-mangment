@@ -53,6 +53,11 @@ export const capitalizeFirstLetter = (str) => {
     .join(" ");
 };
 
+export const FormatType = (str) => {
+  // Replace underscores with spaces and capitalize each word
+  return str.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 export const cleanObject = (obj) => {
   Object.keys(obj).forEach((key) => {
     if (obj[key] === "" || obj[key] === null || obj[key] === undefined) {

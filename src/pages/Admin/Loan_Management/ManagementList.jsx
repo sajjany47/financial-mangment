@@ -247,12 +247,12 @@ const ManagementList = (props) => {
     );
   };
 
-  const forecloseTemplate = (item, rowIndex) => {
+  const forecloseTemplate = (item) => {
     return (
       <>
-        {rowIndex.rowIndex > 5
-          ? Currency(item?.foreclosureAmount)
-          : Currency(0)}
+        {item?.foreclosureAmount === "Not applicable"
+          ? item?.foreclosureAmount
+          : Currency(item?.foreclosureAmount)}
       </>
     );
   };
