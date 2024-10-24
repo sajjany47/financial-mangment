@@ -50,7 +50,10 @@ export default function Topbar() {
         onClick={(event) => menuRef.current.toggle(event)}
         aria-controls="popup_menu_left"
         aria-haspopup
-        image="https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png"
+        label={
+          user.data.userImage ? "" : user.data.name.charAt(0).toUpperCase()
+        }
+        image={user.data.userImage}
         shape="circle"
       />
     </div>

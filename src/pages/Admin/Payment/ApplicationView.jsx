@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getLoanApplicationView } from "../Loan/LoanService";
 import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
@@ -9,8 +9,12 @@ import { FormatString } from "../../../shared/constant";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
+import { Button } from "primereact/button";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const ApplicationView = () => {
+  const contentRef = useRef();
   const id = useParams().id;
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -48,10 +52,55 @@ const ApplicationView = () => {
       </>
     );
   };
+
+  const handleDownloadPdf = async () => {
+    const content = contentRef.current;
+    const canvas = await html2canvas(content);
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const margin = 2;
+
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = margin;
+
+    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save(`${data?.name}.pdf`);
+  };
   return (
     <>
       {loading && <Loader />}
-      <div className="surface-0 p-1 mb-5">
+      <div className="flex justify-content-end mb-2">
+        <Button
+          icon="pi pi-file-pdf"
+          label="Download PDF"
+          onClick={handleDownloadPdf}
+        />
+      </div>
+
+      <div
+        className="surface-0 p-1 mb-5"
+        ref={contentRef}
+        style={{ padding: "20px", backgroundColor: "#f5f5f5" }}
+      >
+        <div className="font-medium text-3xl text-900 mb-3">
+          Application Information
+        </div>
+
         <ul className="list-none p-0 m-0">
           <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
             <div className="text-500 w-6 md:w-2 font-medium">Loan Details</div>
