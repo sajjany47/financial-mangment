@@ -8,7 +8,6 @@ import { Fragment } from "react";
 import { FormatString } from "../../../shared/constant";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -44,39 +43,51 @@ const ApplicationView = () => {
   const statusTemplate = (item) => {
     return (
       <>
-        {item.isPaid ? (
-          <Tag severity="success" value="Yes" rounded />
-        ) : (
-          <Tag severity="danger" value="No" rounded />
-        )}
+        <span
+          style={{
+            color: "white",
+            backgroundColor: item.isPaid ? "green" : "red",
+            padding: "5px",
+            borderRadius: "17px",
+            display: "inline-block",
+          }}
+        >
+          {item.isPaid ? "Yes" : "No"}
+        </span>
       </>
     );
   };
 
   const handleDownloadPdf = async () => {
     const content = contentRef.current;
-    const canvas = await html2canvas(content);
-    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4"); // A4 size in portrait mode
+    const imgWidth = 210; // Width for A4 (in mm)
+    const pageHeight = 295; // Height for A4 (in mm)
+    const margin = 10; // Margin for the content
 
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    const imgWidth = 210;
-    const pageHeight = 295;
-    const margin = 2;
-
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let heightLeft = imgHeight;
     let position = margin;
+    const elements = Array.from(content.querySelectorAll(".pdf-content"));
+    for (const element of elements) {
+      const canvas = await html2canvas(element); // Capture content as canvas
+      const imgData = canvas.toDataURL("image/png"); // Convert canvas to an image
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
 
-    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+      if (position + imgHeight > pageHeight - margin) {
+        pdf.addPage(); // Add a new page if content doesn't fit
+        position = margin; // Reset position for the new page
+      }
 
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      // Add image to PDF with margins
+      pdf.addImage(
+        imgData,
+        "PNG",
+        margin,
+        position,
+        imgWidth - margin * 2,
+        imgHeight
+      );
+
+      position += imgHeight + margin; // Update position for the next element
     }
 
     pdf.save(`${data?.name}.pdf`);
@@ -97,12 +108,12 @@ const ApplicationView = () => {
         ref={contentRef}
         style={{ padding: "20px", backgroundColor: "#f5f5f5" }}
       >
-        <div className="font-medium text-3xl text-900 mb-3">
+        <div className="font-medium text-3xl text-900 mb-3 pdf-content">
           Application Information
         </div>
 
         <ul className="list-none p-0 m-0">
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">Loan Details</div>
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
@@ -159,18 +170,25 @@ const ApplicationView = () => {
                     </div>
                     <div className="col-12 md:col-3">
                       <div className="view-app">Loan Status</div>
-                      {data?.isLoanActive ? (
-                        <Tag severity="success" value="Active" rounded />
-                      ) : (
-                        <Tag severity="success" value="Close" rounded />
-                      )}
+
+                      <span
+                        style={{
+                          color: "white",
+                          backgroundColor: data?.isLoanActive ? "green" : "red",
+                          padding: "5px",
+                          borderRadius: "20px",
+                          display: "inline-block",
+                        }}
+                      >
+                        {data?.isLoanActive ? "Active" : "Close"}
+                      </span>
                     </div>
                   </>
                 )}
               </div>
             </div>
           </li>
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">Basic Details</div>
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
@@ -202,7 +220,7 @@ const ApplicationView = () => {
             </div>
           </li>
 
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">
               Permanent Address
             </div>
@@ -246,7 +264,7 @@ const ApplicationView = () => {
               </div>
             </div>
           </li>
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">
               Residential Address
             </div>
@@ -290,7 +308,7 @@ const ApplicationView = () => {
               </div>
             </div>
           </li>
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">Work Details</div>
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
@@ -324,7 +342,7 @@ const ApplicationView = () => {
               </div>
             </div>
           </li>
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">Work Address</div>
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
@@ -366,7 +384,7 @@ const ApplicationView = () => {
               </div>
             </div>
           </li>
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">
               Dcoument Details
             </div>
@@ -399,7 +417,7 @@ const ApplicationView = () => {
               </div>
             </div>
           </li>
-          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
             <div className="text-500 w-6 md:w-2 font-medium">
               Account Details
             </div>
@@ -431,7 +449,7 @@ const ApplicationView = () => {
           </li>
 
           {data?.status === "disbursed" && (
-            <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+            <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
               <div className="text-500 w-6 md:w-2 font-medium">
                 EMI Schedule
               </div>
