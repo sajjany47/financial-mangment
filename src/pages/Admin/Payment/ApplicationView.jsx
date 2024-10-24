@@ -5,7 +5,7 @@ import Loader from "../../../component/Loader";
 import moment from "moment";
 import { Currency } from "../../../component/FieldType";
 import { Fragment } from "react";
-import { FormatType } from "../../../shared/constant";
+import { FormatString } from "../../../shared/constant";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
@@ -77,7 +77,7 @@ const ApplicationView = () => {
 
                 <div className="col-12 md:col-3">
                   <div className="view-app">Status</div>
-                  {data?.status}
+                  {data?.status ? FormatString(data?.status) : ""}
                 </div>
                 {data?.status === "disbursed" && (
                   <>
@@ -187,15 +187,13 @@ const ApplicationView = () => {
                   <div className="view-app">Pincode</div>
                   {data?.permanentPincode}
                 </div>
-                {data?.status === "disbursed" && (
-                  <div className="col-12 md:col-3">
-                    <div className="view-app">Address Verified By</div>
-                    {data?.addressVerifiedBy
-                      ? `${data?.addressVerifiedBy?.name} (
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Address Verified By</div>
+                  {data?.addressVerifiedBy
+                    ? `${data?.addressVerifiedBy?.name} (
                     ${data?.addressVerifiedBy?.username})`
-                      : ""}
-                  </div>
-                )}
+                    : ""}
+                </div>
               </div>
             </div>
           </li>
@@ -233,15 +231,13 @@ const ApplicationView = () => {
                   <div className="view-app">Pincode</div>
                   {data?.residencePincode}
                 </div>
-                {data?.status === "disbursed" && (
-                  <div className="col-12 md:col-3">
-                    <div className="view-app">Address Verified By</div>
-                    {data?.addressVerifiedBy
-                      ? `${data?.addressVerifiedBy?.name} (
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Address Verified By</div>
+                  {data?.addressVerifiedBy
+                    ? `${data?.addressVerifiedBy?.name} (
                     ${data?.addressVerifiedBy?.username})`
-                      : ""}
-                  </div>
-                )}
+                    : ""}
+                </div>
               </div>
             </div>
           </li>
@@ -269,15 +265,13 @@ const ApplicationView = () => {
                   <div className="view-app">Monthly Income</div>
                   {Currency(data?.monthlyIncome ? data?.monthlyIncome : 0)}
                 </div>
-                {data?.status === "disbursed" && (
-                  <div className="col-12 md:col-3">
-                    <div className="view-app">Work Verified By</div>
-                    {data?.officeOrBussinessVerifiedBy
-                      ? `${data?.officeOrBussinessVerifiedBy?.name} (
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Work Verified By</div>
+                  {data?.officeOrBussinessVerifiedBy
+                    ? `${data?.officeOrBussinessVerifiedBy?.name} (
                     ${data?.officeOrBussinessVerifiedBy?.username})`
-                      : ""}
-                  </div>
-                )}
+                    : ""}
+                </div>
               </div>
             </div>
           </li>
@@ -313,15 +307,13 @@ const ApplicationView = () => {
                   <div className="view-app">Pincode</div>
                   {data?.workPincode}
                 </div>
-                {data?.status === "disbursed" && (
-                  <div className="col-12 md:col-3">
-                    <div className="view-app">Work Verified By</div>
-                    {data?.officeOrBussinessVerifiedBy
-                      ? `${data?.officeOrBussinessVerifiedBy?.name} (
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Work Verified By</div>
+                  {data?.officeOrBussinessVerifiedBy
+                    ? `${data?.officeOrBussinessVerifiedBy?.name} (
                     ${data?.officeOrBussinessVerifiedBy?.username})`
-                      : ""}
-                  </div>
-                )}
+                    : ""}
+                </div>
               </div>
             </div>
           </li>
@@ -332,30 +324,26 @@ const ApplicationView = () => {
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
                 {data?.document?.map((item) => {
-                  const key = Object.keys(item).find((k) => k !== "_id");
-                  const doc = item[key];
                   return (
                     <Fragment key={item._id}>
                       <div className="col-12 md:col-3">
                         <div className="view-app">Type</div>
-                        {FormatType(key)}
+                        {item.type}
                       </div>
                       <div className="col-12 md:col-3">
-                        <div className="view-app">Document Type</div>
-                        {doc.documentType}
+                        <div className="view-app">Document Name</div>
+                        {item.documentType}
                       </div>
                       <div className="col-12 md:col-3">
                         <div className="view-app">Document Number</div>
-                        {doc.documentNumber}
+                        {item.documentNumber}
                       </div>
-                      {data?.status === "disbursed" && (
-                        <div className="col-12 md:col-3">
-                          <div className="view-app">Document Verified By</div>
-                          {data?.documentVerifiedBy
-                            ? `${data?.documentVerifiedBy?.name} (${data?.documentVerifiedBy?.username})`
-                            : ""}
-                        </div>
-                      )}
+                      <div className="col-12 md:col-3">
+                        <div className="view-app">Document Verified By</div>
+                        {data?.documentVerifiedBy
+                          ? `${data?.documentVerifiedBy?.name} (${data?.documentVerifiedBy?.username})`
+                          : ""}
+                      </div>
                     </Fragment>
                   );
                 })}
