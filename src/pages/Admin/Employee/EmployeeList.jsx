@@ -174,6 +174,12 @@ const EmployeeList = () => {
       //   label: "Profile",
       items: [
         {
+          label: "View Employee",
+          command: () => {
+            navigate(`/employee/view/${selectData._id}`);
+          },
+        },
+        {
           label: "Edit Employee",
           command: () => {
             navigate("/employee/edit");

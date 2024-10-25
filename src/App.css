@@ -94,7 +94,7 @@ input[type="file"] {
 
 .content-wrapper {
   margin-top: 10px; 
-  padding: 20px; 
+  padding: 10px; 
   height: calc(100vh - 60px);
   overflow-y: auto; 
 } 

@@ -38,6 +38,7 @@ import History from "./pages/Admin/Payment/History";
 import Upcoming from "./pages/Admin/Payment/Upcoming";
 import Defaulter from "./pages/Admin/Payment/Defaulter";
 import ApplicationView from "./pages/Admin/Payment/ApplicationView";
+import EmployeeView from "./pages/Admin/Employee/EmployeeView";
 
 function App() {
   let isRefreshing = false;
@@ -109,8 +110,10 @@ function App() {
             <Route path="/employee/list" element={<EmployeeList />} />
             <Route path="/employee/add" element={<AddEmployee />} />
             <Route path="/employee/edit" element={<EditEmployee />} />
+            <Route path="/employee/view/:id" element={<EmployeeView />} />
             <Route path="/emi/calculator" element={<Calculator />} />
             <Route path="/lead/list" element={<Lead />} />
+
             <Route path="/applications/list" element={<NewApplication />} />
             <Route
               path="/applications/rejected"
