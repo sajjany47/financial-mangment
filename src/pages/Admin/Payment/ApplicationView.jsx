@@ -323,9 +323,9 @@ const ApplicationView = () => {
             </div>
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
-                {data?.document?.map((item) => {
+                {data?.document?.map((item, index) => {
                   return (
-                    <Fragment key={item._id}>
+                    <Fragment key={index}>
                       <div className="col-12 md:col-3">
                         <div className="view-app">Type</div>
                         {item.type}
