@@ -40,6 +40,9 @@ import Defaulter from "./pages/Admin/Payment/Defaulter";
 import ApplicationView from "./pages/Admin/Payment/ApplicationView";
 import EmployeeView from "./pages/Admin/Employee/EmployeeView";
 import Investor from "./pages/Admin/Finance/Investor";
+import Payout from "./pages/Admin/Finance/Payout";
+import Reedem from "./pages/Admin/Finance/Reedem";
+import AddInvestor from "./pages/Admin/Finance/AddInvestor";
 
 function App() {
   let isRefreshing = false;
@@ -154,6 +157,9 @@ function App() {
               element={<ApplicationView />}
             />
             <Route path="/finance/investor" element={<Investor />} />
+            <Route path="/finance/payout" element={<Payout />} />
+            <Route path="/finance/reedem" element={<Reedem />} />
+            <Route path="/finance/investor/manage" element={<AddInvestor />} />
           </Route>
         </Routes>
       </BrowserRouter>
