@@ -14,7 +14,7 @@ import {
   getInvestorDetails,
 } from "./FinanceService";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { InvestmentTypes, PayoutFrequencies } from "../../../shared/Config";
 import { findIFSC } from "../Employee/AddUserService";
 import { Button } from "primereact/button";
@@ -41,6 +41,7 @@ const financeSchema = Yup.object().shape({
   payoutDate: Yup.string().required("Payout date is required"),
 });
 const AddInvestor = () => {
+  const navigation = useNavigate();
   const propsData = useLocation().state;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
@@ -78,6 +79,7 @@ const AddInvestor = () => {
           bankBranchName: data.bankBranchName,
           ifsc: data.ifsc,
           accountName: data.accountName,
+          _id: data._id,
         }
       : {
           name: "",
@@ -113,6 +115,7 @@ const AddInvestor = () => {
             title: res.message,
             icon: "success",
           });
+          navigation("/finance/investor");
         })
         .catch(() => {
           setLoading(false);

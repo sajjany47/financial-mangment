@@ -206,11 +206,7 @@ const FinanceList = (props) => {
             header="Amount"
             body={(item) => <>{Currency(item?.investmentAmount)}</>}
           />
-          <Column
-            field="interestRate"
-            header="Interest(pm %)"
-            body={(item) => <>{Currency(item?.interestRate)}</>}
-          />
+          <Column field="interestRate" header="Interest(pm %)" />
           <Column field="payoutFrequency" header="Frequency" />
 
           <Column

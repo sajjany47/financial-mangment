@@ -2,7 +2,7 @@ import { headerWithToken, Instance } from "../../../shared/constant";
 
 export const financeDatatable = async (payload) => {
   const response = await Instance.post(
-    `/fiance/datatable`,
+    `/finance/datatable`,
     payload,
     headerWithToken()
   );
