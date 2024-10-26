@@ -66,12 +66,14 @@ const DocumentDetails = (props) => {
           panImage: employeeData.panImage ? employeeData.panImage : "",
           aadharImage: employeeData.aadharImage ? employeeData.aadharImage : "",
           aadharImagePre: employeeData.aadharImage
-            ? employeeData.aadharImage
+            ? employeeData.aadharImageUrl
             : "",
-          panImagePre: employeeData.panImage ? employeeData.panImage : "",
-          voterImagePre: employeeData.voterImage ? employeeData.voterImage : "",
+          panImagePre: employeeData.panImage ? employeeData.panImageUrl : "",
+          voterImagePre: employeeData.voterImage
+            ? employeeData.voterImageUrl
+            : "",
           passportImagePre: employeeData.passportImage
-            ? employeeData.passportImage
+            ? employeeData.passportImageUrl
             : "",
         };
 

@@ -60,10 +60,10 @@ const AccountDetails = (props) => {
             : "",
           uanImage: employeeData.uanImage ? employeeData.uanImage : "",
           passbookPreview: employeeData.passbookImage
-            ? employeeData.passbookImage
+            ? employeeData.passbookImageUrl
             : "",
           uan: employeeData.uan,
-          uanImagePreviw: employeeData.uanImage ? employeeData.uanImage : "",
+          uanImagePreviw: employeeData.uanImage ? employeeData.uanImageUrl : "",
         };
 
   useEffect(() => {

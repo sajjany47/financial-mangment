@@ -127,7 +127,7 @@ const BasicDetails = (props) => {
           branch: getUserData.branch,
           fresherOrExperience: getUserData.fresherOrExperience,
           userImage: getUserData.userImage,
-          userImagePre: getUserData.userImage,
+          userImagePre: getUserData.userImageUrl,
         }
       : {
           name: "",
