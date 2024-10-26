@@ -5,7 +5,7 @@ import Loader from "../../../component/Loader";
 import moment from "moment";
 import { Currency } from "../../../component/FieldType";
 import { Fragment } from "react";
-import { FormatString } from "../../../shared/constant";
+import { capitalizeFirstLetter, FormatString } from "../../../shared/constant";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -215,6 +215,10 @@ const ApplicationView = () => {
                 <div className="col-12 md:col-3">
                   <div className="view-app">Mother Name</div>
                   {data?.motherName}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Resisdence Type</div>
+                  {capitalizeFirstLetter(data?.residenceType)}
                 </div>
               </div>
             </div>

@@ -13,6 +13,14 @@ export const userCreate = async (payload) => {
   return response.data;
 };
 
+export const getEmployeeApplicationView = async (payload) => {
+  const response = await Instance.get(
+    `/user/view/${payload}`,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const userUpdate = async (payload) => {
   const response = await Instance.post(
     `/user/update`,

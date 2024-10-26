@@ -58,6 +58,12 @@ export const FormatString = (str) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
+export const SlashString = (str) => {
+  return str
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 export const FormatType = (str) => {
   // Replace underscores with spaces and capitalize each word
   return str.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
