@@ -39,6 +39,7 @@ import Upcoming from "./pages/Admin/Payment/Upcoming";
 import Defaulter from "./pages/Admin/Payment/Defaulter";
 import ApplicationView from "./pages/Admin/Payment/ApplicationView";
 import EmployeeView from "./pages/Admin/Employee/EmployeeView";
+import Investor from "./pages/Admin/Finance/Investor";
 
 function App() {
   let isRefreshing = false;
@@ -152,6 +153,7 @@ function App() {
               path="/loans/application-view/:id"
               element={<ApplicationView />}
             />
+            <Route path="/finance/investor" element={<Investor />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -58,6 +58,15 @@ const sidebarMenu = {
       ],
     },
     {
+      title: "Finance",
+      icon: "pi pi-wallet",
+      submenu: [
+        { title: "Investor", route: "/finance/investor" },
+        { title: "Payout", route: "/finance/payout" },
+        { title: "Reedem", route: "/finance/reedem" },
+      ],
+    },
+    {
       title: "Reports",
       icon: "pi pi-file-export",
       submenu: [
