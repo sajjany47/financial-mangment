@@ -39,6 +39,8 @@ const financeSchema = Yup.object().shape({
   interestRate: Yup.string().required("Interest Rate is required"),
   payoutFrequency: Yup.string().required("Payout frequency is required"),
   payoutDate: Yup.string().required("Payout date is required"),
+  aadharNumber: Yup.string().required("Aadhar Number is required"),
+  panNumber: Yup.string().required("Pan number is required"),
 });
 const AddInvestor = () => {
   const navigation = useNavigate();
@@ -73,13 +75,15 @@ const AddInvestor = () => {
           duration: data.duration,
           interestRate: data.interestRate,
           payoutFrequency: data.payoutFrequency,
-          payoutDate: data.payoutDate,
+          payoutDate: new Date(data.payoutDate),
           accountNumber: data.accountNumber,
           bankName: data.bankName,
           bankBranchName: data.bankBranchName,
           ifsc: data.ifsc,
           accountName: data.accountName,
           _id: data._id,
+          panNumber: data.panNumber,
+          aadharNumber: data.aadharNumber,
         }
       : {
           name: "",
@@ -97,6 +101,8 @@ const AddInvestor = () => {
           bankBranchName: "",
           ifsc: "",
           accountName: "",
+          panNumber: "",
+          aadharNumber: "",
         };
 
   const handelSubmit = (values) => {
@@ -188,7 +194,20 @@ const AddInvestor = () => {
                       name="dob"
                     />
                   </div>
-
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Aadhar Nummber"
+                      component={InputField}
+                      name="aadharNumber"
+                    />
+                  </div>
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Pan number"
+                      component={InputField}
+                      name="panNumber"
+                    />
+                  </div>
                   <div className="col-12 md:col-3">
                     <Field
                       label="Investment Type"
