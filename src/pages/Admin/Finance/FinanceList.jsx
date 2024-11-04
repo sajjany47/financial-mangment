@@ -213,7 +213,7 @@ const FinanceList = (props) => {
             field="payoutDate"
             header="Payout Date"
             body={(item) => (
-              <>{moment(item?.payoutDate).format("DD-MM-YYYY")}</>
+              <>{moment(item?.payoutDate).format("Do")} of Month</>
             )}
           />
           <Column field="payoutStatus" header="Status" />

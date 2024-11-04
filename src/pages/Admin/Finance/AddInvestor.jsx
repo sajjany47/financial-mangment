@@ -252,6 +252,8 @@ const AddInvestor = () => {
                       label="Payout Date"
                       component={DateField}
                       name="payoutDate"
+                      dateFormat="dd"
+                      view="date"
                     />
                   </div>
                   <div className="col-12 md:col-3">
