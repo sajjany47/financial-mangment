@@ -13,6 +13,9 @@ import { Currency } from "../../../component/FieldType";
 import moment from "moment";
 import CPaginator from "../../../component/CPaginator";
 import { useNavigate } from "react-router-dom";
+import { Calendar } from "primereact/calendar";
+import { Dialog } from "primereact/dialog";
+import PayNow from "./PayNow";
 
 const Reedem = () => {
   const navigation = useNavigate();
@@ -24,6 +27,11 @@ const Reedem = () => {
   const [total, setTotal] = useState(0);
   const [searchShow, setSearchShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
+  const [date, setDate] = useState([
+    new Date(moment().startOf("month")),
+    new Date(moment().endOf("month")),
+  ]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (searchKey?.page === "reedem") {
@@ -46,14 +54,19 @@ const Reedem = () => {
   }, []);
 
   useEffect(() => {
-    getList();
+    if (date[1] !== null) {
+      getList();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKey]);
+  }, [searchKey, date]);
   const getList = () => {
     setLoading(true);
     let reqData = {
       page: searchKey?.pageNumber,
       limit: searchKey?.rows,
+      startDate: date[0],
+      endDate: date[1],
       sort:
         searchKey.hasOwnProperty("sortField") &&
         searchKey.hasOwnProperty("sortOrder")
@@ -100,14 +113,11 @@ const Reedem = () => {
             />
           )}
 
-          <Button
-            label={"Add Reedem"}
-            icon="pi pi-plus"
-            onClick={() => {
-              navigation("/finance/investor/manage", {
-                state: { type: "add" },
-              });
-            }}
+          <Calendar
+            value={date}
+            onChange={(e) => setDate(e.value)}
+            selectionMode="range"
+            placeholder="Select Date"
           />
         </div>
       </div>
@@ -136,22 +146,15 @@ const Reedem = () => {
       //   label: "Profile",
       items: [
         {
-          label: "Edit",
+          label: "Pay Now",
           command: () => {
-            navigation("/finance/investor/manage", {
-              state: { type: "edit", id: selectedItem._id },
-            });
+            setVisible(true);
           },
         },
         {
-          label: "Pay",
-
-          command: () => {},
-        },
-        {
-          label: "View",
+          label: "View Details",
           command: () => {
-            confirm();
+            navigation("");
           },
         },
       ],
@@ -172,6 +175,10 @@ const Reedem = () => {
   };
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
+  };
+  const handelDialog = (e) => {
+    setVisible(e);
+    getList();
   };
   return (
     <>
@@ -200,25 +207,41 @@ const Reedem = () => {
           <Column field="mobile" header="Mobile" />
           <Column field="investmentType" header="Type" sortable />
           <Column
-            field="investmentAmount"
-            header="Amount"
-            body={(item) => <>{Currency(item?.investmentAmount)}</>}
+            field="payoutReedem.reedemAmount"
+            header="Reedem Amount"
+            body={(item) => <>{Currency(item?.payoutReedem.reedemAmount)}</>}
           />
-          <Column field="interestRate" header="Interest(pm %)" />
-          <Column field="payoutFrequency" header="Frequency" />
 
           <Column
-            field="payoutDate"
-            header="Payout Date"
+            field="payoutReedem.reedemDate"
+            header="Reedem Date"
             body={(item) => (
-              <>{moment(item?.payoutDate).format("Do")} of Month</>
+              <>
+                {moment(item?.payoutReedem.reedemDate).format("Do MMM, YYYY")}
+              </>
             )}
           />
-          <Column field="payoutStatus" header="Status" />
+          <Column
+            field="payoutReedem.remainingInvestAmount"
+            header="Remaining InvestAmount"
+            body={(item) => (
+              <>{Currency(item?.payoutReedem.remainingInvestAmount)}</>
+            )}
+          />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
+      <Dialog
+        header={"Pay Now"}
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <PayNow data={selectedItem} type="reedem" handelDialog={handelDialog} />
+      </Dialog>
     </>
   );
 };

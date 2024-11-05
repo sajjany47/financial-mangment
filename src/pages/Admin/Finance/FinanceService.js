@@ -47,3 +47,30 @@ export const financeCreate = async (payload) => {
   );
   return response.data;
 };
+
+export const financepayNow = async (payload) => {
+  const response = await Instance.post(
+    `/finance/pay-now`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
+export const financeReedempayNow = async (payload) => {
+  const response = await Instance.post(
+    `/finance/reedem/pay-now`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
+export const financeReedemApply = async (payload) => {
+  const response = await Instance.post(
+    `/finance/reedem-apply`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};

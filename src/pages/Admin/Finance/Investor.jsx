@@ -3,17 +3,39 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../../store/reducer/searchReducer";
-import { InvestorDatatable } from "./FinanceService";
+import { financeReedemApply, InvestorDatatable } from "./FinanceService";
 import { Button } from "primereact/button";
 import Loader from "../../../component/Loader";
 import { Menu } from "primereact/menu";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Currency } from "../../../component/FieldType";
+import {
+  Currency,
+  DateField,
+  DropdownField,
+  InputField,
+} from "../../../component/FieldType";
 import moment from "moment";
 import CPaginator from "../../../component/CPaginator";
 import { useNavigate } from "react-router-dom";
+import { Dialog } from "primereact/dialog";
+import { Field, Form, Formik } from "formik";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
+import { PayoutFrequencies } from "../../../shared/Config";
 
+const validationSchema = Yup.object({
+  investmentAmount: Yup.string().required("Investment Amount is required"),
+  reedemAmount: Yup.string().required("Reedem amount is required"),
+  reedemDate: Yup.date().required("Reedem date is required"),
+  remainingInvestAmount: Yup.string().required(
+    "Remaining invested amount is required"
+  ),
+  duration: Yup.string().required("Duration is required"),
+  interestRate: Yup.string().required("Interest Rate is required"),
+  payoutFrequency: Yup.string().required("Payout frequency is required"),
+  payoutDate: Yup.string().required("Payout date is required"),
+});
 const Investor = () => {
   const navigation = useNavigate();
   const menuRef = useRef();
@@ -24,6 +46,7 @@ const Investor = () => {
   const [total, setTotal] = useState(0);
   const [searchShow, setSearchShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (searchKey?.page === "investor") {
@@ -136,7 +159,7 @@ const Investor = () => {
       //   label: "Profile",
       items: [
         {
-          label: "Edit",
+          label: "Edit Details",
           command: () => {
             navigation("/finance/investor/manage", {
               state: { type: "edit", id: selectedItem._id },
@@ -144,12 +167,13 @@ const Investor = () => {
           },
         },
         {
-          label: "Status Change",
-
-          command: () => {},
+          label: "Apply Reedem",
+          command: () => {
+            setVisible(true);
+          },
         },
         {
-          label: "View",
+          label: "View Details",
           command: () => {
             confirm();
           },
@@ -172,6 +196,27 @@ const Investor = () => {
   };
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
+  };
+
+  const handelSubmit = (values) => {
+    setLoading(true);
+
+    financeReedemApply({
+      ...values,
+      _id: selectedItem._id,
+    })
+      .then((res) => {
+        setLoading(false);
+        setVisible(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
+        });
+        getList();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
   return (
     <>
@@ -219,6 +264,117 @@ const Investor = () => {
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
+
+      <Dialog
+        header={"Apply Reedem"}
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <Formik
+          initialValues={{
+            investmentAmount: selectedItem.investmentAmount,
+            reedemAmount: "",
+            reedemDate: "",
+            remainingInvestAmount: "",
+            duration: selectedItem.duration,
+            interestRate: selectedItem.interestRate,
+            payoutFrequency: selectedItem.payoutFrequency,
+            payoutDate: "",
+          }}
+          onSubmit={handelSubmit}
+          validationSchema={validationSchema}
+          enableReinitialize
+        >
+          {({ handleSubmit, setFieldValue }) => (
+            <Form onSubmit={handleSubmit}>
+              <div className="flex flex-column ">
+                <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+                  <div className="grid p-3">
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Investment Amount"
+                        component={InputField}
+                        name="investmentAmount"
+                        disabled
+                      />
+                    </div>
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Reedem Amount"
+                        component={InputField}
+                        name="reedemAmount"
+                        keyfilter="money"
+                        onChange={(e) => {
+                          setFieldValue("reedemAmount", e.target.value);
+                          setFieldValue(
+                            "remainingInvestAmount",
+                            Number(selectedItem.investmentAmount) -
+                              Number(e.target.value)
+                          );
+                        }}
+                      />
+                    </div>
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Reedem Date"
+                        component={DateField}
+                        name="reedemDate"
+                      />
+                    </div>
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Remaining Invest Amount"
+                        component={InputField}
+                        name="remainingInvestAmount"
+                        disabled
+                      />
+                    </div>
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Duration (In months)"
+                        component={InputField}
+                        name="duration"
+                        keyfilter="int"
+                      />
+                    </div>
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Interest Rate/Month"
+                        component={InputField}
+                        name="interestRate"
+                      />
+                    </div>
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Payout Frequency"
+                        component={DropdownField}
+                        options={PayoutFrequencies}
+                        name="payoutFrequency"
+                      />
+                    </div>
+                    <div className="col-12 md:col-6">
+                      <Field
+                        label="Payout Date"
+                        component={DateField}
+                        name="payoutDate"
+                        dateFormat="dd"
+                        view="date"
+                      />
+                    </div>
+
+                    <div className="col-12 md:col-12">
+                      <Button label="Submit" className="w-full mt-2" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Dialog>
     </>
   );
 };

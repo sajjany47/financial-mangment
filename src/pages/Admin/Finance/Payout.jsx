@@ -14,6 +14,8 @@ import moment from "moment";
 import CPaginator from "../../../component/CPaginator";
 import { useNavigate } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
+import { Dialog } from "primereact/dialog";
+import PayNow from "./PayNow";
 
 const Payout = () => {
   const navigation = useNavigate();
@@ -29,6 +31,7 @@ const Payout = () => {
     new Date(moment().startOf("month")),
     new Date(moment().endOf("month")),
   ]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (searchKey?.page === "payout") {
@@ -143,22 +146,15 @@ const Payout = () => {
       //   label: "Profile",
       items: [
         {
-          label: "Edit",
+          label: "Pay Now",
           command: () => {
-            navigation("/finance/investor/manage", {
-              state: { type: "edit", id: selectedItem._id },
-            });
+            setVisible(true);
           },
         },
         {
-          label: "Pay",
-
-          command: () => {},
-        },
-        {
-          label: "View",
+          label: "View Details",
           command: () => {
-            confirm();
+            navigation("");
           },
         },
       ],
@@ -179,6 +175,11 @@ const Payout = () => {
   };
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
+  };
+
+  const handelDialog = (e) => {
+    setVisible(e);
+    getList();
   };
   return (
     <>
@@ -225,6 +226,17 @@ const Payout = () => {
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
+
+      <Dialog
+        header={"Pay Now"}
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <PayNow data={selectedItem} type="payout" handelDialog={handelDialog} />
+      </Dialog>
     </>
   );
 };
