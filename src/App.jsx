@@ -43,6 +43,7 @@ import Investor from "./pages/Admin/Finance/Investor";
 import Payout from "./pages/Admin/Finance/Payout";
 import Reedem from "./pages/Admin/Finance/Reedem";
 import AddInvestor from "./pages/Admin/Finance/AddInvestor";
+import FullyMatured from "./pages/Admin/Finance/FullyMatured";
 
 function App() {
   let isRefreshing = false;
@@ -157,6 +158,7 @@ function App() {
               element={<ApplicationView />}
             />
             <Route path="/finance/investor" element={<Investor />} />
+            <Route path="/finance/matured" element={<FullyMatured />} />
             <Route path="/finance/payout" element={<Payout />} />
             <Route path="/finance/reedem" element={<Reedem />} />
             <Route path="/finance/investor/manage" element={<AddInvestor />} />

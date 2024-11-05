@@ -64,6 +64,7 @@ const sidebarMenu = {
         { title: "Investor", route: "/finance/investor" },
         { title: "Payout", route: "/finance/payout" },
         { title: "Reedem", route: "/finance/reedem" },
+        { title: "Matured", route: "/finance/matured" },
       ],
     },
     {
