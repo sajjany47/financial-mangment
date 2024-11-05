@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../../store/reducer/searchReducer";
-import { financeDatatable } from "./FinanceService";
+import { InvestorDatatable } from "./FinanceService";
 import { Button } from "primereact/button";
 import Loader from "../../../component/Loader";
 import { Menu } from "primereact/menu";
@@ -64,7 +64,7 @@ const Investor = () => {
       reqData = { ...reqData, ...searchKey?.filterOptions };
     }
 
-    financeDatatable(reqData)
+    InvestorDatatable(reqData)
       .then((res) => {
         setList(res.data);
         setTotal(res.count);
@@ -211,7 +211,7 @@ const Investor = () => {
             field="payoutDate"
             header="Payout Date"
             body={(item) => (
-              <>{moment(item?.payoutDate).format("Do")} of Month</>
+              <>{moment(item?.payoutDate).format("Do")} every Month</>
             )}
           />
           <Column field="payoutStatus" header="Status" />

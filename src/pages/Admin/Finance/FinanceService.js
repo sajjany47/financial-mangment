@@ -1,8 +1,24 @@
 import { headerWithToken, Instance } from "../../../shared/constant";
 
-export const financeDatatable = async (payload) => {
+export const InvestorDatatable = async (payload) => {
   const response = await Instance.post(
-    `/finance/datatable`,
+    `/finance/investor/datatable`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+export const PayoutDatatable = async (payload) => {
+  const response = await Instance.post(
+    `/finance/payout/datatable`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+export const ReedemDatatable = async (payload) => {
+  const response = await Instance.post(
+    `/finance/reedem/datatable`,
     payload,
     headerWithToken()
   );

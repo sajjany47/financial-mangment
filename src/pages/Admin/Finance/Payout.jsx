@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../../store/reducer/searchReducer";
-import { financeDatatable } from "./FinanceService";
+import { PayoutDatatable } from "./FinanceService";
 import { Button } from "primereact/button";
 import Loader from "../../../component/Loader";
 import { Menu } from "primereact/menu";
@@ -13,6 +13,7 @@ import { Currency } from "../../../component/FieldType";
 import moment from "moment";
 import CPaginator from "../../../component/CPaginator";
 import { useNavigate } from "react-router-dom";
+import { Calendar } from "primereact/calendar";
 
 const Payout = () => {
   const navigation = useNavigate();
@@ -24,6 +25,10 @@ const Payout = () => {
   const [total, setTotal] = useState(0);
   const [searchShow, setSearchShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
+  const [date, setDate] = useState([
+    new Date(moment().startOf("month")),
+    new Date(moment().endOf("month")),
+  ]);
 
   useEffect(() => {
     if (searchKey?.page === "payout") {
@@ -46,14 +51,19 @@ const Payout = () => {
   }, []);
 
   useEffect(() => {
-    getList();
+    if (date[1] !== null) {
+      getList();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKey]);
+  }, [searchKey, date]);
   const getList = () => {
     setLoading(true);
     let reqData = {
       page: searchKey?.pageNumber,
       limit: searchKey?.rows,
+      startDate: date[0],
+      endDate: date[1],
       sort:
         searchKey.hasOwnProperty("sortField") &&
         searchKey.hasOwnProperty("sortOrder")
@@ -64,7 +74,7 @@ const Payout = () => {
       reqData = { ...reqData, ...searchKey?.filterOptions };
     }
 
-    financeDatatable(reqData)
+    PayoutDatatable(reqData)
       .then((res) => {
         setList(res.data);
         setTotal(res.count);
@@ -99,6 +109,13 @@ const Payout = () => {
               severity="secondary"
             />
           )}
+
+          <Calendar
+            value={date}
+            onChange={(e) => setDate(e.value)}
+            selectionMode="range"
+            placeholder="Select Date"
+          />
         </div>
       </div>
     );
@@ -190,21 +207,20 @@ const Payout = () => {
           <Column field="mobile" header="Mobile" />
           <Column field="investmentType" header="Type" sortable />
           <Column
-            field="investmentAmount"
-            header="Amount"
-            body={(item) => <>{Currency(item?.investmentAmount)}</>}
+            field="payoutAmount"
+            header="Payout Amount"
+            body={(item) => <>{Currency(item?.payoutSchedule.payoutAmount)}</>}
           />
-          <Column field="interestRate" header="Interest(pm %)" />
-          <Column field="payoutFrequency" header="Frequency" />
 
           <Column
             field="payoutDate"
             header="Payout Date"
             body={(item) => (
-              <>{moment(item?.payoutDate).format("Do")} of Month</>
+              <>
+                {moment(item?.payoutSchedule.payoutDate).format("Do MMM, YYYY")}
+              </>
             )}
           />
-          <Column field="payoutStatus" header="Status" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../../store/reducer/searchReducer";
-import { financeDatatable } from "./FinanceService";
+import { ReedemDatatable } from "./FinanceService";
 import { Button } from "primereact/button";
 import Loader from "../../../component/Loader";
 import { Menu } from "primereact/menu";
@@ -64,7 +64,7 @@ const Reedem = () => {
       reqData = { ...reqData, ...searchKey?.filterOptions };
     }
 
-    financeDatatable(reqData)
+    ReedemDatatable(reqData)
       .then((res) => {
         setList(res.data);
         setTotal(res.count);
