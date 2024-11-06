@@ -22,41 +22,45 @@ const PayNow = (props) => {
 
   const handelSubmit = (values) => {
     setLoading(true);
-    if (props.type === "payout") {
-      financepayNow({
-        ...values,
-        payoutId: data.payoutSchedule._id,
-        _id: data._id,
-      })
-        .then((res) => {
-          setLoading(false);
-          Swal.fire({
-            title: res.message,
-            icon: "success",
-          });
-          props.handelDialog(false);
-        })
-        .catch(() => {
-          setLoading(false);
+    // if (props.type === "payout") {
+    financepayNow({
+      ...values,
+      [props.type === "payout" ? "payoutId" : "reedemId"]:
+        props.type === "payout"
+          ? data.payoutSchedule._id
+          : data.payoutReedem._id,
+      _id: data._id,
+      type: props.type,
+    })
+      .then((res) => {
+        setLoading(false);
+        Swal.fire({
+          title: res.message,
+          icon: "success",
         });
-    } else {
-      financeReedempayNow({
-        ...values,
-        reedemId: data.payoutReedem._id,
-        _id: data._id,
+        props.handelDialog(false);
       })
-        .then((res) => {
-          setLoading(false);
-          Swal.fire({
-            title: res.message,
-            icon: "success",
-          });
-          props.handelDialog(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
+      .catch(() => {
+        setLoading(false);
+      });
+    // } else {
+    // financeReedempayNow({
+    //   ...values,
+    //   reedemId: data.payoutReedem._id,
+    //   _id: data._id,
+    // })
+    //   .then((res) => {
+    //     setLoading(false);
+    //     Swal.fire({
+    //       title: res.message,
+    //       icon: "success",
+    //     });
+    //     props.handelDialog(false);
+    //   })
+    //   .catch(() => {
+    //     setLoading(false);
+    //   });
+    // }
   };
   return (
     <>
