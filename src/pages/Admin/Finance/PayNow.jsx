@@ -22,15 +22,16 @@ const PayNow = (props) => {
 
   const handelSubmit = (values) => {
     setLoading(true);
-    // if (props.type === "payout") {
+    let reqData = { ...values, _id: data._id, type: props.type };
+    if (props.type === "payout") {
+      reqData.payoutId = data.payoutSchedule._id;
+    }
+    if (props.type === "reedemId") {
+      reqData.payoutId = data.payoutReedem._id;
+    }
+
     financepayNow({
-      ...values,
-      [props.type === "payout" ? "payoutId" : "reedemId"]:
-        props.type === "payout"
-          ? data.payoutSchedule._id
-          : data.payoutReedem._id,
-      _id: data._id,
-      type: props.type,
+      ...reqData,
     })
       .then((res) => {
         setLoading(false);

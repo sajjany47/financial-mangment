@@ -25,6 +25,15 @@ export const ReedemDatatable = async (payload) => {
   return response.data;
 };
 
+export const MatureDatatable = async (payload) => {
+  const response = await Instance.post(
+    `/finance/matured/datatable`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const getInvestorDetails = async (payload) => {
   const response = await Instance.get(`/finance/${payload}`, headerWithToken());
   return response.data;
