@@ -31,10 +31,26 @@ const validationSchema = Yup.object({
   remainingInvestAmount: Yup.string().required(
     "Remaining invested amount is required"
   ),
-  duration: Yup.string().required("Duration is required"),
-  interestRate: Yup.string().required("Interest Rate is required"),
-  payoutFrequency: Yup.string().required("Payout frequency is required"),
-  payoutDate: Yup.string().required("Payout date is required"),
+  duration: Yup.string().when("remainingInvestAmount", {
+    is: (values) => Number(values) !== 0,
+    then: () => Yup.string().required("Duration is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+  interestRate: Yup.string().when("remainingInvestAmount", {
+    is: (values) => Number(values) !== 0,
+    then: () => Yup.string().required("Interest Rate is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+  payoutFrequency: Yup.string().when("remainingInvestAmount", {
+    is: (values) => Number(values) !== 0,
+    then: () => Yup.string().required("Payout frequency is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+  payoutDate: Yup.string().when("remainingInvestAmount", {
+    is: (values) => Number(values) !== 0,
+    then: () => Yup.string().required("Payout date is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
 });
 const Investor = () => {
   const navigation = useNavigate();
@@ -200,10 +216,26 @@ const Investor = () => {
 
   const handelSubmit = (values) => {
     setLoading(true);
+    let reqData = {
+      _id: selectedItem._id,
+      investmentAmount: values.investmentAmount,
+      reedemAmount: values.reedemAmount,
+      reedemDate: values.reedemDate,
+      remainingInvestAmount: values.remainingInvestAmount,
+      duration:
+        Number(values.remainingInvestAmount) === 0 ? null : values.duration,
+      interestRate:
+        Number(values.remainingInvestAmount) === 0 ? null : values.interestRate,
+      payoutFrequency:
+        Number(values.remainingInvestAmount) === 0
+          ? null
+          : values.payoutFrequency,
+      payoutDate:
+        Number(values.remainingInvestAmount) === 0 ? null : values.payoutDate,
+    };
 
     financeReedemApply({
-      ...values,
-      _id: selectedItem._id,
+      ...reqData,
     })
       .then((res) => {
         setLoading(false);
@@ -288,7 +320,7 @@ const Investor = () => {
           validationSchema={validationSchema}
           enableReinitialize
         >
-          {({ handleSubmit, setFieldValue }) => (
+          {({ handleSubmit, setFieldValue, values }) => (
             <Form onSubmit={handleSubmit}>
               <div className="flex flex-column ">
                 <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
@@ -324,6 +356,7 @@ const Investor = () => {
                         name="reedemDate"
                       />
                     </div>
+
                     <div className="col-12 md:col-6">
                       <Field
                         label="Remaining Invest Amount"
@@ -332,38 +365,42 @@ const Investor = () => {
                         disabled
                       />
                     </div>
-                    <div className="col-12 md:col-6">
-                      <Field
-                        label="Duration (In months)"
-                        component={InputField}
-                        name="duration"
-                        keyfilter="int"
-                      />
-                    </div>
-                    <div className="col-12 md:col-6">
-                      <Field
-                        label="Interest Rate/Month"
-                        component={InputField}
-                        name="interestRate"
-                      />
-                    </div>
-                    <div className="col-12 md:col-6">
-                      <Field
-                        label="Payout Frequency"
-                        component={DropdownField}
-                        options={PayoutFrequencies}
-                        name="payoutFrequency"
-                      />
-                    </div>
-                    <div className="col-12 md:col-6">
-                      <Field
-                        label="Payout Date"
-                        component={DateField}
-                        name="payoutDate"
-                        dateFormat="dd"
-                        view="date"
-                      />
-                    </div>
+                    {values.remainingInvestAmount !== 0 && (
+                      <>
+                        <div className="col-12 md:col-6">
+                          <Field
+                            label="Duration (In months)"
+                            component={InputField}
+                            name="duration"
+                            keyfilter="int"
+                          />
+                        </div>
+                        <div className="col-12 md:col-6">
+                          <Field
+                            label="Interest Rate/Month"
+                            component={InputField}
+                            name="interestRate"
+                          />
+                        </div>
+                        <div className="col-12 md:col-6">
+                          <Field
+                            label="Payout Frequency"
+                            component={DropdownField}
+                            options={PayoutFrequencies}
+                            name="payoutFrequency"
+                          />
+                        </div>
+                        <div className="col-12 md:col-6">
+                          <Field
+                            label="Payout Date"
+                            component={DateField}
+                            name="payoutDate"
+                            dateFormat="dd"
+                            view="date"
+                          />
+                        </div>
+                      </>
+                    )}
 
                     <div className="col-12 md:col-12">
                       <Button label="Submit" className="w-full mt-2" />

@@ -26,8 +26,8 @@ const PayNow = (props) => {
     if (props.type === "payout") {
       reqData.payoutId = data.payoutSchedule._id;
     }
-    if (props.type === "reedemId") {
-      reqData.payoutId = data.payoutReedem._id;
+    if (props.type === "reedem") {
+      reqData.reedemId = data.payoutReedem._id;
     }
 
     financepayNow({
