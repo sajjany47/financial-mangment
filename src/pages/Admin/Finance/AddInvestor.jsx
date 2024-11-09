@@ -72,10 +72,10 @@ const AddInvestor = () => {
           dob: new Date(data.dob),
           investmentType: data.investmentType,
           investmentAmount: data.investmentAmount,
-          duration: data.duration,
-          interestRate: data.interestRate,
-          payoutFrequency: data.payoutFrequency,
-          payoutDate: new Date(data.payoutDate),
+          duration: propsData?.plan ? "" : data.duration,
+          interestRate: propsData?.plan ? "" : data.interestRate,
+          payoutFrequency: propsData?.plan ? "" : data.payoutFrequency,
+          payoutDate: propsData?.plan ? "" : new Date(data.payoutDate),
           accountNumber: data.accountNumber,
           bankName: data.bankName,
           bankBranchName: data.bankBranchName,
@@ -134,7 +134,7 @@ const AddInvestor = () => {
             title: res.message,
             icon: "success",
           });
-          propsData.next();
+          navigation("/finance/investor");
         })
         .catch(() => {
           setLoading(false);

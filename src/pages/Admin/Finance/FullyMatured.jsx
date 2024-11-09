@@ -13,8 +13,10 @@ import { Currency } from "../../../component/FieldType";
 import CPaginator from "../../../component/CPaginator";
 import { Dialog } from "primereact/dialog";
 import PayNow from "./PayNow";
+import { useNavigate } from "react-router-dom";
 
 const FullyMatured = () => {
+  const navigation = useNavigate();
   const menuRef = useRef();
   const dispatch = useDispatch();
   const searchKey = useSelector((state) => state?.search?.value);
@@ -134,6 +136,14 @@ const FullyMatured = () => {
           label: "View Details",
           command: () => {
             confirm();
+          },
+        },
+        {
+          label: "Plan Extend",
+          command: () => {
+            navigation("/finance/investor/manage", {
+              state: { type: "edit", id: selectedItem._id, plan: "extend" },
+            });
           },
         },
       ],

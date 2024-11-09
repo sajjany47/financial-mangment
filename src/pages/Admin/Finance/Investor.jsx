@@ -23,6 +23,7 @@ import { Field, Form, Formik } from "formik";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { PayoutFrequencies } from "../../../shared/Config";
+import { Tag } from "primereact/tag";
 
 const validationSchema = Yup.object({
   investmentAmount: Yup.string().required("Investment Amount is required"),
@@ -250,6 +251,18 @@ const Investor = () => {
         setLoading(false);
       });
   };
+
+  const statusTemplate = (item) => {
+    return (
+      <>
+        {item?.isInvestorActive ? (
+          <Tag severity="success" value="Active" rounded />
+        ) : (
+          <Tag severity="danger" value="Inactive" rounded />
+        )}
+      </>
+    );
+  };
   return (
     <>
       {loading && <Loader />}
@@ -291,7 +304,7 @@ const Investor = () => {
               <>{moment(item?.payoutDate).format("Do")} every Month</>
             )}
           />
-          <Column field="payoutStatus" header="Status" />
+          <Column body={statusTemplate} header="Status" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />
