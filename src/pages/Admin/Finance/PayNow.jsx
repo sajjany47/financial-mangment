@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
-import { financepayNow, financeReedempayNow } from "./FinanceService";
+import { financepayNow } from "./FinanceService";
 import Swal from "sweetalert2";
 import Loader from "../../../component/Loader";
 import * as Yup from "yup";
@@ -43,24 +43,6 @@ const PayNow = (props) => {
       .catch(() => {
         setLoading(false);
       });
-    // } else {
-    // financeReedempayNow({
-    //   ...values,
-    //   reedemId: data.payoutReedem._id,
-    //   _id: data._id,
-    // })
-    //   .then((res) => {
-    //     setLoading(false);
-    //     Swal.fire({
-    //       title: res.message,
-    //       icon: "success",
-    //     });
-    //     props.handelDialog(false);
-    //   })
-    //   .catch(() => {
-    //     setLoading(false);
-    //   });
-    // }
   };
   return (
     <>
