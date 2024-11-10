@@ -15,9 +15,14 @@ import {
 } from "./FinanceService";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
-import { InvestmentTypes, PayoutFrequencies } from "../../../shared/Config";
+import {
+  InvestmentTypes,
+  PayoutFrequencies,
+  PayoutKey,
+} from "../../../shared/Config";
 import { findIFSC } from "../Employee/AddUserService";
 import { Button } from "primereact/button";
+import { PayoutFrequencyConditional } from "../../../shared/constant";
 
 const financeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -168,7 +173,7 @@ const AddInvestor = () => {
         validationSchema={financeSchema}
         enableReinitialize
       >
-        {({ handleSubmit, setFieldValue, resetForm }) => (
+        {({ handleSubmit, setFieldValue, resetForm, values }) => (
           <Form onSubmit={handleSubmit}>
             <div className="flex flex-column ">
               <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
@@ -243,7 +248,10 @@ const AddInvestor = () => {
                     <Field
                       label="Payout Frequency"
                       component={DropdownField}
-                      options={PayoutFrequencies}
+                      options={PayoutFrequencyConditional(
+                        PayoutFrequencies,
+                        values.duration
+                      )}
                       name="payoutFrequency"
                     />
                   </div>

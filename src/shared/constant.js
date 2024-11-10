@@ -1,5 +1,9 @@
 import axios from "axios";
-import { ACCESS_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from "./Config";
+import {
+  ACCESS_TOKEN_STORAGE_KEY,
+  PayoutKey,
+  REFRESH_TOKEN_STORAGE_KEY,
+} from "./Config";
 
 export const apiPath = import.meta.env.VITE_API_BASE_URL;
 export const env_path = import.meta.env.VITE_MODE;
@@ -76,4 +80,36 @@ export const cleanObject = (obj) => {
     }
   });
   return obj;
+};
+
+export const PayoutFrequencyConditional = (data, duration) => {
+  const a = data.filter((item) => {
+    if (Number(duration) % 12 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY ||
+        item.value === PayoutKey.AT_MATURITY ||
+        item.value === PayoutKey.QUARTERLY ||
+        item.value === PayoutKey.SEMI_ANNUALLY ||
+        item.value === PayoutKey.ANNUALLY
+      );
+    } else if (Number(duration) % 6 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY ||
+        item.value === PayoutKey.AT_MATURITY ||
+        item.value === PayoutKey.QUARTERLY ||
+        item.value === PayoutKey.SEMI_ANNUALLY
+      );
+    } else if (Number(duration) % 3 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY ||
+        item.value === PayoutKey.AT_MATURITY ||
+        item.value === PayoutKey.QUARTERLY
+      );
+    } else if (Number(duration) % 1 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY || item.value === PayoutKey.AT_MATURITY
+      );
+    }
+  });
+  return a;
 };

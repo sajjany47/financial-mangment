@@ -278,3 +278,11 @@ export const PayoutFrequencies = [
   { label: "Annually", value: "annually" },
   { label: "At Maturity", value: "at_maturity" },
 ];
+
+export const PayoutKey = {
+  MONTHLY: "monthly",
+  QUARTERLY: "quarterly",
+  SEMI_ANNUALLY: "semi_annually",
+  ANNUALLY: "annually",
+  AT_MATURITY: "at_maturity",
+};
