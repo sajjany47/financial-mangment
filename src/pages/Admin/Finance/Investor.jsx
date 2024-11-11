@@ -192,7 +192,7 @@ const Investor = () => {
         {
           label: "View Details",
           command: () => {
-            confirm();
+            navigation(`/finance/investor-details/${selectedItem._id}`);
           },
         },
       ],

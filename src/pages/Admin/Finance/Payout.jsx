@@ -154,7 +154,7 @@ const Payout = () => {
         {
           label: "View Details",
           command: () => {
-            navigation("");
+            navigation(`/finance/investor-details/${selectedItem._id}`);
           },
         },
       ],

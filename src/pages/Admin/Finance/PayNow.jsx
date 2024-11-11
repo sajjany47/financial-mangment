@@ -57,7 +57,11 @@ const PayNow = (props) => {
           amount:
             props.type === "payout"
               ? data.payoutSchedule.payoutAmount
-              : data.payoutReedem.reedemAmount,
+              : props.type === "reedem"
+              ? data.payoutReedem.reedemAmount
+              : props.type === "matured"
+              ? data.investmentAmount
+              : "",
           transactionNumber: "",
         }}
         onSubmit={handelSubmit}

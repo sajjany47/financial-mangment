@@ -15,11 +15,7 @@ import {
 } from "./FinanceService";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  InvestmentTypes,
-  PayoutFrequencies,
-  PayoutKey,
-} from "../../../shared/Config";
+import { InvestmentTypes, PayoutFrequencies } from "../../../shared/Config";
 import { findIFSC } from "../Employee/AddUserService";
 import { Button } from "primereact/button";
 import { PayoutFrequencyConditional } from "../../../shared/constant";
