@@ -36,7 +36,9 @@ const financeSchema = Yup.object().shape({
   accountName: Yup.string().required("Account name is required"),
   investmentType: Yup.string().required("Investment type is required"),
   investmentAmount: Yup.string().required("Investment amount is required"),
-  duration: Yup.string().required("Duration is required"),
+  duration: Yup.number()
+    .required("Duration is required")
+    .min(1, "Value should be greater than 0"),
   interestRate: Yup.string().required("Interest Rate is required"),
   payoutFrequency: Yup.string().required("Payout frequency is required"),
   payoutDate: Yup.string().required("Payout date is required"),
