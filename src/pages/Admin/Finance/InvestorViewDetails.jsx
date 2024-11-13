@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
 import { Divider } from "primereact/divider";
 import moment from "moment";
+import { Currency } from "../../../component/FieldType";
 
 const InvestorViewDetails = () => {
   const contentRef = useRef();
@@ -80,6 +81,32 @@ const InvestorViewDetails = () => {
               }`}
             >
               {data?.isMaturityCompleted ? "Completed" : "Not Completed"}
+            </div>
+          </div>
+
+          <div className="col-12 md:col-3">
+            <div className="font-semibold mb-1 text-500">Status</div>
+            <div
+              className={`font-light mb-1 text-600 text-white-700 ${
+                data?.isInvestorActive ? "text-green-700" : "text-red-700"
+              }`}
+            >
+              {data?.isInvestorActive ? "Active" : "Inactive"}
+            </div>
+          </div>
+        </div>
+        <Divider
+          // layout="horizontal"
+
+          align="center"
+        >
+          <b>Investment Details</b>
+        </Divider>
+        <div className="grid">
+          <div className="col-12 md:col-3">
+            <div className="font-semibold mb-1 text-500">Investment Amount</div>
+            <div className="font-light mb-1 text-600">
+              {Currency(data?.investmentAmount)}
             </div>
           </div>
         </div>
