@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { getInvestorDetails } from "./FinanceService";
 import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
-import { Divider } from "primereact/divider";
 import moment from "moment";
 import { Currency } from "../../../component/FieldType";
 import { capitalizeFirstLetter } from "../../../shared/constant";
@@ -99,360 +98,402 @@ const InvestorViewDetails = () => {
         <div className="font-medium text-3xl text-900 mb-3 pdf-content">
           Investor Information
         </div>
-        <Divider align="center">
-          <b>Personal Details</b>
-        </Divider>
-        <div className="grid">
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Name</div>
-            <div className="font-light mb-1 text-600">{data?.name}</div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Mobile Number</div>
-            <div className="font-light mb-1 text-600">{data?.mobile}</div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Email</div>
-            <div className="font-light mb-1 text-600">{data?.email}</div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">DOB</div>
-            <div className="font-light mb-1 text-600">
-              {moment(data?.dob).format("Do MMM,YYYY")}
+        <ul className="list-none p-0 m-0">
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Personal Details
             </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Created By</div>
-            <div className="font-light mb-1 text-600">
-              {data?.createdBy?.name}
-            </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Created At</div>
-            <div className="font-light mb-1 text-600">
-              {moment(data?.createdAt).format("Do MMM,YYYY HH:mm:ss")}
-            </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Maturity Status</div>
-            <div
-              className={`font-light mb-1 text-600 text-white-700 ${
-                data?.isMaturityCompleted ? "text-green-700" : "text-red-700"
-              }`}
-            >
-              {data?.isMaturityCompleted ? "Completed" : "Not Completed"}
-            </div>
-          </div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Name</div>
+                  {data?.name}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app"> Mobile Number</div>
+                  {data?.mobile}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app"> Email</div>
+                  {data?.email}
+                </div>
 
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Status</div>
-            <div
-              className={`font-light mb-1 text-600 text-white-700 ${
-                data?.isInvestorActive ? "text-green-700" : "text-red-700"
-              }`}
-            >
-              {data?.isInvestorActive ? "Active" : "Inactive"}
-            </div>
-          </div>
-        </div>
-        <Divider align="center">
-          <b>Investment Details</b>
-        </Divider>
-        <div className="grid">
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Investment Amount</div>
-            <div className="font-light mb-1 text-600">
-              {Currency(data?.investmentAmount)}
-            </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Investment Type</div>
-            <div className="font-light mb-1 text-600">
-              {capitalizeFirstLetter(data?.investmentType)}
-            </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Duration(Monthly)</div>
-            <div className="font-light mb-1 text-600">{data?.duration}</div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">
-              Interest Rate(Monthly)
-            </div>
-            <div className="font-light mb-1 text-600">
-              {data?.interestRate}%
-            </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Payout Frequency</div>
-            <div className="font-light mb-1 text-600">
-              {capitalizeFirstLetter(data?.payoutFrequency)}
-            </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Payout Date</div>
-            <div className="font-light mb-1 text-600">
-              {moment(data?.payoutDate).format("Do")} of every month
-            </div>
-          </div>
-        </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">DOB</div>
 
-        <Divider align="center">
-          <b>Document Details</b>
-        </Divider>
-        <div className="grid">
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Aadhar Number</div>
-            <div className="font-light mb-1 text-600">{data?.aadharNumber}</div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Pan Number</div>
-            <div className="font-light mb-1 text-600">{data?.panNumber}</div>
-          </div>
-        </div>
-        <Divider align="center">
-          <b>Account Details</b>
-        </Divider>
-        <div className="grid">
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Account Number</div>
-            <div className="font-light mb-1 text-600">
-              {data?.accountNumber}
+                  {moment(data?.dob).format("Do MMM,YYYY")}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Created By</div>
+
+                  {data?.createdBy?.name}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Created At</div>
+
+                  {moment(data?.createdAt).format("Do MMM,YYYY HH:mm:ss")}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Maturity Status</div>
+                  <span
+                    style={{
+                      color: "white",
+                      backgroundColor: data?.isMaturityCompleted
+                        ? "green"
+                        : "red",
+                      padding: "5px",
+                      borderRadius: "20px",
+                      display: "inline-block",
+                    }}
+                  >
+                    {data?.isMaturityCompleted ? "Completed" : "Not Completed"}
+                  </span>
+                </div>
+
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Status</div>
+                  <span
+                    style={{
+                      color: "white",
+                      backgroundColor: data?.isInvestorActive ? "green" : "red",
+                      padding: "5px",
+                      borderRadius: "20px",
+                      display: "inline-block",
+                    }}
+                  >
+                    {data?.isInvestorActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Account Name</div>
-            <div className="font-light mb-1 text-600">{data?.accountName}</div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Bank Name</div>
-            <div className="font-light mb-1 text-600">{data?.bankName}</div>
-          </div>
-
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">IFSC</div>
-            <div className="font-light mb-1 text-600"> {data?.ifsc}</div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Bank Branch Name</div>
-            <div className="font-light mb-1 text-600">
-              {data?.bankBranchName}
+          </li>
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Investment Details
             </div>
-          </div>
-        </div>
-        <Divider align="center">
-          <b>Transaction Details</b>
-        </Divider>
-        <div className="grid">
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Fully Paid</div>
-            <div
-              className={`font-light mb-1 text-600 text-white-700 ${
-                data?.isFullyPaid ? "text-green-700" : "text-red-700"
-              }`}
-            >
-              {data?.isFullyPaid ? "Yes" : "No"}
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Investment Amount</div>
+
+                  {Currency(data?.investmentAmount)}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Investment Type</div>
+
+                  {capitalizeFirstLetter(data?.investmentType)}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Duration(Monthly)</div>
+
+                  {data?.duration}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Interest Rate(Monthly)</div>
+                  {data?.interestRate}%
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Payout Frequency</div>
+
+                  {capitalizeFirstLetter(data?.payoutFrequency)}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Payout Date</div>
+                  {moment(data?.payoutDate).format("Do")} of every month
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">
-              Transaction Number
+          </li>
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Document Details
             </div>
-            <div className="font-light mb-1 text-600">
-              {data?.transactionNumber}
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Aadhar Number</div>
+
+                  {data?.aadharNumber}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Pan Number</div>
+
+                  {data?.panNumber}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col-12 md:col-3">
-            <div className="font-semibold mb-1 text-500">Paid On</div>
-            <div className="font-light mb-1 text-600">
-              {data?.paidOn
-                ? moment(data?.paidOn).format("Do MMM,YYYY HH:mm")
-                : ""}
+          </li>
+
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Account Details
             </div>
-          </div>
-        </div>
-        <Divider align="center">
-          <b>Plan Details</b>
-        </Divider>
-        <div className="grid">
-          <div className="col-12">
-            <DataTable value={data?.planDetails}>
-              <Column
-                field="investmentAmount"
-                header="Investment Amount"
-                body={(item) => <> {Currency(item?.investmentAmount)}</>}
-              />
-              <Column
-                field="investmentType"
-                header="Type"
-                body={(item) => (
-                  <>{capitalizeFirstLetter(item?.investmentType)}</>
-                )}
-              />
-              <Column field="duration" header="Duration" />
-              <Column field="interestRate" header="Interest(pm %)" />
-              <Column
-                field="payoutFrequency"
-                header="Frequency"
-                body={(item) => (
-                  <>{capitalizeFirstLetter(item?.payoutFrequency)}</>
-                )}
-              />
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Account Number</div>
 
-              <Column
-                field="payoutDate"
-                header="Payout Date"
-                body={(item) => (
-                  <>{moment(item?.payoutDate).format("Do")} of every Month</>
-                )}
-              />
-              <Column
-                field="updatedAt"
-                header="Updated At"
-                body={(item) => (
-                  <>{moment(item?.updatedAt).format("Do MMM,YYYY HH:mm")}</>
-                )}
-              />
-              <Column
-                field="updatedBy"
-                header=" Updated By"
-                body={(item) => (
-                  <> {`${item.updatedBy.name}(${item.updatedBy.username})`}</>
-                )}
-              />
-            </DataTable>
-          </div>
-        </div>
+                  {data?.accountNumber}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Account Name</div>
 
-        <Divider align="center">
-          <b>Payout Schedule</b>
-        </Divider>
-        <div className="grid">
-          <div className="col-12">
-            <DataTable value={data?.payoutSchedule}>
-              <Column
-                field="payoutDate"
-                header="Payout Date"
-                body={(item) => (
-                  <>{moment(item?.payoutDate).format("Do")} of every Month</>
-                )}
-              />
-              <Column
-                field="payoutAmount"
-                header="Payout Amount"
-                body={(item) => <> {Currency(item?.payoutAmount)}</>}
-              />
-              <Column
-                field="isPaid"
-                header="Paid Status"
-                body={statusTemplate}
-              />
-              <Column field="transactionNumber" header="Transaction Number" />
+                  {data?.accountName}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Bank Name</div>
 
-              <Column
-                field="paidOn"
-                header="Paid On"
-                body={(item) => (
-                  <>
-                    {item?.paidOn
-                      ? moment(item?.paidOn).format("Do MMM,YYYY HH:mm")
-                      : ""}
-                  </>
-                )}
-              />
-              <Column
-                field="paidBy"
-                header=" Paid By"
-                body={(item) => (
-                  <>
-                    {item?.paidBy
-                      ? `${item?.paidBy?.name}(${item?.paidBy?.username})`
-                      : ""}
-                  </>
-                )}
-              />
-            </DataTable>
-          </div>
-        </div>
+                  {data?.bankName}
+                </div>
 
-        <Divider align="center">
-          <b>Payout Reedem</b>
-        </Divider>
-        <div className="grid mb-5">
-          <div className="col-12">
-            <DataTable value={data?.payoutReedem}>
-              <Column
-                field="reedemDate"
-                header="Reedem Date"
-                body={(item) => (
-                  <>{moment(item?.reedemDate).format("Do MMM,YYYY")} </>
-                )}
-              />
-              <Column
-                field="reedemAmount"
-                header="Reedem Amount"
-                body={(item) => <> {Currency(item?.reedemAmount)}</>}
-              />
-              <Column
-                field="createdOn"
-                header="Created On"
-                body={(item) => (
-                  <>
-                    {item?.createdOn
-                      ? moment(item?.createdOn).format("Do MMM,YYYY HH:mm")
-                      : ""}
-                  </>
-                )}
-              />
-              <Column
-                field="isPaid"
-                header="Paid Status"
-                body={statusTemplate}
-              />
+                <div className="col-12 md:col-3">
+                  <div className="view-app">IFSC</div>
+                  {data?.ifsc}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Bank Branch Name</div>
 
-              <Column field="transactionNumber" header="Transaction Number" />
+                  {data?.bankBranchName}
+                </div>
+              </div>
+            </div>
+          </li>
 
-              <Column
-                field="paidOn"
-                header="Paid On"
-                body={(item) => (
-                  <>
-                    {item?.paidOn
-                      ? moment(item?.paidOn).format("Do MMM,YYYY HH:mm")
-                      : ""}
-                  </>
-                )}
-              />
-              <Column
-                field="paidBy"
-                header=" Paid By"
-                body={(item) => (
-                  <>
-                    {item?.paidBy
-                      ? `${item?.paidBy?.name}(${item?.paidBy?.username})`
-                      : ""}
-                  </>
-                )}
-              />
-              <Column
-                field="remainingInvestAmount"
-                header="Remaining Invest Amount"
-                body={(item) => <> {Currency(item?.remainingInvestAmount)}</>}
-              />
-              <Column
-                field="createdBy"
-                header=" Created By"
-                body={(item) => (
-                  <>
-                    {item?.createdBy
-                      ? `${item?.createdBy?.name}(${item?.createdBy?.username})`
-                      : ""}
-                  </>
-                )}
-              />
-            </DataTable>
-          </div>
-        </div>
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Transaction Details
+            </div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Fully Paid</div>
+                  <span
+                    style={{
+                      color: "white",
+                      backgroundColor: data?.isFullyPaid ? "green" : "red",
+                      padding: "5px",
+                      borderRadius: "20px",
+                      display: "inline-block",
+                    }}
+                  >
+                    {data?.isFullyPaid ? "Yes" : "No"}
+                  </span>
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Transaction Number</div>
+
+                  {data?.transactionNumber}
+                </div>
+                <div className="col-12 md:col-3">
+                  <div className="view-app">Paid On</div>
+
+                  {data?.paidOn
+                    ? moment(data?.paidOn).format("Do MMM,YYYY HH:mm")
+                    : ""}
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">Plan Details</div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12">
+                  <DataTable value={data?.planDetails}>
+                    <Column
+                      field="investmentAmount"
+                      header="Investment Amount"
+                      body={(item) => <> {Currency(item?.investmentAmount)}</>}
+                    />
+                    <Column
+                      field="investmentType"
+                      header="Type"
+                      body={(item) => (
+                        <>{capitalizeFirstLetter(item?.investmentType)}</>
+                      )}
+                    />
+                    <Column field="duration" header="Duration" />
+                    <Column field="interestRate" header="Interest(pm %)" />
+                    <Column
+                      field="payoutFrequency"
+                      header="Frequency"
+                      body={(item) => (
+                        <>{capitalizeFirstLetter(item?.payoutFrequency)}</>
+                      )}
+                    />
+
+                    <Column
+                      field="payoutDate"
+                      header="Payout Date"
+                      body={(item) => (
+                        <>
+                          {moment(item?.payoutDate).format("Do")} of every Month
+                        </>
+                      )}
+                    />
+                    <Column
+                      field="updatedAt"
+                      header="Updated At"
+                      body={(item) => (
+                        <>
+                          {moment(item?.updatedAt).format("Do MMM,YYYY HH:mm")}
+                        </>
+                      )}
+                    />
+                    <Column
+                      field="updatedBy"
+                      header=" Updated By"
+                      body={(item) => (
+                        <>
+                          {" "}
+                          {`${item.updatedBy.name}(${item.updatedBy.username})`}
+                        </>
+                      )}
+                    />
+                  </DataTable>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">
+              Payout Schedule
+            </div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12">
+                  <DataTable value={data?.payoutSchedule}>
+                    <Column
+                      field="payoutDate"
+                      header="Payout Date"
+                      body={(item) => (
+                        <>
+                          {moment(item?.payoutDate).format("Do")} of every Month
+                        </>
+                      )}
+                    />
+                    <Column
+                      field="payoutAmount"
+                      header="Payout Amount"
+                      body={(item) => <> {Currency(item?.payoutAmount)}</>}
+                    />
+                    <Column
+                      field="isPaid"
+                      header="Paid Status"
+                      body={statusTemplate}
+                    />
+                    <Column
+                      field="transactionNumber"
+                      header="Transaction Number"
+                    />
+
+                    <Column
+                      field="paidOn"
+                      header="Paid On"
+                      body={(item) => (
+                        <>
+                          {item?.paidOn
+                            ? moment(item?.paidOn).format("Do MMM,YYYY HH:mm")
+                            : ""}
+                        </>
+                      )}
+                    />
+                    <Column
+                      field="paidBy"
+                      header=" Paid By"
+                      body={(item) => (
+                        <>
+                          {item?.paidBy
+                            ? `${item?.paidBy?.name}(${item?.paidBy?.username})`
+                            : ""}
+                        </>
+                      )}
+                    />
+                  </DataTable>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap pdf-content">
+            <div className="text-500 w-6 md:w-2 font-medium">Payout Reedem</div>
+            <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
+              <div className="grid">
+                <div className="col-12">
+                  <DataTable value={data?.payoutReedem}>
+                    <Column
+                      field="reedemDate"
+                      header="Reedem Date"
+                      body={(item) => (
+                        <>{moment(item?.reedemDate).format("Do MMM,YYYY")} </>
+                      )}
+                    />
+                    <Column
+                      field="reedemAmount"
+                      header="Reedem Amount"
+                      body={(item) => <> {Currency(item?.reedemAmount)}</>}
+                    />
+                    <Column
+                      field="createdOn"
+                      header="Created On"
+                      body={(item) => (
+                        <>
+                          {item?.createdOn
+                            ? moment(item?.createdOn).format(
+                                "Do MMM,YYYY HH:mm"
+                              )
+                            : ""}
+                        </>
+                      )}
+                    />
+                    <Column
+                      field="isPaid"
+                      header="Paid Status"
+                      body={statusTemplate}
+                    />
+
+                    <Column
+                      field="transactionNumber"
+                      header="Transaction Number"
+                    />
+
+                    <Column
+                      field="paidOn"
+                      header="Paid On"
+                      body={(item) => (
+                        <>
+                          {item?.paidOn
+                            ? moment(item?.paidOn).format("Do MMM,YYYY HH:mm")
+                            : ""}
+                        </>
+                      )}
+                    />
+                    <Column
+                      field="paidBy"
+                      header=" Paid By"
+                      body={(item) => (
+                        <>
+                          {item?.paidBy
+                            ? `${item?.paidBy?.name}(${item?.paidBy?.username})`
+                            : ""}
+                        </>
+                      )}
+                    />
+                    <Column
+                      field="remainingInvestAmount"
+                      header="Remaining Invest Amount"
+                      body={(item) => (
+                        <> {Currency(item?.remainingInvestAmount)}</>
+                      )}
+                    />
+                  </DataTable>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </>
   );
