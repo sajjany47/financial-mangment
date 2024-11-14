@@ -67,7 +67,7 @@ const PLoanAccount = (props) => {
     applicationUpdate({
       ...values,
       applicationType: "account",
-      _id: getLoanData._id,
+      _id: loanDetails.loanId,
     })
       .then((res) => {
         setLoading(false);

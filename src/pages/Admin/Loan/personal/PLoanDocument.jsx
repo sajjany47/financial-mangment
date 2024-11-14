@@ -201,7 +201,6 @@ const PLoanDocument = (props) => {
       if (uploadedDocs.length === 0) {
         // If no document is uploaded for this document type
         isValid = false;
-        console.log(`${item.documentType} is missing.`);
       } else {
         uploadedDocs.forEach((doc) => {
           if (
