@@ -14,6 +14,7 @@ import CPaginator from "../../../component/CPaginator";
 import { Dialog } from "primereact/dialog";
 import PayNow from "./PayNow";
 import { useNavigate } from "react-router-dom";
+import FinanceSearch from "./FinanceSearch";
 
 const FullyMatured = () => {
   const navigation = useNavigate();
@@ -180,6 +181,7 @@ const FullyMatured = () => {
         id="popup_menu_right"
         popupAlignment="right"
       />
+      {searchShow && <FinanceSearch />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}

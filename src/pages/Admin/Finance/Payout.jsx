@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
 import { Dialog } from "primereact/dialog";
 import PayNow from "./PayNow";
+import FinanceSearch from "./FinanceSearch";
 
 const Payout = () => {
   const navigation = useNavigate();
@@ -191,6 +192,7 @@ const Payout = () => {
         id="popup_menu_right"
         popupAlignment="right"
       />
+      {searchShow && <FinanceSearch />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}

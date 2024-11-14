@@ -24,6 +24,7 @@ import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { PayoutFrequencies } from "../../../shared/Config";
 import { Tag } from "primereact/tag";
+import FinanceSearch from "./FinanceSearch";
 
 const validationSchema = Yup.object({
   investmentAmount: Yup.string().required("Investment Amount is required"),
@@ -273,6 +274,7 @@ const Investor = () => {
         id="popup_menu_right"
         popupAlignment="right"
       />
+      {searchShow && <FinanceSearch isActive={true} />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}
