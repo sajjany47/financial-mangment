@@ -10,6 +10,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const InvestorViewDetails = () => {
   const contentRef = useRef();
@@ -28,39 +29,341 @@ const InvestorViewDetails = () => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const logoImage =
+    "https://www.shutterstock.com/shutterstock/photos/1539151892/display_1500/stock-vector-software-testing-and-automation-logo-1539151892.jpg"; // Replace with Grow2Tech logo in base64 or URL
+  const approvedSeal =
+    "https://thumbs.dreamstime.com/b/vector-approved-stamp-isolated-white-29840749.jpg";
   const handleDownloadPdf = async () => {
-    const content = contentRef.current;
-    const pdf = new jsPDF("p", "mm", "a4"); // A4 size in portrait mode
-    const imgWidth = 210; // Width for A4 (in mm)
-    const pageHeight = 295; // Height for A4 (in mm)
-    const margin = 10; // Margin for the content
+    // const content = contentRef.current;
+    // const pdf = new jsPDF("p", "mm", "a4"); // A4 size in portrait mode
+    // const imgWidth = 210; // Width for A4 (in mm)
+    // const pageHeight = 295; // Height for A4 (in mm)
+    // const margin = 10; // Margin for the content
 
-    let position = margin;
-    const elements = Array.from(content.querySelectorAll(".pdf-content"));
-    for (const element of elements) {
-      const canvas = await html2canvas(element); // Capture content as canvas
-      const imgData = canvas.toDataURL("image/png"); // Convert canvas to an image
-      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+    // let position = margin;
+    // const elements = Array.from(content.querySelectorAll(".pdf-content"));
+    // for (const element of elements) {
+    //   const canvas = await html2canvas(element); // Capture content as canvas
+    //   const imgData = canvas.toDataURL("image/png"); // Convert canvas to an image
+    //   const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
 
-      if (position + imgHeight > pageHeight - margin) {
-        pdf.addPage(); // Add a new page if content doesn't fit
-        position = margin; // Reset position for the new page
+    //   if (position + imgHeight > pageHeight - margin) {
+    //     pdf.addPage(); // Add a new page if content doesn't fit
+    //     position = margin; // Reset position for the new page
+    //   }
+
+    //   // Add image to PDF with margins
+    //   pdf.addImage(
+    //     imgData,
+    //     "PNG",
+    //     margin,
+    //     position,
+    //     imgWidth - margin * 2,
+    //     imgHeight
+    //   );
+
+    //   position += imgHeight + margin; // Update position for the next element
+    // }
+
+    // pdf.save(`${data?.name} Investor.pdf`);
+
+    const doc = new jsPDF();
+    let y = 10;
+
+    // Add company logo at the top center
+    doc.addImage(logoImage, "PNG", 80, y, 50, 20); // Position and size as needed
+    y += 30;
+    // PDF Title
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Investor Details Report", 105, y, { align: "center" });
+    y += 10;
+
+    // Section: Personal Details
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Personal Details", 10, y);
+    y += 8;
+
+    const personalDetails = [
+      ["Name", data.name, "DOB", moment(data?.dob).format("Do MMM,YYYY")],
+      ["Mobile Number", data.mobile, "Created By", data?.createdBy?.name],
+      [
+        "Email",
+        data.email,
+        "Created At",
+        moment(data?.createdAt).format("Do MMM,YYYY HH:mm:ss"),
+      ],
+      [
+        "Maturity Status",
+        data?.isMaturityCompleted ? "Yes" : "No",
+        "Status",
+        data?.isInvestorActive ? "Active" : "Inactive",
+      ],
+    ];
+
+    personalDetails.forEach(([label1, value1, label2, value2]) => {
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`${label1}:`, 10, y);
+      doc.text(`${value1}`, 50, y);
+      if (label2) {
+        doc.text(`${label2}:`, 105, y);
+        doc.text(`${value2}`, 145, y);
       }
+      y += 8;
+    });
 
-      // Add image to PDF with margins
-      pdf.addImage(
-        imgData,
-        "PNG",
-        margin,
-        position,
-        imgWidth - margin * 2,
-        imgHeight
-      );
+    //Section Investment Details
+    y += 5;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Investment Details", 10, y);
+    y += 8;
+    const investmentDetails = [
+      [
+        "Investment Amount",
+        `${data?.investmentAmount}`,
+        "Investment Type",
+        capitalizeFirstLetter(data?.investmentType),
+      ],
+      [
+        "Duration(Monthly)",
+        data?.duration,
+        "Interest Rate(pm)",
+        `${data?.interestRate}%`,
+      ],
+      [
+        "Payout Frequency",
+        capitalizeFirstLetter(data?.payoutFrequency),
+        "Payout Date",
+        `${moment(data?.payoutDate).format("Do")} of every month`,
+      ],
+    ];
 
-      position += imgHeight + margin; // Update position for the next element
-    }
+    investmentDetails.forEach(([label1, value1, label2, value2]) => {
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`${label1}:`, 10, y);
+      doc.text(`${value1}`, 50, y);
+      if (label2) {
+        doc.text(`${label2}:`, 105, y);
+        doc.text(`${value2}`, 145, y);
+      }
+      y += 8;
+    });
 
-    pdf.save(`${data?.name} Investor.pdf`);
+    //Section Document Details
+    y += 5;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Document Details", 10, y);
+    y += 8;
+    const documentDetails = [
+      ["Aadhar Number", `${data?.aadharNumber}`, "Pan Number", data?.panNumber],
+    ];
+
+    documentDetails.forEach(([label1, value1, label2, value2]) => {
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`${label1}:`, 10, y);
+      doc.text(`${value1}`, 50, y);
+      if (label2) {
+        doc.text(`${label2}:`, 105, y);
+        doc.text(`${value2}`, 145, y);
+      }
+      y += 8;
+    });
+
+    //Section Account Details
+    y += 5;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Account Details", 10, y);
+    y += 8;
+    const accountDetails = [
+      [
+        "Account Number",
+        `${data?.accountNumber}`,
+        "Account Name",
+        data?.accountName,
+      ],
+      ["Bank Name", `${data?.bankName}`, "IFSC", data?.ifsc],
+      ["Bank Branch Name", `${data?.bankBranchName}`],
+    ];
+
+    accountDetails.forEach(([label1, value1, label2, value2]) => {
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`${label1}:`, 10, y);
+      doc.text(`${value1}`, 50, y);
+      if (label2) {
+        doc.text(`${label2}:`, 105, y);
+        doc.text(`${value2}`, 145, y);
+      }
+      y += 8;
+    });
+
+    //Section Transaction Details
+    y += 5;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Transaction Details", 10, y);
+    y += 8;
+    const transactionDetails = [
+      [
+        "Fully Paid",
+        data?.isFullyPaid ? "Yes" : "No",
+        "Transaction Number",
+        data?.transactionNumber ? data?.transactionNumber : "         -",
+      ],
+      [
+        "Paid On",
+        data?.paidOn ? moment(data?.paidOn).format("Do MMM,YYYY HH:mm") : "-",
+      ],
+    ];
+
+    transactionDetails.forEach(([label1, value1, label2, value2]) => {
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`${label1}:`, 10, y);
+      doc.text(`${value1}`, 50, y);
+      if (label2) {
+        doc.text(`${label2}:`, 105, y);
+        doc.text(`${value2}`, 145, y);
+      }
+      y += 8;
+    });
+
+    // Section: Plan Details Table
+    y += 10;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Plan Details", 10, y);
+    y += 8;
+    doc.autoTable({
+      startY: y,
+      head: [
+        [
+          "Investment Amount",
+          "Type",
+          "Duration",
+          "Interest Rate",
+          "Frequency",
+          "Payout Date",
+        ],
+      ],
+      body: data.planDetails.map((plan) => [
+        plan.investmentAmount,
+        `${plan.investmentType}`,
+        `${plan.duration} months`,
+        `${plan.interestRate}%`,
+        `${capitalizeFirstLetter(plan?.payoutFrequency)}`,
+        `${moment(plan?.payoutDate).format("Do")} of every Month`,
+      ]),
+      theme: "grid",
+    });
+
+    // Section: Payout Schedule Table
+    y = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Payout Schedule", 10, y);
+    y += 8;
+    doc.autoTable({
+      startY: y,
+      head: [
+        [
+          "Payout Date",
+          "Amount",
+          "Is Paid",
+          "Transaction Number",
+          "Paid On",
+          "Paid By",
+        ],
+      ],
+      body: data.payoutSchedule.map((schedule) => [
+        `${moment(schedule?.payoutDate).format("Do")} of every Month`,
+        `${schedule.payoutAmount}`,
+        schedule.isPaid ? "Yes" : "No",
+        schedule.transactionNumber || "-",
+        `${
+          schedule?.paidOn
+            ? moment(schedule?.paidOn).format("Do MMM,YYYY HH:mm")
+            : "-"
+        }`,
+        `${
+          schedule?.paidBy
+            ? `${schedule?.paidBy?.name}(${schedule?.paidBy?.username})`
+            : ""
+        }`,
+      ]),
+      theme: "grid",
+    });
+
+    // Section: Payout Redeem Table
+    y = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Payout Redeem", 10, y);
+    y += 8;
+    doc.autoTable({
+      startY: y,
+      head: [
+        [
+          "Redeem Date",
+          "Redeem Amount",
+          "Remaining Amount",
+          "Is Paid",
+          "Transaction Number",
+          "Paid On",
+          "Paid By",
+        ],
+      ],
+      body: data.payoutReedem.map((redeem) => [
+        `${moment(redeem?.reedemDate).format("Do MMM,YYYY")}`,
+        `${redeem.reedemAmount}`,
+        `${redeem.remainingInvestAmount}`,
+        redeem.isPaid ? "Yes" : "No",
+        redeem.transactionNumber || "-",
+        `${
+          redeem?.paidOn
+            ? moment(redeem?.paidOn).format("Do MMM,YYYY HH:mm")
+            : "-"
+        }`,
+        `${
+          redeem?.paidBy
+            ? `${redeem?.paidBy?.name}(${redeem?.paidBy?.username})`
+            : "-"
+        }`,
+      ]),
+      theme: "grid",
+    });
+
+    // Add approved seal with company name at the bottom
+    y = doc.lastAutoTable.finalY + 20; // Position after the last table
+    const sealWidth = 40; // Width of the seal
+    const sealHeight = 40; // Height of the seal
+    const sealX = 150; // X position for the seal
+    const sealY = y; // Y position for the seal
+
+    // Add the approved seal image
+    doc.addImage(approvedSeal, "PNG", sealX, sealY, sealWidth, sealHeight);
+
+    // Add the company name below the seal
+    doc.setFontSize(12);
+    doc.setTextColor(0, 128, 0);
+    doc.text(
+      "Testing Software Pvt Ltd",
+      sealX + sealWidth / 2,
+      sealY + sealHeight + 8,
+      {
+        align: "center",
+      }
+    );
+    // Save the PDF
+    doc.save("Investor_Details_Report.pdf");
   };
 
   const statusTemplate = (item) => {
