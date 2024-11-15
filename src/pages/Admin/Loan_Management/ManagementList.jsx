@@ -378,7 +378,7 @@ const ManagementList = (props) => {
           setEmiData([]);
         }}
       >
-        <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
+        <div className="font-medium mt-3 mb-6">
           <DataTable
             value={emiData}
             // tableStyle={{ minWidth: "60rem" }}
