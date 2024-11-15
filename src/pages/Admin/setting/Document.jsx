@@ -242,7 +242,7 @@ const Document = () => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
         >
           <Column field="documentName" header="Name" />
           <Column field="documentType.name" header="Document Type" />

@@ -191,6 +191,7 @@ const Calculator = () => {
                   <DataTable
                     value={data?.emiSchedule}
                     tableStyle={{ minWidth: "50rem" }}
+                    showGridlines
                   >
                     <Column
                       field="emiDate"

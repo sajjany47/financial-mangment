@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getInvestorDetails } from "./FinanceService";
 import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
@@ -8,12 +8,13 @@ import { capitalizeFirstLetter } from "../../../shared/constant";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import html2canvas from "html2canvas";
+// import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { Tag } from "primereact/tag";
 
 const InvestorViewDetails = () => {
-  const contentRef = useRef();
+  // const contentRef = useRef();
   const id = useParams().id;
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -369,17 +370,11 @@ const InvestorViewDetails = () => {
   const statusTemplate = (item) => {
     return (
       <>
-        <span
-          style={{
-            color: "white",
-            backgroundColor: item.isPaid ? "green" : "red",
-            padding: "5px",
-            borderRadius: "17px",
-            display: "inline-block",
-          }}
-        >
-          {item.isPaid ? "Yes" : "No"}
-        </span>
+        {item?.isPaid ? (
+          <Tag severity="success" value="Yes" rounded />
+        ) : (
+          <Tag severity="danger" value="No" rounded />
+        )}
       </>
     );
   };
@@ -393,9 +388,10 @@ const InvestorViewDetails = () => {
           onClick={handleDownloadPdf}
         />
       </div>
+
       <div
         className="surface-0 p-1 mb-5"
-        ref={contentRef}
+        // ref={contentRef}
         style={{ padding: "20px", backgroundColor: "#f5f5f5" }}
       >
         <div className="font-medium text-3xl text-900 mb-3 pdf-content">
@@ -438,34 +434,21 @@ const InvestorViewDetails = () => {
                 </div>
                 <div className="col-12 md:col-3">
                   <div className="view-app">Maturity Status</div>
-                  <span
-                    style={{
-                      color: "white",
-                      backgroundColor: data?.isMaturityCompleted
-                        ? "green"
-                        : "red",
-                      padding: "5px",
-                      borderRadius: "20px",
-                      display: "inline-block",
-                    }}
-                  >
-                    {data?.isMaturityCompleted ? "Completed" : "Not Completed"}
-                  </span>
+
+                  {data?.isMaturityCompleted ? (
+                    <Tag severity="success" value="Completed" rounded />
+                  ) : (
+                    <Tag severity="danger" value="Not Completed" rounded />
+                  )}
                 </div>
 
                 <div className="col-12 md:col-3">
                   <div className="view-app">Status</div>
-                  <span
-                    style={{
-                      color: "white",
-                      backgroundColor: data?.isInvestorActive ? "green" : "red",
-                      padding: "5px",
-                      borderRadius: "20px",
-                      display: "inline-block",
-                    }}
-                  >
-                    {data?.isInvestorActive ? "Active" : "Inactive"}
-                  </span>
+                  {data?.isInvestorActive ? (
+                    <Tag severity="success" value="Active" rounded />
+                  ) : (
+                    <Tag severity="danger" value="Inactive" rounded />
+                  )}
                 </div>
               </div>
             </div>
@@ -570,17 +553,11 @@ const InvestorViewDetails = () => {
               <div className="grid">
                 <div className="col-12 md:col-3">
                   <div className="view-app">Fully Paid</div>
-                  <span
-                    style={{
-                      color: "white",
-                      backgroundColor: data?.isFullyPaid ? "green" : "red",
-                      padding: "5px",
-                      borderRadius: "20px",
-                      display: "inline-block",
-                    }}
-                  >
-                    {data?.isFullyPaid ? "Yes" : "No"}
-                  </span>
+                  {data?.isFullyPaid ? (
+                    <Tag severity="success" value="Yes" rounded />
+                  ) : (
+                    <Tag severity="danger" value="No" rounded />
+                  )}
                 </div>
                 <div className="col-12 md:col-3">
                   <div className="view-app">Transaction Number</div>
@@ -603,7 +580,7 @@ const InvestorViewDetails = () => {
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
                 <div className="col-12">
-                  <DataTable value={data?.planDetails}>
+                  <DataTable value={data?.planDetails} showGridlines>
                     <Column
                       field="investmentAmount"
                       header="Investment Amount"
@@ -667,7 +644,7 @@ const InvestorViewDetails = () => {
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
                 <div className="col-12">
-                  <DataTable value={data?.payoutSchedule}>
+                  <DataTable value={data?.payoutSchedule} showGridlines>
                     <Column
                       field="payoutDate"
                       header="Payout Date"
@@ -725,7 +702,7 @@ const InvestorViewDetails = () => {
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
                 <div className="col-12">
-                  <DataTable value={data?.payoutReedem}>
+                  <DataTable value={data?.payoutReedem} showGridlines>
                     <Column
                       field="reedemDate"
                       header="Reedem Date"

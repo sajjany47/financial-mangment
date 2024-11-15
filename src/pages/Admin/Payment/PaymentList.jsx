@@ -314,7 +314,7 @@ const PaymentList = (props) => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="loanId"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
         >
           {/* <Column field="" header="SLNo." body={rowNumberTemplate} /> */}
           <Column field="applicationNumber" header="Application Number" />

@@ -221,7 +221,7 @@ const EmployeeList = () => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
           onSort={onSort}
           sortOrder={searchKey.sortOrder}
           sortField={searchKey.sortField}
