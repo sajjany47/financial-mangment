@@ -384,7 +384,7 @@ const ManagementList = (props) => {
             // tableStyle={{ minWidth: "60rem" }}
             dataKey="_id"
             emptyMessage="No data found."
-            filterDisplay="row"
+            showGridlines
             scrollable
             scrollHeight="400px"
             style={{ minWidth: "55rem" }}
