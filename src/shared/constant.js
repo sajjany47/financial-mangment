@@ -113,3 +113,24 @@ export const PayoutFrequencyConditional = (data, duration) => {
   });
   return a;
 };
+
+export const TransformData = (data) => {
+  const entries = Object.entries(data).map(([key, value]) => {
+    if (typeof value === "object" && value !== null) {
+      // Handle nested objects
+      return [key, value.name || JSON.stringify(value)];
+    }
+    return [key, value];
+  });
+
+  // Flatten key-value pairs into single array
+  const flattened = entries.flat();
+
+  // Group into sub-arrays of two key-value pairs
+  const chunked = [];
+  for (let i = 0; i < flattened.length; i += 4) {
+    chunked.push(flattened.slice(i, i + 4));
+  }
+
+  return chunked;
+};
