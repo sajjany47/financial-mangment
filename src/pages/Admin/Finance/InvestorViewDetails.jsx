@@ -31,10 +31,8 @@ const InvestorViewDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const logoImage =
-    "https://www.shutterstock.com/shutterstock/photos/1539151892/display_1500/stock-vector-software-testing-and-automation-logo-1539151892.jpg"; // Replace with Grow2Tech logo in base64 or URL
-  const approvedSeal =
-    "https://thumbs.dreamstime.com/b/vector-approved-stamp-isolated-white-29840749.jpg";
+  const logoImage = import.meta.env.VITE_COMPANY_LOGO;
+  const approvedSeal = import.meta.env.VITE_COMPANY_APPROVED_SEAL;
   const handleDownloadPdf = async () => {
     // const content = contentRef.current;
     // const pdf = new jsPDF("p", "mm", "a4"); // A4 size in portrait mode
@@ -356,7 +354,7 @@ const InvestorViewDetails = () => {
     doc.setFontSize(12);
     doc.setTextColor(0, 128, 0);
     doc.text(
-      "Testing Software Pvt Ltd",
+      import.meta.env.VITE_COMPANY_NAME,
       sealX + sealWidth / 2,
       sealY + sealHeight + 8,
       {
