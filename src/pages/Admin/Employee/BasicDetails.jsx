@@ -5,7 +5,6 @@ import {
   DropdownField,
   InputField,
   RadioField,
-  TextAreaInputField,
 } from "../../../component/FieldType";
 import {
   DropdownPosition,
@@ -58,15 +57,31 @@ const adminSignUpSchema30 = Yup.object().shape({
     ])
     .required("Position is required"),
 
-  branch: Yup.string().required("Branch is required"),
+  branch: Yup.string().when("position", {
+    is: (val) =>
+      val !== Position.ADMIN && val !== Position.SM && val !== Position.CM,
+    then: () => Yup.string().required("Branch is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
 
-  address: Yup.string().required("Address is required"),
-  state: Yup.string().required("State is required"),
-  country: Yup.string().required("Country is required"),
-  city: Yup.string().required("City is required"),
-  pincode: Yup.string()
-    .matches(/^\d{6}$/, "Enter valid pincode")
-    .required("Pincode is required"),
+  state: Yup.string().when("position", {
+    is: (val) =>
+      val !== Position.ADMIN && val !== Position.SM && val !== Position.CM,
+    then: () => Yup.string().required("State is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+  country: Yup.string().when("position", {
+    is: (val) =>
+      val !== Position.ADMIN && val !== Position.SM && val !== Position.CM,
+    then: () => Yup.string().required("Country is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+  city: Yup.string().when("position", {
+    is: (val) =>
+      val !== Position.ADMIN && val !== Position.SM && val !== Position.CM,
+    then: () => Yup.string().required("City is required"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
 });
 const BasicDetails = (props) => {
   const dispatch = useDispatch();
@@ -106,15 +121,13 @@ const BasicDetails = (props) => {
           email: getUserData.email,
           dob: new Date(getUserData.dob),
           position: getUserData.position,
-          address: getUserData.address,
-          state: Number(getUserData.state),
-          country: Number(getUserData.country),
-          city: Number(getUserData.city),
-          pincode: getUserData.pincode,
+          state: getUserData?.state ? Number(getUserData.state) : "",
+          country: getUserData?.country ? Number(getUserData.country) : "",
+          city: getUserData?.city ? Number(getUserData.city) : "",
           branch: getUserData.branch,
           fresherOrExperience: getUserData.fresherOrExperience,
           userImage: getUserData.userImage,
-          userImagePre: getUserData.userImage,
+          userImagePre: getUserData.userImageUrl,
         }
       : {
           name: "",
@@ -123,11 +136,9 @@ const BasicDetails = (props) => {
           email: "",
           dob: "",
           position: "",
-          address: "",
           state: "",
           country: "",
           city: "",
-          pincode: "",
           branch: "",
           userImage: "",
           userImagePre: "",
@@ -199,7 +210,7 @@ const BasicDetails = (props) => {
         dataType: "basic",
         id: getUserData._id,
         profileRatio:
-          getUserData.profileRatio <= 30 ? 30 : getUserData.profileRatio,
+          getUserData.profileRatio <= 20 ? 20 : getUserData.profileRatio,
       })
         .then((res) => {
           setLoading(false);
@@ -213,7 +224,7 @@ const BasicDetails = (props) => {
           setLoading(false);
         });
     } else {
-      userCreate({ ...values, userImage: values.userImage.name })
+      userCreate({ ...values })
         .then((res) => {
           dispatch(
             setAddUser({
@@ -287,86 +298,106 @@ const BasicDetails = (props) => {
                     />
                   </div>
 
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Address"
-                      component={TextAreaInputField}
-                      name="address"
-                      rows={2}
-                      cols={10}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Country"
-                      component={DropdownField}
-                      name="country"
-                      options={props.countryData.map((item) => ({
-                        label: item.name,
-                        value: item.id,
-                      }))}
-                      filter
-                      onChange={(e) => {
-                        setFieldValue("branch", "");
-                        handelSate(setFieldValue, e.target.value);
-                        getBranchList({ country: e.target.value });
-                      }}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="State"
-                      filter
-                      component={DropdownField}
-                      name="state"
-                      options={stateData}
-                      onChange={(e) => {
-                        setFieldValue("branch", "");
-                        handelCityList(setFieldValue, e.target.value, values);
-                        getBranchList({
-                          country: Number(values.country),
-                          state: Number(e.target.value),
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="City"
-                      component={DropdownField}
-                      name="city"
-                      filter
-                      options={cityData}
-                      onChange={(e) => {
-                        setFieldValue("branch", "");
-                        setFieldValue("city", e.target.value);
-                        getBranchList({
-                          country: Number(values.country),
-                          state: Number(values.state),
-                          city: Number(e.targte.value),
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Pincode"
-                      component={InputField}
-                      name="pincode"
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Branch Name"
-                      component={DropdownField}
-                      name="branch"
-                      filter
-                      options={branch}
-                      // optionLabel={"name"}
-                      // optionValue={"_id"}
-                    />
-                  </div>
+                  {values.position !== Position.ADMIN &&
+                    values.position !== "" && (
+                      <>
+                        <div className="col-12 md:col-3">
+                          <Field
+                            label="Country"
+                            component={DropdownField}
+                            name="country"
+                            options={props.countryData.map((item) => ({
+                              label: item.name,
+                              value: item.id,
+                            }))}
+                            filter
+                            onChange={(e) => {
+                              setFieldValue("branch", "");
+                              handelSate(setFieldValue, e.target.value);
+                              getBranchList({ country: e.target.value });
+                            }}
+                          />
+                        </div>
+                        <div className="col-12 md:col-3">
+                          <Field
+                            label="State"
+                            filter
+                            component={DropdownField}
+                            name="state"
+                            options={stateData}
+                            onChange={(e) => {
+                              setFieldValue("branch", "");
+                              handelCityList(
+                                setFieldValue,
+                                e.target.value,
+                                values
+                              );
+                              getBranchList({
+                                country: Number(values.country),
+                                state: Number(e.target.value),
+                              });
+                            }}
+                          />
+                        </div>
+                      </>
+                    )}
+                  {values.position !== Position.ADMIN &&
+                    values.position !== "" &&
+                    values.position !== Position.SM && (
+                      <div className="col-12 md:col-3">
+                        <Field
+                          label="City"
+                          component={DropdownField}
+                          name="city"
+                          filter
+                          options={cityData}
+                          onChange={(e) => {
+                            setFieldValue("branch", "");
+                            setFieldValue("city", e.target.value);
+                            getBranchList({
+                              country: Number(values.country),
+                              state: Number(values.state),
+                              city: Number(e.target.value),
+                            });
+                          }}
+                        />
+                      </div>
+                    )}
 
+                  {values.position !== Position.ADMIN &&
+                    values.position !== "" &&
+                    values.position !== Position.SM &&
+                    values.position !== Position.CM && (
+                      <div className="col-12 md:col-3">
+                        <Field
+                          label="Branch Name"
+                          component={DropdownField}
+                          name="branch"
+                          filter
+                          options={branch}
+                        />
+                      </div>
+                    )}
+                  <div className="col-12 md:col-4">
+                    {console.log(values.branch)}
+                    <Field
+                      label="Fresher or Experience"
+                      component={RadioField}
+                      name={`fresherOrExperience`}
+                      radiolist={[
+                        {
+                          label: "Experience",
+                          value: fresherOrExperience.EXPERIENCE,
+                          id: "1",
+                        },
+                        {
+                          label: "Fresher",
+                          value: fresherOrExperience.FRESHER,
+                          id: "2",
+                        },
+                      ]}
+                    />
+                  </div>
                   <div className="col-12 md:col-3 ">
                     <label
                       htmlFor="userImage"
@@ -392,25 +423,6 @@ const BasicDetails = (props) => {
                       alt="Image"
                       width="260"
                       height="260"
-                    />
-                  </div>
-                  <div className="col-12 md:col-3">
-                    <Field
-                      label="Fresher or Experience"
-                      component={RadioField}
-                      name={`fresherOrExperience`}
-                      radiolist={[
-                        {
-                          label: "Experience",
-                          value: fresherOrExperience.EXPERIENCE,
-                          id: "1",
-                        },
-                        {
-                          label: "Fresher",
-                          value: fresherOrExperience.FRESHER,
-                          id: "2",
-                        },
-                      ]}
                     />
                   </div>
                 </div>

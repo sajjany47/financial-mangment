@@ -4,17 +4,22 @@ import { useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { Panel } from "primereact/panel";
-import Loader from "../../../../component/Loader";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
+import {
+  city,
+  countryList,
+  getDetails,
+  state,
+  userUpdate,
+} from "./AddUserService";
+import Loader from "../../../component/Loader";
 import {
   CheckField,
   DropdownField,
   InputField,
-} from "../../../../component/FieldType";
-import { ResidenceTypes } from "../../../../shared/Config";
-import { applicationDetails, applicationUpdate } from "../LoanService";
-import Swal from "sweetalert2";
-import * as Yup from "yup";
-import { city, countryList, state } from "../../Employee/AddUserService";
+} from "../../../component/FieldType";
+import { ResidenceTypes } from "../../../shared/Config";
 
 const addressValidationSchema = Yup.object().shape({
   permanentHouseOrBuildingNumber: Yup.string().required(
@@ -37,10 +42,10 @@ const addressValidationSchema = Yup.object().shape({
   residenceCountry: Yup.string().required("Country is required"),
   residenceCity: Yup.string().required("City is required"),
 });
-const PLoanAddress = (props) => {
-  const loanDetails = useSelector((state) => state.loan.addLoan);
+const AddressDetails = (props) => {
+  const addUserData = useSelector((state) => state.addUser.addUser);
   const [loading, setLoading] = useState(false);
-  const [getLoanData, setLoanData] = useState({});
+  const [employeeData, setEmployeeData] = useState({});
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
@@ -62,9 +67,9 @@ const PLoanAddress = (props) => {
       });
     // if (loanDetails.type === "edit") {
     setLoading(true);
-    applicationDetails(loanDetails.loanId)
+    getDetails(addUserData.id)
       .then((res) => {
-        setLoanData(res.data);
+        setEmployeeData(res.data);
         setLoading(false);
         if (res?.data?.permanentCountry && res?.data?.permanentState) {
           stateList(res.data.permanentCountry, "permanent");
@@ -90,26 +95,26 @@ const PLoanAddress = (props) => {
   }, []);
 
   const initialValues =
-    loanDetails.type === "edit"
+    addUserData.type === "edit"
       ? {
           permanentHouseOrBuildingNumber:
-            getLoanData.permanentHouseOrBuildingNumber,
-          permanentStreet: getLoanData.permanentStreet,
-          permanentLandmark: getLoanData.permanentLandmark,
-          permanentPincode: getLoanData.permanentPincode,
-          permanentState: Number(getLoanData.permanentState),
-          permanentCountry: Number(getLoanData.permanentCountry),
-          permanentCity: Number(getLoanData.permanentCity),
+            employeeData.permanentHouseOrBuildingNumber,
+          permanentStreet: employeeData.permanentStreet,
+          permanentLandmark: employeeData.permanentLandmark,
+          permanentPincode: employeeData.permanentPincode,
+          permanentState: Number(employeeData.permanentState),
+          permanentCountry: Number(employeeData.permanentCountry),
+          permanentCity: Number(employeeData.permanentCity),
           residenceHouseOrBuildingNumber:
-            getLoanData.residenceHouseOrBuildingNumber,
-          residenceStreet: getLoanData.residenceStreet,
-          residenceLandmark: getLoanData.residenceLandmark,
-          residencePincode: getLoanData.residencePincode,
-          residenceState: Number(getLoanData.residenceState),
-          residenceCountry: Number(getLoanData.residenceCountry),
-          residenceCity: Number(getLoanData.residenceCity),
-          addressSame: getLoanData.addressSame,
-          residenceType: getLoanData.residenceType,
+            employeeData.residenceHouseOrBuildingNumber,
+          residenceStreet: employeeData.residenceStreet,
+          residenceLandmark: employeeData.residenceLandmark,
+          residencePincode: employeeData.residencePincode,
+          residenceState: Number(employeeData.residenceState),
+          residenceCountry: Number(employeeData.residenceCountry),
+          residenceCity: Number(employeeData.residenceCity),
+          addressSame: employeeData.addressSame,
+          residenceType: employeeData.residenceType,
         }
       : {
           permanentHouseOrBuildingNumber: "",
@@ -200,10 +205,12 @@ const PLoanAddress = (props) => {
   };
 
   const handelSubmit = (values) => {
-    applicationUpdate({
+    userUpdate({
       ...values,
-      applicationType: "address",
-      _id: loanDetails.loanId,
+      profileRatio:
+        employeeData.profileRatio <= 40 ? 40 : employeeData.profileRatio,
+      dataType: "address",
+      id: employeeData._id,
     })
       .then((res) => {
         setLoading(false);
@@ -235,7 +242,7 @@ const PLoanAddress = (props) => {
   };
   return (
     <>
-      {loading && <Loader />}{" "}
+      {loading && <Loader />}
       <Formik
         onSubmit={handelSubmit}
         initialValues={initialValues}
@@ -429,7 +436,7 @@ const PLoanAddress = (props) => {
               </div>
             </Panel>
 
-            <div className="flex pt-4 justify-content-end gap-2 mb-3">
+            <div className="flex pt-4 justify-content-between mb-3">
               <Button
                 label="Back"
                 severity="secondary"
@@ -438,21 +445,26 @@ const PLoanAddress = (props) => {
                 onClick={() => props.back()}
                 type="button"
               />
-              {loanDetails.type === "edit" && (
+              <div className="flex  justify-content-end gap-2">
+                {addUserData.type === "edit" && (
+                  <Button
+                    label="Next"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    onClick={() => props.next()}
+                    type="button"
+                  />
+                )}
+
                 <Button
-                  type="button"
-                  label={"Next"}
+                  label={
+                    addUserData.type === "add" ? "Submit & Next" : "Update"
+                  }
                   icon="pi pi-arrow-right"
                   iconPos="right"
-                  onClick={() => props.next()}
+                  type="submit"
                 />
-              )}
-              <Button
-                type="submit"
-                label={loanDetails.type === "add" ? "Submit & Next" : "Update"}
-                icon="pi pi-arrow-right"
-                iconPos="right"
-              />
+              </div>
             </div>
           </Form>
         )}
@@ -461,4 +473,4 @@ const PLoanAddress = (props) => {
   );
 };
 
-export default PLoanAddress;
+export default AddressDetails;

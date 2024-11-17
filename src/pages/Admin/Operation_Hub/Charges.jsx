@@ -8,10 +8,10 @@ import {
   chargesList,
   chargesStatusChange,
   documentTypeUpdate,
-} from "./SettingService";
+} from "./OperationHubService";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
-import { InputField } from "../../../component/FieldType";
+import { Currency, InputField } from "../../../component/FieldType";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { InputSwitch } from "primereact/inputswitch";
@@ -43,6 +43,8 @@ const Charges = () => {
           otherChargesGST: "",
           foreclosureFees: "",
           foreclosureFeesGST: "",
+          foreclosureApply: "",
+          overdue: "",
         }
       : {
           processingFees: selectData.processingFees,
@@ -53,6 +55,8 @@ const Charges = () => {
           otherChargesGST: selectData.otherChargesGST,
           foreclosureFees: selectData.foreclosureFees,
           foreclosureFeesGST: selectData.foreclosureFeesGST,
+          foreclosureApply: selectData.foreclosureApply,
+          overdue: selectData.overdue,
         };
 
   useEffect(() => {
@@ -150,7 +154,7 @@ const Charges = () => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
         >
           <Column
             field="processingFees"
@@ -168,11 +172,21 @@ const Charges = () => {
             )}
             align={"center"}
           />
-          <Column field="loginFees" header="Login Fees" align={"center"} />
+          <Column
+            field="loginFees"
+            header="Login Fees"
+            align={"center"}
+            body={(item) => <>{item.loginFees && Currency(item?.loginFees)}</>}
+          />
           <Column
             field="loginFeesGST"
             header="Login Fees GST"
             body={(item) => <>{item.loginFeesGST && `${item.loginFeesGST}%`}</>}
+            align={"center"}
+          />
+          <Column
+            header="Foreclosure Apply"
+            field="foreclosureApply"
             align={"center"}
           />
           <Column
@@ -195,6 +209,9 @@ const Charges = () => {
             field="otherCharges"
             header="Other Charges"
             align={"center"}
+            body={(item) => (
+              <>{item.otherCharges && Currency(item?.otherCharges)}</>
+            )}
           />
           <Column
             header="Other Charges GST"
@@ -204,6 +221,13 @@ const Charges = () => {
             )}
             align={"center"}
           />
+          <Column
+            field="overdue"
+            header="Overdue"
+            align={"center"}
+            body={(item) => <>{item.overdue && `${item.overdue}%`}</>}
+          />
+
           <Column header="Status" field="isActive" body={statusTemplate} />
         </DataTable>
       </div>
@@ -226,7 +250,7 @@ const Charges = () => {
           {({ handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <div className="grid p-3 border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Processing Fees(%)"
                     component={InputField}
@@ -234,7 +258,7 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Processing Fees GST(%)"
                     component={InputField}
@@ -242,7 +266,7 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Login Fees Amount"
                     component={InputField}
@@ -250,14 +274,14 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Login Fees GST(%)"
                     component={InputField}
                     name="loginFeesGST"
                   />
                 </div>
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Foreclosure Fees(%)"
                     component={InputField}
@@ -265,14 +289,30 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Foreclosure Fees GST(%)"
                     component={InputField}
                     name="foreclosureFeesGST"
                   />
                 </div>
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
+                  <Field
+                    label="Foreclosure Apply(In months)"
+                    component={InputField}
+                    name="foreclosureApply"
+                    keyfilter="int"
+                  />
+                </div>
+
+                <div className="col-12 md:col-4">
+                  <Field
+                    label="Overdue(%)/Perday of EMI"
+                    component={InputField}
+                    name="overdue"
+                  />
+                </div>
+                <div className="col-12 md:col-4">
                   <Field
                     label="Other Charges Amount"
                     component={InputField}
@@ -280,7 +320,7 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Other Charges GST(%)"
                     component={InputField}

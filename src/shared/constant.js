@@ -1,10 +1,9 @@
 import axios from "axios";
-import { ACCESS_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from "./Config";
 import {
-  city,
-  countryList,
-  state,
-} from "../pages/Admin/AddUser/AddUserService";
+  ACCESS_TOKEN_STORAGE_KEY,
+  PayoutKey,
+  REFRESH_TOKEN_STORAGE_KEY,
+} from "./Config";
 
 export const apiPath = import.meta.env.VITE_API_BASE_URL;
 export const env_path = import.meta.env.VITE_MODE;
@@ -52,7 +51,26 @@ export const headerWithFormData = () => {
 
 export const capitalizeFirstLetter = (str) => {
   if (!str) return str; // Return empty string if input is empty or null
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return str
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+export const FormatString = (str) => {
+  return str
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+export const SlashString = (str) => {
+  return str
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+export const FormatType = (str) => {
+  // Replace underscores with spaces and capitalize each word
+  return str.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 export const cleanObject = (obj) => {
@@ -64,40 +82,55 @@ export const cleanObject = (obj) => {
   return obj;
 };
 
-export const fetchCountryStateCityData = async (data) => {
-  try {
-    const countryData = await countryList();
-    const response = {};
-    if (countryList) {
-      const filterCountry = countryData.data.find(
-        (item) => item.id === Number(data.country)
+export const PayoutFrequencyConditional = (data, duration) => {
+  const a = data.filter((item) => {
+    if (Number(duration) % 12 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY ||
+        item.value === PayoutKey.AT_MATURITY ||
+        item.value === PayoutKey.QUARTERLY ||
+        item.value === PayoutKey.SEMI_ANNUALLY ||
+        item.value === PayoutKey.ANNUALLY
       );
-
-      if (filterCountry) {
-        const item = await state(filterCountry.iso2);
-
-        response.state = item.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        }));
-
-        const filterState = item.data.find(
-          (stateItem) => stateItem.id === Number(data.state)
-        );
-
-        if (filterState) {
-          const elm = await city(filterCountry.iso2, filterState.iso2);
-
-          response.city = elm.data.map((item) => ({
-            label: item.name,
-            value: item.id,
-          }));
-        }
-      }
-
-      return response;
+    } else if (Number(duration) % 6 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY ||
+        item.value === PayoutKey.AT_MATURITY ||
+        item.value === PayoutKey.QUARTERLY ||
+        item.value === PayoutKey.SEMI_ANNUALLY
+      );
+    } else if (Number(duration) % 3 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY ||
+        item.value === PayoutKey.AT_MATURITY ||
+        item.value === PayoutKey.QUARTERLY
+      );
+    } else if (Number(duration) % 1 === 0) {
+      return (
+        item.value === PayoutKey.MONTHLY || item.value === PayoutKey.AT_MATURITY
+      );
     }
-  } catch (error) {
-    console.error("An error occurred:", error);
+  });
+  return a;
+};
+
+export const TransformData = (data) => {
+  const entries = Object.entries(data).map(([key, value]) => {
+    if (typeof value === "object" && value !== null) {
+      // Handle nested objects
+      return [key, value.name || JSON.stringify(value)];
+    }
+    return [key, value];
+  });
+
+  // Flatten key-value pairs into single array
+  const flattened = entries.flat();
+
+  // Group into sub-arrays of two key-value pairs
+  const chunked = [];
+  for (let i = 0; i < flattened.length; i += 4) {
+    chunked.push(flattened.slice(i, i + 4));
   }
+
+  return chunked;
 };

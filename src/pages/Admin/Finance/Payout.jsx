@@ -1,35 +1,46 @@
 /* eslint-disable no-prototype-builtins */
-import { Button } from "primereact/button";
+
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { setAddUser } from "../../../store/reducer/AddUserReducer";
+import { setSearch } from "../../../store/reducer/searchReducer";
+import { PayoutDatatable } from "./FinanceService";
+import { Button } from "primereact/button";
+import Loader from "../../../component/Loader";
+import { Menu } from "primereact/menu";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect, useState } from "react";
-import { employeeDataTable } from "./AddUserService";
-import Loader from "../../../component/Loader";
-import { Tag } from "primereact/tag";
-import { RoleSeverityColor } from "../../../shared/Config";
-import { setSearch } from "../../../store/reducer/searchReducer";
+import { Currency } from "../../../component/FieldType";
+import moment from "moment";
 import CPaginator from "../../../component/CPaginator";
-import EmployeeSearch from "./EmployeeSearch";
+import { useNavigate } from "react-router-dom";
+import { Calendar } from "primereact/calendar";
+import { Dialog } from "primereact/dialog";
+import PayNow from "./PayNow";
+import FinanceSearch from "./FinanceSearch";
 
-const EmployeeList = () => {
+const Payout = () => {
+  const navigation = useNavigate();
+  const menuRef = useRef();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
-  const [employeeList, setEmployeeList] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
   const [searchShow, setSearchShow] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
+  const [date, setDate] = useState([
+    new Date(moment().startOf("month")),
+    new Date(moment().endOf("month")),
+  ]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (searchKey?.page === "employee") {
+    if (searchKey?.page === "payout") {
       dispatch(setSearch({ ...searchKey }));
     } else {
       dispatch(
         setSearch({
-          page: "employee",
+          page: "payout",
           filterOptions: {},
           pageNumber: 1,
           firstPage: 0,
@@ -44,29 +55,33 @@ const EmployeeList = () => {
   }, []);
 
   useEffect(() => {
-    getEmployeeList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKey]);
+    if (date[1] !== null) {
+      getList();
+    }
 
-  const getEmployeeList = () => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKey, date]);
+  const getList = () => {
     setLoading(true);
     let reqData = {
       page: searchKey?.pageNumber,
       limit: searchKey?.rows,
+      startDate: date[0],
+      endDate: date[1],
       sort:
         searchKey.hasOwnProperty("sortField") &&
         searchKey.hasOwnProperty("sortOrder")
           ? { [searchKey.sortField]: searchKey.sortOrder }
           : { name: 1 },
     };
-
     if (Object.keys(searchKey?.filterOptions).length > 0) {
       reqData = { ...reqData, ...searchKey?.filterOptions };
     }
-    employeeDataTable(reqData)
+
+    PayoutDatatable(reqData)
       .then((res) => {
-        setTotalCount(res.count);
-        setEmployeeList(res.data);
+        setList(res.data);
+        setTotal(res.count);
         setLoading(false);
       })
       .catch(() => {
@@ -77,7 +92,7 @@ const EmployeeList = () => {
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-        <span className="text-xl text-900 font-bold">{"Employee List"}</span>
+        <span className="text-xl text-900 font-bold">{"Payout List"}</span>
         <div className="flex gap-2">
           {searchShow ? (
             <Button
@@ -98,13 +113,12 @@ const EmployeeList = () => {
               severity="secondary"
             />
           )}
-          <Button
-            label="Add Employee"
-            icon="pi pi-user-plus"
-            onClick={() => {
-              navigate("/employee/add");
-              dispatch(setAddUser({ type: "add", role: "employee" }));
-            }}
+
+          <Calendar
+            value={date}
+            onChange={(e) => setDate(e.value)}
+            selectionMode="range"
+            placeholder="Select Date"
           />
         </div>
       </div>
@@ -114,26 +128,39 @@ const EmployeeList = () => {
     return (
       <>
         <Button
-          icon="pi pi-pencil"
+          icon="pi pi-ellipsis-v"
           rounded
           text
           aria-label="Filter"
-          onClick={() => {
-            navigate("/employee/edit");
-            dispatch(
-              setAddUser({ type: "edit", role: "employee", id: item._id })
-            );
+          aria-controls="popup_menu_right"
+          aria-haspopup
+          onClick={(event) => {
+            menuRef.current.toggle(event);
+            setSelectedItem(item);
           }}
         />
       </>
     );
   };
-
-  const positionTemplate = (item) => {
-    const { label, severity } = RoleSeverityColor(item.position);
-    return <Tag severity={severity} value={label} rounded />;
-  };
-
+  const menuTemplate = [
+    {
+      //   label: "Profile",
+      items: [
+        {
+          label: "Pay Now",
+          command: () => {
+            setVisible(true);
+          },
+        },
+        {
+          label: "View Details",
+          command: () => {
+            navigation(`/finance/investor-details/${selectedItem._id}`);
+          },
+        },
+      ],
+    },
+  ];
   const onSort = (e) => {
     setLoading(true);
     const { sortField, sortOrder } = e;
@@ -145,65 +172,75 @@ const EmployeeList = () => {
       })
     );
 
-    setEmployeeList([]);
+    setList([]);
   };
-
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
   };
 
-  const statusTemplate = (item) => {
-    return (
-      <>
-        {item.isActive ? (
-          <Tag severity="success" value="Active" rounded />
-        ) : (
-          <Tag severity="danger" value="Inactive" rounded />
-        )}
-      </>
-    );
+  const handelDialog = (e) => {
+    setVisible(e);
+    getList();
   };
-
   return (
     <>
       {loading && <Loader />}
-      {searchShow && <EmployeeSearch />}
+      <Menu
+        model={menuTemplate}
+        popup
+        ref={menuRef}
+        id="popup_menu_right"
+        popupAlignment="right"
+      />
+      {searchShow && <FinanceSearch />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
-          value={employeeList}
+          value={list}
           header={header}
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
           onSort={onSort}
           sortOrder={searchKey.sortOrder}
           sortField={searchKey.sortField}
         >
           <Column field="" header="SLNo." body={rowNumberTemplate} />
-          <Column field="employeeId" header="Employe ID" sortable />
           <Column field="name" header="Name" sortable />
-          <Column field="username" header="Username" sortable />
+          <Column field="mobile" header="Mobile" />
+          <Column field="investmentType" header="Type" sortable />
           <Column
-            field="position"
-            header="Position"
-            body={positionTemplate}
-            sortable
-          />
-          <Column
-            field="isActive"
-            header="Status"
-            body={statusTemplate}
-            sortable
+            field="payoutAmount"
+            header="Payout Amount"
+            body={(item) => <>{Currency(item?.payoutSchedule.payoutAmount)}</>}
           />
 
-          <Column field="branchCode" header="Branch Code" sortable />
+          <Column
+            field="payoutDate"
+            header="Payout Date"
+            body={(item) => (
+              <>
+                {moment(item?.payoutSchedule.payoutDate).format("Do MMM, YYYY")}
+              </>
+            )}
+          />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
-        <CPaginator totalRecords={totalCount} />
+        <CPaginator totalRecords={total} />
       </div>
+
+      <Dialog
+        header={"Pay Now"}
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => {
+          setVisible(false);
+        }}
+      >
+        <PayNow data={selectedItem} type="payout" handelDialog={handelDialog} />
+      </Dialog>
     </>
   );
 };
 
-export default EmployeeList;
+export default Payout;

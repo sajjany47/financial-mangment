@@ -1,57 +1,36 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { Field, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { useDispatch, useSelector } from "react-redux";
 import { cleanObject } from "../../../shared/constant";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import { DropdownField, InputField } from "../../../component/FieldType";
-import { branchList } from "../Branch/BranchService";
-import { useEffect, useState } from "react";
-import { loanTypeGetList } from "../Operation_Hub/OperationHubService";
+import {
+  ActiveStatus,
+  InvestmentTypes,
+  PayoutFrequencies,
+} from "../../../shared/Config";
 
-const LoanSearch = () => {
+const FinanceSearch = (props) => {
   const searchKey = useSelector((state) => state?.search?.value);
   const dispatch = useDispatch();
-  const [branch, setBranch] = useState([]);
-  const [loanTypeOption, setLoanTypeOption] = useState([]);
-
-  useEffect(() => {
-    getLoanTypeList();
-    getBranchList();
-  }, []);
-
-  const getLoanTypeList = () => {
-    loanTypeGetList({}).then((res) => {
-      setLoanTypeOption(
-        res.data.map((item) => ({
-          ...item,
-          label: item.name,
-          value: item._id,
-        }))
-      );
-    });
-  };
-  const getBranchList = () => {
-    branchList({}).then((res) => {
-      setBranch(
-        res.data.map((item) => ({
-          label: `${item.name} (${item.code})`,
-          value: item._id,
-        }))
-      );
-    });
-  };
 
   const initialValues = {
     name: "",
-    applicationNumber: "",
     mobile: "",
-    loanType: "",
-    branch: "",
+    email: "",
+    investmentType: "",
+    payoutFrequency: "",
+    isActive: "",
   };
 
   const handelSubmit = (values) => {
     let data = cleanObject(values);
-
+    // eslint-disable-next-line no-prototype-builtins
+    if (data.hasOwnProperty("isActive")) {
+      data.isInvestorActive = data.isActive === "active" ? true : false;
+    }
     dispatch(
       setSearch({
         ...searchKey,
@@ -72,38 +51,45 @@ const LoanSearch = () => {
                 style={{ backgroundColor: "beige" }}
               >
                 <div className="col-12 md:col-3">
-                  <Field
-                    label="Lead/Application Number"
-                    component={InputField}
-                    name="applicationNumber"
-                  />
+                  <Field label="Name" component={InputField} name="name" />
                 </div>
                 <div className="col-12 md:col-3">
-                  <Field label="Name" component={InputField} name="name" />
+                  <Field label="Email" component={InputField} name="email" />
                 </div>
                 <div className="col-12 md:col-3">
                   <Field label="Mobile" component={InputField} name="mobile" />
                 </div>
+
                 <div className="col-12 md:col-3">
                   <Field
-                    label="Loan Type"
+                    label="Investment Type"
                     component={DropdownField}
-                    name="loanType"
-                    options={loanTypeOption}
-                    filter
+                    options={InvestmentTypes}
+                    name="investmentType"
                   />
                 </div>
                 <div className="col-12 md:col-3">
                   <Field
-                    label="Branch"
+                    label="Payout Frequency"
                     component={DropdownField}
-                    name="branch"
-                    filter
-                    options={branch}
+                    options={PayoutFrequencies}
+                    name="payoutFrequency"
                   />
                 </div>
 
+                {props?.isActive && (
+                  <div className="col-12 md:col-3">
+                    <Field
+                      label="Status"
+                      component={DropdownField}
+                      name="isActive"
+                      options={ActiveStatus}
+                    />
+                  </div>
+                )}
+
                 <div className="col-12 md:col-12">
+                  {" "}
                   <div className="flex pt-4 justify-content-end gap-2">
                     <Button
                       type="button"
@@ -134,4 +120,4 @@ const LoanSearch = () => {
   );
 };
 
-export default LoanSearch;
+export default FinanceSearch;

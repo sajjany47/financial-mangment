@@ -44,7 +44,6 @@ const sidebarMenu = {
       icon: "pi pi-ticket",
       submenu: [
         { title: "Active Loans", route: "/loans/active" },
-        { title: "Pending Payments", route: "/loans/pending-payments" },
         { title: "Delinquent Loans", route: "/loans/delinquent" },
         { title: "Closed Loans", route: "/loans/closed" },
       ],
@@ -53,10 +52,19 @@ const sidebarMenu = {
       title: "Payments",
       icon: "pi pi-money-bill",
       submenu: [
-        { title: "Payment History", route: "/payments/history" },
-        { title: "Upcoming Payments", route: "/payments/upcoming" },
-        { title: "Process Payment", route: "/payments/process" },
-        { title: "Refunds", route: "/payments/refunds" },
+        { title: "History", route: "/payments/history" },
+        { title: "Upcoming", route: "/payments/upcoming" },
+        { title: "Defaulter", route: "/payments/defaulter" },
+      ],
+    },
+    {
+      title: "Finance",
+      icon: "pi pi-wallet",
+      submenu: [
+        { title: "Investor", route: "/finance/investor" },
+        { title: "Payout", route: "/finance/payout" },
+        { title: "Reedem", route: "/finance/reedem" },
+        { title: "Matured", route: "/finance/matured" },
       ],
     },
     {
@@ -69,13 +77,13 @@ const sidebarMenu = {
       ],
     },
     {
-      title: "Settings",
-      icon: "pi pi-cog",
+      title: "Operations Hub",
+      icon: "pi pi-unlock",
       submenu: [
-        { title: "Charges", route: "/settings/charges" },
-        { title: "Documents", route: "/settings/document" },
-        { title: "Document Type", route: "/settings/document-type" },
-        { title: "Loan Type", route: "/settings/loan-type" },
+        { title: "Charges", route: "/operation-hub/charges" },
+        { title: "Documents Name", route: "/operation-hub/document" },
+        { title: "Document Type", route: "/operation-hub/document-type" },
+        { title: "Loan Type", route: "/operation-hub/loan-type" },
       ],
     },
     {

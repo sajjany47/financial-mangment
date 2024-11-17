@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import * as Yup from "yup";
 import { Position } from "../../../../shared/Config";
-import { loanTypeList } from "../../setting/SettingService";
+import { loanTypeList } from "../../Operation_Hub/OperationHubService";
 
 const basicValidationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -112,7 +112,7 @@ const PLoanBasic = (props) => {
           name: getLoanData.name,
           mobile: getLoanData.mobile,
           email: getLoanData.email,
-          dob: new Date(getLoanData.dob),
+          dob: getLoanData?.dob ? new Date(getLoanData.dob) : "",
           branch: getLoanData.branch,
           loanType: getLoanData.loanType,
           fatherName: getLoanData.fatherName,
@@ -242,6 +242,7 @@ const PLoanBasic = (props) => {
                       label="Date Of Birth"
                       component={DateField}
                       name="dob"
+                      maxDate={new Date(Date.now() - 567648000000)}
                     />
                   </div>
                   <div className="col-12 md:col-3">

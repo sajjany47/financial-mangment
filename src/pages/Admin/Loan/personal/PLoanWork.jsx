@@ -6,11 +6,11 @@ import { Button } from "primereact/button";
 import Loader from "../../../../component/Loader";
 import { DropdownField, InputField } from "../../../../component/FieldType";
 import { Panel } from "primereact/panel";
-import { city, countryList, state } from "../../AddUser/AddUserService";
 import { EmployeeTypes } from "../../../../shared/Config";
 import { applicationDetails, applicationUpdate } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
+import { city, countryList, state } from "../../Employee/AddUserService";
 
 const workValidationSchema = Yup.object().shape({
   companyOrBussinessName: Yup.string().required(

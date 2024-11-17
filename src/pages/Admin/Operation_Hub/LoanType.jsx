@@ -7,14 +7,18 @@ import { Field, Form, Formik } from "formik";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { Tag } from "primereact/tag";
-import { loanTypeCreate, loanTypeList, loanTypeUpdate } from "./SettingService";
+import {
+  loanTypeCreate,
+  loanTypeList,
+  loanTypeUpdate,
+} from "./OperationHubService";
 import Loader from "../../../component/Loader";
 import {
   InputField,
   MultiDropdownField,
   RadioField,
 } from "../../../component/FieldType";
-import { countryList } from "../AddUser/AddUserService";
+import { countryList } from "../Employee/AddUserService";
 
 const loanTypeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -176,7 +180,7 @@ const LoanType = () => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
         >
           <Column field="name" header="Name" />
           <Column field="country" header="Country" body={countryTemplate} />

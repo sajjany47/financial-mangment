@@ -19,10 +19,10 @@ import {
 } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
-import { documentGetList } from "../../setting/SettingService";
 import { Dialog } from "primereact/dialog";
 import { Image } from "primereact/image";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { documentGetList } from "../../Operation_Hub/OperationHubService";
 
 const documentValidationSchema = Yup.object().shape({
   documentType: Yup.string().required("Document type is required"),
@@ -65,7 +65,7 @@ const PLoanDocument = (props) => {
         setLoading(false);
       });
   };
-  const initialValues =
+  let initialValues =
     loanDetails.type === "edit"
       ? {
           ...selectedData,
@@ -102,6 +102,7 @@ const PLoanDocument = (props) => {
           getDetails();
           setVisible(false);
           setActionType("add");
+          setSelectedData({});
           // props.next();
         })
         .catch(() => {
@@ -123,6 +124,7 @@ const PLoanDocument = (props) => {
           });
           setVisible(false);
           setActionType("add");
+          setSelectedData({});
           // props.next();
         })
         .catch(() => {
@@ -199,7 +201,6 @@ const PLoanDocument = (props) => {
       if (uploadedDocs.length === 0) {
         // If no document is uploaded for this document type
         isValid = false;
-        console.log(`${item.documentType} is missing.`);
       } else {
         uploadedDocs.forEach((doc) => {
           if (
@@ -277,8 +278,8 @@ const PLoanDocument = (props) => {
                                 {
                                   item.document.find(
                                     (a) =>
-                                      a._id === elm[elm.entity].documentType
-                                  ).name
+                                      a._id === elm[elm.entity]?.documentType
+                                  )?.name
                                 }
                               </span>
                               <div className="text-900 font-medium text-xl">
@@ -360,6 +361,7 @@ const PLoanDocument = (props) => {
         onHide={() => {
           setVisible(false);
           setActionType("add");
+          setSelectedData({});
         }}
       >
         <Formik

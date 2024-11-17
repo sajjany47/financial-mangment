@@ -120,7 +120,7 @@ const EducationDetails = (props) => {
             resultImage: "",
             resultImagePre: "",
           }
-        : { ...selectedData, resultImagePre: selectedData.resultImage }
+        : { ...selectedData, resultImagePre: selectedData.resultImageUrl }
       : actionType === "add"
       ? {
           companyName: "",
@@ -140,10 +140,10 @@ const EducationDetails = (props) => {
           ...selectedData,
           startingYear: new Date(selectedData.startingYear),
           endingYear: new Date(selectedData.endingYear),
-          experienceLetterPre: selectedData.experienceLetter,
-          relievingLetterPre: selectedData.relievingLetter,
-          appointmentLetterPre: selectedData.appointmentLetter,
-          salarySlipPre: selectedData.salarySlip,
+          experienceLetterPre: selectedData.experienceLetterUrl,
+          relievingLetterPre: selectedData.relievingLetterUrl,
+          appointmentLetterPre: selectedData.appointmentLetterUrl,
+          salarySlipPre: selectedData.salarySlipUrl,
         };
   useEffect(() => {
     getUserDetails();
@@ -189,7 +189,7 @@ const EducationDetails = (props) => {
     const finalReqData =
       actionType === "add"
         ? { ...reqData, id: employeeData._id }
-        : { ...reqData, productId: selectedData._id };
+        : { ...reqData, productId: selectedData._id, id: employeeData._id };
 
     userEducationDetailsUpdate(finalReqData)
       .then((res) => {
@@ -338,7 +338,7 @@ const EducationDetails = (props) => {
               </div>
             )}
 
-            <div className="flex pt-4 justify-content-between">
+            <div className="flex pt-4 justify-content-between mb-3">
               <Button
                 label="Back"
                 severity="secondary"

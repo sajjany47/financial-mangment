@@ -7,7 +7,7 @@ import {
   documentTypeCreate,
   documentTypeList,
   documentTypeUpdate,
-} from "./SettingService";
+} from "./OperationHubService";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
 import { InputField, RadioField } from "../../../component/FieldType";
@@ -143,7 +143,7 @@ const DocumentType = () => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
         >
           <Column field="name" header="Name" />
           <Column field="description" header="Description" />

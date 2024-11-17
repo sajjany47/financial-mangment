@@ -17,7 +17,7 @@ import {
 } from "./LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
-import { loanTypeGetList } from "../setting/SettingService";
+import { loanTypeGetList } from "../Operation_Hub/OperationHubService";
 import { LoanApplicationStepsEnum, Position } from "../../../shared/Config";
 import CPaginator from "../../../component/CPaginator";
 import { Menu } from "primereact/menu";
@@ -394,7 +394,7 @@ const Lead = () => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
           onSort={onSort}
           sortOrder={searchKey.sortOrder}
           sortField={searchKey.sortField}
@@ -472,6 +472,7 @@ const Lead = () => {
                         label="Loan Amount"
                         component={InputField}
                         name="loanAmount"
+                        keyfilter="money"
                       />
                     </div>
                     <div className="col-12 md:col-4">
@@ -479,6 +480,7 @@ const Lead = () => {
                         label="Loan Tenure (In months)"
                         component={InputField}
                         name="loanTenure"
+                        keyfilter="int"
                       />
                     </div>
                     <div className="col-12 md:col-4">

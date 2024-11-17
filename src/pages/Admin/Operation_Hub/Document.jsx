@@ -14,14 +14,14 @@ import {
   MultiDropdownField,
   RadioField,
 } from "../../../component/FieldType";
-import { countryList } from "../AddUser/AddUserService";
 import {
   documentCreate,
   documentList,
   documentTypeList,
   documentUpdate,
   loanTypeList,
-} from "./SettingService";
+} from "./OperationHubService";
+import { countryList } from "../Employee/AddUserService";
 
 const documentSchema = Yup.object().shape({
   documentName: Yup.string().required("Name is required"),
@@ -242,7 +242,7 @@ const Document = () => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
         >
           <Column field="documentName" header="Name" />
           <Column field="documentType.name" header="Document Type" />

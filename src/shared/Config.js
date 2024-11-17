@@ -231,3 +231,58 @@ export const LoantatusSeverityColor = (role) => {
       return { label: "Unknown", severity: "contrast" }; // Fallback case
   }
 };
+
+export const PayWithFore = [
+  { label: "EMI Pay", value: "emi_pay" },
+  {
+    label: "Foreclosure",
+    value: "foreclosure",
+  },
+  {
+    label: "EMI Settlement",
+    value: "emi_settlement",
+  },
+  {
+    label: "Loan Settlement",
+    value: "loan_settlement",
+  },
+];
+
+export const PayWithoutFore = [
+  { label: "EMI Pay", value: "emi_pay" },
+  {
+    label: "EMI Settlement",
+    value: "emi_settlement",
+  },
+  {
+    label: "Loan Settlement",
+    value: "loan_settlement",
+  },
+];
+
+export const InvestmentTypes = [
+  { label: "Fixed Deposit", value: "fixed_deposit" },
+  { label: "Mutual Funds", value: "mutual_funds" },
+  { label: "Stocks", value: "stocks" },
+  { label: "Bonds", value: "bonds" },
+  { label: "Gold", value: "gold" },
+  { label: "Cryptocurrency", value: "cryptocurrency" },
+  { label: "Retirement Plans", value: "retirement_plans" },
+  { label: "Recuring", value: "recuring" },
+];
+
+export const PayoutFrequencies = [
+  { label: "Monthly", value: "monthly" },
+  { label: "Quarterly", value: "quarterly" },
+  { label: "Semi-Annually", value: "semi_annually" },
+  { label: "Annually", value: "annually" },
+  { label: "At Maturity", value: "at_maturity" },
+];
+
+export const PayoutKey = {
+  MONTHLY: "monthly",
+  QUARTERLY: "quarterly",
+  SEMI_ANNUALLY: "semi_annually",
+  ANNUALLY: "annually",
+  AT_MATURITY: "at_maturity",
+};

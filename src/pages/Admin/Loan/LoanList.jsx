@@ -15,11 +15,11 @@ import {
   applicationUpdate,
 } from "./LoanService";
 import { Dropdown } from "primereact/dropdown";
-import { countryList } from "../AddUser/AddUserService";
-import { loanTypeGetList } from "../setting/SettingService";
+import { loanTypeGetList } from "../Operation_Hub/OperationHubService";
 import CPaginator from "../../../component/CPaginator";
 import {
   AddLoanPath,
+  applicationRenderStatus,
   EditLoanPath,
   LoanApplicationSteps,
   LoanApplicationStepsEnum,
@@ -39,6 +39,7 @@ import * as Yup from "yup";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import LoanSearch from "./LoanSearch";
+import { countryList } from "../Employee/AddUserService";
 
 const ApplicationStatusSchema = Yup.object().shape({
   status: Yup.string().required("Application status is required"),
@@ -248,7 +249,14 @@ const LoanList = (props) => {
       //   label: "Profile",
       items: [
         {
+          label: "View Application",
+          command: () => {
+            navigate(`/loans/application-view/${selectedItem._id}`);
+          },
+        },
+        {
           label: "Edit Application",
+          visible: props.type !== applicationRenderStatus.disbursed,
           command: () => {
             navigate(EditLoanPath(selectedItem.loanDetails.entity));
             dispatch(
@@ -263,13 +271,16 @@ const LoanList = (props) => {
         },
         {
           label: "Status Change",
-          visible: selectedItem.status !== LoanApplicationStepsEnum.INCOMPLETED,
+          visible:
+            selectedItem.status !== LoanApplicationStepsEnum.INCOMPLETED &&
+            props.type !== applicationRenderStatus.disbursed,
           command: () => {
             setStatusVisible(true);
           },
         },
         {
           label: "Application Delete",
+          visible: props.type !== applicationRenderStatus.disbursed,
           command: () => {
             confirm();
           },
@@ -370,7 +381,7 @@ const LoanList = (props) => {
           // tableStyle={{ minWidth: "60rem" }}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
           onSort={onSort}
           sortOrder={searchKey.sortOrder}
           sortField={searchKey.sortField}

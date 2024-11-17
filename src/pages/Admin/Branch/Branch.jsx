@@ -9,7 +9,6 @@ import {
   TextAreaInputField,
 } from "../../../component/FieldType";
 import * as Yup from "yup";
-import { city, countryList, state } from "../AddUser/AddUserService";
 import Loader from "../../../component/Loader";
 import { branchDatatable, createBranch, updateBranch } from "./BranchService";
 import Swal from "sweetalert2";
@@ -20,6 +19,7 @@ import { Tag } from "primereact/tag";
 import BranchSearch from "./BranchSearch";
 import CPaginator from "../../../component/CPaginator";
 import { setSearch } from "../../../store/reducer/searchReducer";
+import { city, countryList, state } from "../Employee/AddUserService";
 
 const createBranchSchema = Yup.object().shape({
   _id: Yup.string(),
@@ -314,7 +314,7 @@ const Branch = () => {
           header={header}
           dataKey="_id"
           emptyMessage="No data found."
-          filterDisplay="row"
+          showGridlines
           onSort={onSort}
           sortOrder={searchKey.sortOrder}
           sortField={searchKey.sortField}
