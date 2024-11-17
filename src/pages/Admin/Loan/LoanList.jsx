@@ -15,7 +15,7 @@ import {
   applicationUpdate,
 } from "./LoanService";
 import { Dropdown } from "primereact/dropdown";
-import { loanTypeGetList } from "../setting/SettingService";
+import { loanTypeGetList } from "../Operation_Hub/OperationHubService";
 import CPaginator from "../../../component/CPaginator";
 import {
   AddLoanPath,

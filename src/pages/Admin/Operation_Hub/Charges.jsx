@@ -8,7 +8,7 @@ import {
   chargesList,
   chargesStatusChange,
   documentTypeUpdate,
-} from "./SettingService";
+} from "./OperationHubService";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
 import { Currency, InputField } from "../../../component/FieldType";

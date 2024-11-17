@@ -77,13 +77,13 @@ const sidebarMenu = {
       ],
     },
     {
-      title: "Settings",
-      icon: "pi pi-cog",
+      title: "Operations Hub",
+      icon: "pi pi-unlock",
       submenu: [
-        { title: "Charges", route: "/settings/charges" },
-        { title: "Documents", route: "/settings/document" },
-        { title: "Document Type", route: "/settings/document-type" },
-        { title: "Loan Type", route: "/settings/loan-type" },
+        { title: "Charges", route: "/operation-hub/charges" },
+        { title: "Documents Name", route: "/operation-hub/document" },
+        { title: "Document Type", route: "/operation-hub/document-type" },
+        { title: "Loan Type", route: "/operation-hub/loan-type" },
       ],
     },
     {

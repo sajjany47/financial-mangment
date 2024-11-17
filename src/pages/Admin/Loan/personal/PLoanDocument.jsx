@@ -19,10 +19,10 @@ import {
 } from "../LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
-import { documentGetList } from "../../setting/SettingService";
 import { Dialog } from "primereact/dialog";
 import { Image } from "primereact/image";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { documentGetList } from "../../Operation_Hub/OperationHubService";
 
 const documentValidationSchema = Yup.object().shape({
   documentType: Yup.string().required("Document type is required"),

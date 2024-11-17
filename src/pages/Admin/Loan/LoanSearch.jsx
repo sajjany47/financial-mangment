@@ -6,7 +6,7 @@ import { setSearch } from "../../../store/reducer/searchReducer";
 import { DropdownField, InputField } from "../../../component/FieldType";
 import { branchList } from "../Branch/BranchService";
 import { useEffect, useState } from "react";
-import { loanTypeGetList } from "../setting/SettingService";
+import { loanTypeGetList } from "../Operation_Hub/OperationHubService";
 
 const LoanSearch = () => {
   const searchKey = useSelector((state) => state?.search?.value);

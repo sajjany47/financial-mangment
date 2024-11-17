@@ -7,7 +7,7 @@ import {
   documentTypeCreate,
   documentTypeList,
   documentTypeUpdate,
-} from "./SettingService";
+} from "./OperationHubService";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
 import { InputField, RadioField } from "../../../component/FieldType";

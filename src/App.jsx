@@ -18,11 +18,7 @@ import PLoanAdd from "./pages/Admin/Loan/personal/PLoanAdd";
 import RejectedApplication from "./pages/Admin/Loan/RejectedApplication";
 import ProgressApplication from "./pages/Admin/Loan/ProgressApplication";
 import ApprovedApplication from "./pages/Admin/Loan/ApprovedApplication";
-import Document from "./pages/Admin/setting/Document";
-import DocumentType from "./pages/Admin/setting/DocumentType";
-import LoanType from "./pages/Admin/setting/LoanType";
 import PLoanEdit from "./pages/Admin/Loan/personal/PLoanEdit";
-import Charges from "./pages/Admin/setting/Charges";
 import Calculator from "./pages/Admin/EMI/Calculator";
 import Disbursed from "./pages/Admin/Loan/Disbursed";
 import ActiveLoan from "./pages/Admin/Loan_Management/ActiveLoan";
@@ -45,6 +41,10 @@ import Reedem from "./pages/Admin/Finance/Reedem";
 import AddInvestor from "./pages/Admin/Finance/AddInvestor";
 import FullyMatured from "./pages/Admin/Finance/FullyMatured";
 import InvestorViewDetails from "./pages/Admin/Finance/InvestorViewDetails";
+import Document from "./pages/Admin/Operation_Hub/Document";
+import Charges from "./pages/Admin/Operation_Hub/Charges";
+import LoanType from "./pages/Admin/Operation_Hub/LoanType";
+import DocumentType from "./pages/Admin/Operation_Hub/DocumentType";
 
 function App() {
   let isRefreshing = false;
@@ -142,10 +142,13 @@ function App() {
               path="/application/personal-loan/edit"
               element={<PLoanEdit />}
             />
-            <Route path="/settings/document" element={<Document />} />
-            <Route path="/settings/document-type" element={<DocumentType />} />
-            <Route path="/settings/loan-type" element={<LoanType />} />
-            <Route path="/settings/charges" element={<Charges />} />
+            <Route path="/operation-hub/document" element={<Document />} />
+            <Route
+              path="/operation-hub/document-type"
+              element={<DocumentType />}
+            />
+            <Route path="/operation-hub/loan-type" element={<LoanType />} />
+            <Route path="/operation-hub/charges" element={<Charges />} />
             <Route path="/loans/active" element={<ActiveLoan />} />
             <Route path="/loans/delinquent" element={<DeliquentLoan />} />
             <Route path="/loans/closed" element={<ClosedLoan />} />

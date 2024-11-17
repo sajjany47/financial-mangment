@@ -17,7 +17,7 @@ import {
 } from "./LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
-import { loanTypeGetList } from "../setting/SettingService";
+import { loanTypeGetList } from "../Operation_Hub/OperationHubService";
 import { LoanApplicationStepsEnum, Position } from "../../../shared/Config";
 import CPaginator from "../../../component/CPaginator";
 import { Menu } from "primereact/menu";

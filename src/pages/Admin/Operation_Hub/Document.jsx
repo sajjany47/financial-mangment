@@ -7,45 +7,62 @@ import { Field, Form, Formik } from "formik";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { Tag } from "primereact/tag";
-import { loanTypeCreate, loanTypeList, loanTypeUpdate } from "./SettingService";
 import Loader from "../../../component/Loader";
 import {
+  DropdownField,
   InputField,
   MultiDropdownField,
   RadioField,
 } from "../../../component/FieldType";
+import {
+  documentCreate,
+  documentList,
+  documentTypeList,
+  documentUpdate,
+  loanTypeList,
+} from "./OperationHubService";
 import { countryList } from "../Employee/AddUserService";
 
-const loanTypeSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  icon: Yup.string().required("Icon is required"),
+const documentSchema = Yup.object().shape({
+  documentName: Yup.string().required("Name is required"),
+  documentType: Yup.string().required("Document Type is required"),
+  // optional: Yup.string().required("Optional is required"),
+  loanType: Yup.array().min(1, "Loan type is required"),
   country: Yup.array().min(1, "Country is required"),
 });
 
-const LoanType = () => {
+const Document = () => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
   const [countryData, setCountryData] = useState([]);
+  const [documntsList, setDocumntsList] = useState([]);
+  const [getLoanList, setLoanList] = useState([]);
 
   const initialValues =
     actionType === "add"
       ? {
-          name: "",
+          documentName: "",
+          documentType: "",
+          loanType: [],
           country: [],
-          icon: "",
+          optional: false,
         }
       : {
-          name: selectData.name,
+          documentName: selectData.documentName,
+          documentType: selectData.documentType,
+          loanType: selectData.loanType,
           country: selectData.country,
+          optional: selectData.optional,
           isActive: selectData.isActive,
-          icon: selectData.icon,
         };
 
   useEffect(() => {
     getList();
+    docmentTypeList();
+    loanList();
     countryList()
       .then((res) => {
         setCountryData(
@@ -63,9 +80,37 @@ const LoanType = () => {
   const getList = () => {
     setLoading(true);
 
-    loanTypeList()
+    documentList()
       .then((res) => {
         setList(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const docmentTypeList = () => {
+    setLoading(true);
+    documentTypeList({ isActive: true })
+      .then((res) => {
+        setDocumntsList(
+          res.data.map((item) => ({ label: item.name, value: item._id }))
+        );
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const loanList = () => {
+    setLoading(true);
+    loanTypeList({ isActive: true })
+      .then((res) => {
+        setLoanList(
+          res.data.map((item) => ({ label: item.name, value: item._id }))
+        );
         setLoading(false);
       })
       .catch(() => {
@@ -75,7 +120,7 @@ const LoanType = () => {
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-        <span className="text-xl text-900 font-bold">{"Loan Type List"}</span>
+        <span className="text-xl text-900 font-bold">{"Document List"}</span>
 
         <Button
           label="Add"
@@ -102,6 +147,8 @@ const LoanType = () => {
             setSelectData({
               ...item,
               country: item.country.map((elm) => elm._id),
+              documentType: item.documentType._id,
+              loanType: item.loanType.map((elm) => elm._id),
             });
             setActionType("edit");
           }}
@@ -114,7 +161,7 @@ const LoanType = () => {
     setLoading(true);
 
     if (actionType === "add") {
-      loanTypeCreate({ ...values })
+      documentCreate({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -125,7 +172,7 @@ const LoanType = () => {
           setLoading(false);
         });
     } else {
-      loanTypeUpdate({ ...values, _id: selectData._id })
+      documentUpdate({ ...values, _id: selectData._id })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -150,6 +197,24 @@ const LoanType = () => {
     );
   };
 
+  const loanTemplate = (item) => {
+    return (
+      <div>
+        {item.loanType.map((elm, ind) => {
+          return (
+            <Tag
+              //   severity="success"
+              className="m-1"
+              value={elm.name}
+              //   rounded
+              key={ind}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
   const countryTemplate = (item) => {
     return (
       <div>
@@ -159,6 +224,7 @@ const LoanType = () => {
               severity="warning"
               className="m-1"
               value={elm.name}
+              //   rounded
               key={ind}
             />
           );
@@ -178,7 +244,9 @@ const LoanType = () => {
           emptyMessage="No data found."
           showGridlines
         >
-          <Column field="name" header="Name" />
+          <Column field="documentName" header="Name" />
+          <Column field="documentType.name" header="Document Type" />
+          <Column field="loanType" header="Loan Type" body={loanTemplate} />
           <Column field="country" header="Country" body={countryTemplate} />
           <Column field="isActive" header="Status" body={statusTemplate} />
           <Column field="createdBy" header="CreatedBy" />
@@ -188,7 +256,7 @@ const LoanType = () => {
       </div>
 
       <Dialog
-        header={actionType === "add" ? "Add Loan Type" : "Edit Loan Type"}
+        header={actionType === "add" ? "Add Document" : "Edit Document"}
         visible={visible}
         style={{ width: "60vw" }}
         onHide={() => {
@@ -200,16 +268,34 @@ const LoanType = () => {
         <Formik
           onSubmit={handelSubmits}
           initialValues={initialValues}
-          validationSchema={loanTypeSchema}
+          validationSchema={documentSchema}
         >
           {({ handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <div className="grid p-3 border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
                 <div className="col-12 md:col-4">
-                  <Field label="Name" component={InputField} name="name" />
+                  <Field
+                    label="Name"
+                    component={InputField}
+                    name="documentName"
+                  />
                 </div>
+
                 <div className="col-12 md:col-4">
-                  <Field label="Icon" component={InputField} name="icon" />
+                  <Field
+                    label="Document Type"
+                    component={DropdownField}
+                    name="documentType"
+                    options={documntsList}
+                  />
+                </div>
+                <div className="col-12 md:col-12">
+                  <Field
+                    label="Loan Type"
+                    component={MultiDropdownField}
+                    name="loanType"
+                    options={getLoanList}
+                  />
                 </div>
                 <div className="col-12 md:col-12">
                   <Field
@@ -220,7 +306,17 @@ const LoanType = () => {
                     filter
                   />
                 </div>
-
+                {/* <div className="col-12 md:col-4">
+                  <Field
+                    label="Optional"
+                    component={RadioField}
+                    name="optional"
+                    radiolist={[
+                      { label: "Yes", id: 1, value: true },
+                      { label: "No", id: 2, value: false },
+                    ]}
+                  />
+                </div> */}
                 {actionType === "edit" && (
                   <div className="col-12 md:col-4">
                     <Field
@@ -253,4 +349,4 @@ const LoanType = () => {
   );
 };
 
-export default LoanType;
+export default Document;

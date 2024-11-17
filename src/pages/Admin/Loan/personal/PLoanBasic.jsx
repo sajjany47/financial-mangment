@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import { setAddLoan } from "../../../../store/reducer/AddLoanReducer";
 import * as Yup from "yup";
 import { Position } from "../../../../shared/Config";
-import { loanTypeList } from "../../setting/SettingService";
+import { loanTypeList } from "../../Operation_Hub/OperationHubService";
 
 const basicValidationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
