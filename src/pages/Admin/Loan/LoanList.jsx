@@ -249,7 +249,14 @@ const LoanList = (props) => {
       //   label: "Profile",
       items: [
         {
+          label: "View Application",
+          command: () => {
+            navigate(`/loans/application-view/${selectedItem._id}`);
+          },
+        },
+        {
           label: "Edit Application",
+          visible: props.type !== applicationRenderStatus.disbursed,
           command: () => {
             navigate(EditLoanPath(selectedItem.loanDetails.entity));
             dispatch(
