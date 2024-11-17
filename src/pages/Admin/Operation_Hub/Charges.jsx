@@ -250,7 +250,7 @@ const Charges = () => {
           {({ handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <div className="grid p-3 border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Processing Fees(%)"
                     component={InputField}
@@ -258,7 +258,7 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Processing Fees GST(%)"
                     component={InputField}
@@ -266,7 +266,7 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Login Fees Amount"
                     component={InputField}
@@ -274,14 +274,14 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Login Fees GST(%)"
                     component={InputField}
                     name="loginFeesGST"
                   />
                 </div>
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Foreclosure Fees(%)"
                     component={InputField}
@@ -289,14 +289,14 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Foreclosure Fees GST(%)"
                     component={InputField}
                     name="foreclosureFeesGST"
                   />
                 </div>
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Foreclosure Apply(In months)"
                     component={InputField}
@@ -305,14 +305,14 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Overdue(%)/Perday of EMI"
                     component={InputField}
                     name="overdue"
                   />
                 </div>
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Other Charges Amount"
                     component={InputField}
@@ -320,7 +320,7 @@ const Charges = () => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-4">
                   <Field
                     label="Other Charges GST(%)"
                     component={InputField}

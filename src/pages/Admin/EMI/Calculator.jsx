@@ -20,7 +20,7 @@ const emiSchema = Yup.object().shape({
 });
 const Calculator = () => {
   const propsValue = useLocation()?.state?.data;
-  console.log(propsValue);
+
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
 
