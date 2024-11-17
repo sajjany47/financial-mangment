@@ -24,6 +24,7 @@ import { Menu } from "primereact/menu";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import LoanSearch from "./LoanSearch";
+import LeadBulkUpload from "./Lead_Bulk_Upload/LeadBulkUpload";
 
 const leadSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -46,6 +47,7 @@ const Lead = () => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [bulVisible, setBulkVisible] = useState(false);
   const [branch, setBranch] = useState([]);
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
@@ -197,6 +199,13 @@ const Lead = () => {
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Lead List"}</span>
         <div className="flex gap-2">
+          <Button
+            label="Bulk Upload"
+            icon="pi pi-file-arrow-up"
+            onClick={() => {
+              setBulkVisible(true);
+            }}
+          />
           {searchShow ? (
             <Button
               icon="pi pi-times"
@@ -421,6 +430,17 @@ const Lead = () => {
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
+
+      <Dialog
+        header={"Bulk Lead Upload"}
+        visible={bulVisible}
+        style={{ width: "60vw" }}
+        onHide={() => {
+          setBulkVisible(false);
+        }}
+      >
+        <LeadBulkUpload />
+      </Dialog>
 
       <Dialog
         header={actionType === "add" ? "Add Lead" : "Edit Lead"}
