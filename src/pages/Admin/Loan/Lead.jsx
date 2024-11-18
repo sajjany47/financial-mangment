@@ -434,7 +434,7 @@ const Lead = () => {
       <Dialog
         header={"Bulk Lead Upload"}
         visible={bulVisible}
-        style={{ width: "60vw" }}
+        style={{ width: "80vw" }}
         onHide={() => {
           setBulkVisible(false);
         }}
