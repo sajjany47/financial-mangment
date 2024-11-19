@@ -199,7 +199,7 @@ const AddInvestor = () => {
                   </div>
                   <div className="col-12 md:col-3">
                     <Field
-                      label="Aadhar Nummber"
+                      label="Aadhar Number"
                       component={InputField}
                       name="aadharNumber"
                     />

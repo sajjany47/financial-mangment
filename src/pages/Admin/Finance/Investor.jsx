@@ -25,6 +25,7 @@ import * as Yup from "yup";
 import { PayoutFrequencies } from "../../../shared/Config";
 import { Tag } from "primereact/tag";
 import FinanceSearch from "./FinanceSearch";
+import InvestorBulkUpload from "./Investor_Bulk_Upload/InvestorBulkUpload";
 
 const validationSchema = Yup.object({
   investmentAmount: Yup.string().required("Investment Amount is required"),
@@ -65,6 +66,7 @@ const Investor = () => {
   const [searchShow, setSearchShow] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const [visible, setVisible] = useState(false);
+  const [bulVisible, setBulkVisible] = useState(false);
 
   useEffect(() => {
     if (searchKey?.page === "investor") {
@@ -121,6 +123,13 @@ const Investor = () => {
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Investor"}</span>
         <div className="flex gap-2">
+          <Button
+            label="Bulk Upload"
+            icon="pi pi-file-arrow-up"
+            onClick={() => {
+              setBulkVisible(true);
+            }}
+          />
           {searchShow ? (
             <Button
               icon="pi pi-times"
@@ -264,6 +273,11 @@ const Investor = () => {
       </>
     );
   };
+
+  const handelDialogeClose = () => {
+    setBulkVisible(false);
+    getList();
+  };
   return (
     <>
       {loading && <Loader />}
@@ -311,6 +325,17 @@ const Investor = () => {
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
+
+      <Dialog
+        header={"Bulk Investor Upload"}
+        visible={bulVisible}
+        style={{ width: "80vw" }}
+        onHide={() => {
+          handelDialogeClose();
+        }}
+      >
+        <InvestorBulkUpload handelDialogeClose={handelDialogeClose} />
+      </Dialog>
 
       <Dialog
         header={"Apply Reedem"}

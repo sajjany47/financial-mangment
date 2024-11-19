@@ -91,11 +91,3 @@ export const leadBulkUpload = async (payload) => {
   );
   return response.data;
 };
-
-export const downloadExcel = async () => {
-  const response = await Instance.get(`/loan/download-excel`, {
-    ...headerWithToken(),
-    responseType: "blob",
-  });
-  return response.data;
-};

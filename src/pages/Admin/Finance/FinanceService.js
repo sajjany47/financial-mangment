@@ -1,4 +1,8 @@
-import { headerWithToken, Instance } from "../../../shared/constant";
+import {
+  headerWithFormData,
+  headerWithToken,
+  Instance,
+} from "../../../shared/constant";
 
 export const InvestorDatatable = async (payload) => {
   const response = await Instance.post(
@@ -69,6 +73,32 @@ export const financepayNow = async (payload) => {
 export const financeReedemApply = async (payload) => {
   const response = await Instance.post(
     `/finance/reedem-apply`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
+export const readInvestorExcel = async (payload) => {
+  const response = await Instance.post(
+    `/finance/investor/read-excel`,
+    payload,
+    headerWithFormData()
+  );
+  return response.data;
+};
+
+export const downloadInvestorExcel = async () => {
+  const response = await Instance.get(`/finance/investor/download-excel`, {
+    ...headerWithToken(),
+    responseType: "blob",
+  });
+  return response.data;
+};
+
+export const insertInvestorExcel = async (payload) => {
+  const response = await Instance.post(
+    `/finance/investor/insert/excel`,
     payload,
     headerWithToken()
   );
