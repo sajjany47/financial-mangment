@@ -122,6 +122,14 @@ input[type="file"] {
   font-weight: bold; /* Optional: make the text bold */
 }
 
+/* Custom styling for DataTable header */
+.danger .p-datatable-thead > tr > th {
+  background-color: #e70d0d; /* Set your desired background color */
+  color: white; /* Optional: change text color */
+  text-align: center; /* Optional: center the text */
+  font-weight: bold; /* Optional: make the text bold */
+}
+
 
 
 @media (max-width: 540px) {

@@ -384,6 +384,11 @@ const Lead = () => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
   };
 
+  const handelDialogeClose = () => {
+    setBulkVisible(false);
+    getLeadList();
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -436,10 +441,10 @@ const Lead = () => {
         visible={bulVisible}
         style={{ width: "80vw" }}
         onHide={() => {
-          setBulkVisible(false);
+          handelDialogeClose();
         }}
       >
-        <LeadBulkUpload />
+        <LeadBulkUpload handelDialogeClose={handelDialogeClose} />
       </Dialog>
 
       <Dialog

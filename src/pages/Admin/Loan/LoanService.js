@@ -83,6 +83,15 @@ export const applicationList = async (payload) => {
   return response.data;
 };
 
+export const leadBulkUpload = async (payload) => {
+  const response = await Instance.post(
+    `/loan/lead/bulk-upload`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
+
 export const downloadExcel = async () => {
   const response = await Instance.get(`/loan/download-excel`, {
     ...headerWithToken(),

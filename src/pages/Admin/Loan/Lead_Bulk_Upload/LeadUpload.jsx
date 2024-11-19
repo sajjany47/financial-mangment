@@ -6,31 +6,30 @@ import { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 import Loader from "../../../../component/Loader";
 import ExcelJS from "exceljs";
-import { loanTypeGetList } from "../../Operation_Hub/OperationHubService";
-import { useSelector } from "react-redux";
+import { loanTypeList } from "../../Operation_Hub/OperationHubService";
 
 const LeadUpload = (props) => {
-  const userDetails = useSelector((state) => state.user.user.data);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [loanTypeOption, setLoanTypeOption] = useState([]);
 
   useEffect(() => {
-    loanTypeDetails(101);
+    loanTypeDetails();
   }, []);
 
-  const loanTypeDetails = (country) => {
+  const loanTypeDetails = () => {
     setLoading(true);
-    loanTypeGetList({ country: country })
+
+    loanTypeList()
       .then((res) => {
         setLoanTypeOption(res.data);
-
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
       });
   };
+
   const handelDownload = async () => {
     setLoading(true);
     const headers = [
@@ -44,7 +43,11 @@ const LeadUpload = (props) => {
       "BRANCH CODE",
     ];
 
-    const loanTypes = loanTypeOption.map((item) => item.name);
+    const filterLoanType = loanTypeOption.filter(
+      (item) => item.isActive === true
+    );
+
+    const loanTypes = filterLoanType.map((item) => item.name);
 
     async function createExcelWithDropdown() {
       const workbook = new ExcelJS.Workbook();
@@ -104,6 +107,7 @@ const LeadUpload = (props) => {
   };
 
   const handelSubmit = () => {
+    // setLoading(true);
     if (file) {
       const reader = new FileReader(); // Create a FileReader to read the file
 
@@ -149,6 +153,8 @@ const LeadUpload = (props) => {
 
       reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
     }
+
+    // setLoading(false);
   };
   return (
     <>
@@ -189,9 +195,6 @@ const LeadUpload = (props) => {
             <p className="m-0">Drag and drop files to here to upload.</p>
           }
           style={{ width: "100%", marginTop: "10px" }}
-          // uploadHandler={(e) => {
-          //   setFile(e.files[0]);
-          // }}
           onSelect={(e) => {
             setFile(e.files[0]);
           }}
@@ -201,6 +204,7 @@ const LeadUpload = (props) => {
             label={"Submit & Next"}
             icon="pi pi-arrow-right"
             iconPos="right"
+            disabled={file === null ? true : false}
             onClick={() => {
               handelSubmit();
               props.next();

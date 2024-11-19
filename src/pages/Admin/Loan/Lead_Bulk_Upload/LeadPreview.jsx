@@ -2,11 +2,18 @@
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { leadBulkUpload } from "../LoanService";
+import Loader from "../../../../component/Loader";
 
 const LeadPreview = (props) => {
-  const [data, setData] = useState(props.data);
+  console.log(props.data);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setData(props.data);
+  }, [props]);
   const handelDelete = (item, index) => {
     const filterData = data.filter((elm, ind) => ind !== index.rowIndex);
     setData(filterData);
@@ -29,8 +36,21 @@ const LeadPreview = (props) => {
       </>
     );
   };
+
+  const handelSubmit = () => {
+    setLoading(true);
+    leadBulkUpload({ data: data })
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        props.getErrorData(error.response.data.data);
+      });
+  };
   return (
     <>
+      {loading && <Loader />}
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium p-1">
         <div className="card p-fluid">
           <DataTable
@@ -66,7 +86,10 @@ const LeadPreview = (props) => {
               label={"Submit & Next"}
               icon="pi pi-arrow-right"
               iconPos="right"
-              onClick={() => props.next()}
+              onClick={() => {
+                handelSubmit();
+                props.next();
+              }}
               type="submit"
             />
           </div>
