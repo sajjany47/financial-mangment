@@ -45,6 +45,9 @@ import Document from "./pages/Admin/Operation_Hub/Document";
 import Charges from "./pages/Admin/Operation_Hub/Charges";
 import LoanType from "./pages/Admin/Operation_Hub/LoanType";
 import DocumentType from "./pages/Admin/Operation_Hub/DocumentType";
+import FinancialReports from "./pages/Admin/Reports/FinancialReports";
+import CustomerReports from "./pages/Admin/Reports/CustomerReports";
+import LoanPerformance from "./pages/Admin/Reports/LoanPerformance";
 
 function App() {
   let isRefreshing = false;
@@ -169,6 +172,13 @@ function App() {
             <Route
               path="/finance/investor-details/:id"
               element={<InvestorViewDetails />}
+            />
+
+            <Route path="/reports/financial" element={<FinancialReports />} />
+            <Route path="/reports/customer" element={<CustomerReports />} />
+            <Route
+              path="/reports/loan-performance"
+              element={<LoanPerformance />}
             />
           </Route>
         </Routes>

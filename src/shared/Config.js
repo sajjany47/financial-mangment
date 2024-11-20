@@ -286,3 +286,33 @@ export const PayoutKey = {
   ANNUALLY: "annually",
   AT_MATURITY: "at_maturity",
 };
+
+export const ColorCode = {
+  DARK_BLUE: "#005F9E",
+  MEDIUM_BLUE: "#0079C1",
+  LIGHT_BLUE: "#00A2E8",
+  CYAN: "#33CFFF",
+  TEAL: "#00C49A",
+  GREEN: "#76C043",
+  YELLOW: "#FFDD00",
+  ORANGE: "#FF9900",
+  RED_ORANGE: "#FF5E00",
+  RED: "#D42E12",
+  PINK: "#FF69B4",
+  PURPLE: "#8A2BE2",
+};
+
+export const MonthColors = [
+  { month: "January", color: "#005F9E" }, // Dark Blue
+  { month: "February", color: "#0079C1" }, // Medium Blue
+  { month: "March", color: "#00A2E8" }, // Light Blue
+  { month: "April", color: "#33CFFF" }, // Cyan
+  { month: "May", color: "#00C49A" }, // Teal
+  { month: "June", color: "#76C043" }, // Green
+  { month: "July", color: "#FFDD00" }, // Yellow
+  { month: "August", color: "#FF9900" }, // Orange
+  { month: "September", color: "#FF5E00" }, // Red Orange
+  { month: "October", color: "#D42E12" }, // Red
+  { month: "November", color: "#FF69B4" }, // Pink
+  { month: "December", color: "#8A2BE2" }, // Purple
+];
