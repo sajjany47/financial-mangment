@@ -23,15 +23,7 @@ ChartJS.register(
 const BarChart = (props) => {
   const data = {
     labels: props.label,
-    datasets: [
-      {
-        label: props.dataSetLabel,
-        data: props.data,
-        backgroundColor: props.color,
-        borderWidth: 1,
-        barThickness: 40,
-      },
-    ],
+    datasets: props.dataset,
   };
   const options = {
     maintainAspectRatio: false,

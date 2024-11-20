@@ -88,10 +88,16 @@ const FinancialReports = () => {
             <Card title="Investor Month Wise Report">
               <div style={{ height: "300px" }}>
                 <BarChart
-                  data={[65, 59, 80, 81, 56, 55, 40, 34, 76, 20, 47, 98]}
-                  dataSetLabel="Newly Added Investors"
+                  dataset={[
+                    {
+                      label: "Investors",
+                      data: [65, 59, 80, 81, 56, 55, 40, 34, 76, 20, 47, 98],
+                      backgroundColor: "#00C49A",
+                      borderWidth: 1,
+                      barThickness: 40,
+                    },
+                  ]}
                   label={MonthColors.map((item) => item.month)}
-                  color={"#00C49A"}
                 />
               </div>
             </Card>
@@ -100,13 +106,29 @@ const FinancialReports = () => {
             <Card title="Investment Month Wise Report">
               <div style={{ height: "300px" }}>
                 <BarChart
-                  data={[
-                    65000, 59000, 80000, 81000, 56000, 55000, 40000, 34000,
-                    76000, 20000, 47000, 98000,
+                  dataset={[
+                    {
+                      label: "Investment",
+                      data: [
+                        65000, 59000, 80000, 81000, 56000, 55000, 40000, 34000,
+                        76000, 20000, 47000, 98000,
+                      ],
+                      backgroundColor: "#FF5E00",
+                      borderWidth: 1,
+                      barThickness: 40,
+                    },
+                    {
+                      label: "Reedem",
+                      data: [
+                        6500, 5900, 8000, 8100, 5600, 5500, 4000, 3400, 7600,
+                        2000, 4700, 9800,
+                      ],
+                      backgroundColor: "#8A2BE2",
+                      borderWidth: 1,
+                      barThickness: 40,
+                    },
                   ]}
-                  dataSetLabel="Newly Added Investment"
                   label={MonthColors.map((item) => item.month)}
-                  color={"#FF5E00"}
                 />
               </div>
             </Card>
