@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import Loader from "../../../component/Loader";
 import { Calendar } from "primereact/calendar";
 import PieChart from "../../../component/chart/PieChart";
-import { ColorCode, MonthColors } from "../../../shared/Config";
+import { ColorCode } from "../../../shared/Config";
 import { Card } from "primereact/card";
 import BarChart from "../../../component/chart/BarChart";
 import moment from "moment";
+import { FinanceYearReport } from "./ReportService";
 
 const FinancialReports = () => {
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(null);
+  const [data, setData] = useState({});
 
   useEffect(() => {
     const currentDate = moment();
@@ -23,9 +25,31 @@ const FinancialReports = () => {
       .month(2)
       .date(31);
     setDate([new Date(startOfFinancialYear), new Date(endOfFinancialYear)]);
-
-    setLoading(false);
+    reportData(new Date(startOfFinancialYear), new Date(endOfFinancialYear));
   }, []);
+
+  const reportData = (startDate, endDate) => {
+    setLoading(true);
+    FinanceYearReport({
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+    })
+      .then((res) => {
+        setData(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const handelDateChange = (e) => {
+    if (e[1] !== null) {
+      reportData(new Date(e[0]), new Date(e[1]));
+    }
+
+    setDate(e);
+  };
 
   return (
     <>
@@ -38,7 +62,9 @@ const FinancialReports = () => {
           <div className="flex gap-2">
             <Calendar
               value={date}
-              onChange={(e) => setDate(e.value)}
+              onChange={(e) => {
+                handelDateChange(e.value);
+              }}
               view="month"
               dateFormat="mm/yy"
               selectionMode="range"
@@ -55,9 +81,13 @@ const FinancialReports = () => {
                     "Active Investor",
                     "Newly Added Investors",
                   ]}
-                  data={[40, 22, 12]}
+                  data={[
+                    data?.investor?.totalInvestor,
+                    data?.investor?.totalActiveInvestor,
+                    data?.investor?.newInvestor,
+                  ]}
                   color={[
-                    ColorCode.DARK_BLUE,
+                    ColorCode.GREEN,
                     ColorCode.RED_ORANGE,
                     ColorCode.CYAN,
                   ]}
@@ -73,62 +103,80 @@ const FinancialReports = () => {
                     "Total Investment Amount",
                     "Reedem Amount",
                     "Remaining Amount",
+                    "New Investment Amount",
                   ]}
-                  data={[1600000, 600000, 1000000]}
+                  data={[
+                    data?.investment?.totalInvestment,
+                    data?.investment?.reedemAmount,
+                    data?.investment?.remainingInvestAmount,
+                    data?.investment?.newInvestment,
+                  ]}
                   color={[
                     ColorCode.MEDIUM_BLUE,
-                    ColorCode.YELLOW,
+                    ColorCode.RED_ORANGE,
                     ColorCode.ORANGE,
+                    ColorCode.GREEN,
                   ]}
-                />
-              </div>
-            </Card>
-          </div>
-          <div className="sm:col-12 md:col-12">
-            <Card title="Investor Month Wise Report">
-              <div style={{ height: "300px" }}>
-                <BarChart
-                  dataset={[
-                    {
-                      label: "Investors",
-                      data: [65, 59, 80, 81, 56, 55, 40, 34, 76, 20, 47, 98],
-                      backgroundColor: "#00C49A",
-                      borderWidth: 1,
-                      barThickness: 40,
-                    },
-                  ]}
-                  label={MonthColors.map((item) => item.month)}
                 />
               </div>
             </Card>
           </div>
           <div className="sm:col-12 md:col-12">
             <Card title="Investment Month Wise Report">
-              <div style={{ height: "300px" }}>
+              <div style={{ height: "400px" }}>
                 <BarChart
                   dataset={[
                     {
                       label: "Investment",
-                      data: [
-                        65000, 59000, 80000, 81000, 56000, 55000, 40000, 34000,
-                        76000, 20000, 47000, 98000,
-                      ],
-                      backgroundColor: "#FF5E00",
+                      data: data?.monthWiseInvestor?.map(
+                        (item) => item.totalInvestAmount
+                      ),
+                      backgroundColor: ColorCode.CYAN,
                       borderWidth: 1,
-                      barThickness: 40,
-                    },
-                    {
-                      label: "Reedem",
-                      data: [
-                        6500, 5900, 8000, 8100, 5600, 5500, 4000, 3400, 7600,
-                        2000, 4700, 9800,
-                      ],
-                      backgroundColor: "#8A2BE2",
-                      borderWidth: 1,
-                      barThickness: 40,
+                      barThickness: 50,
                     },
                   ]}
-                  label={MonthColors.map((item) => item.month)}
+                  label={data?.monthWiseInvestor?.map((item) => item._id)}
+                />
+              </div>
+            </Card>
+          </div>
+          <div className="sm:col-12 md:col-12">
+            <Card title="Investor Month Wise Report">
+              <div style={{ height: "400px" }}>
+                <BarChart
+                  dataset={[
+                    {
+                      label: "Investment",
+                      data: data?.monthWiseInvestor?.map(
+                        (item) => item.totalInvestorCount
+                      ),
+                      backgroundColor: ColorCode.GREEN,
+                      borderWidth: 1,
+                      barThickness: 50,
+                    },
+                  ]}
+                  label={data?.monthWiseInvestor?.map((item) => item._id)}
+                />
+              </div>
+            </Card>
+          </div>
+          <div className="sm:col-12 md:col-12">
+            <Card title="Reedem Month Wise Report">
+              <div style={{ height: "400px" }}>
+                <BarChart
+                  dataset={[
+                    {
+                      label: "Reedem",
+                      data: data?.monthWiseReedem?.map(
+                        (item) => item.totalReedemAmount
+                      ),
+                      backgroundColor: ColorCode.PINK,
+                      borderWidth: 1,
+                      barThickness: 50,
+                    },
+                  ]}
+                  label={data?.monthWiseReedem?.map((item) => item._id)}
                 />
               </div>
             </Card>

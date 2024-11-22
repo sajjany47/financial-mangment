@@ -43,8 +43,9 @@ const BarChart = (props) => {
       datalabels: {
         display: true,
         color: "black",
-        anchor: "end",
+        anchor: "center",
         align: "end",
+        offset: -20,
         formatter: (value) => `${value}`,
       },
     },
