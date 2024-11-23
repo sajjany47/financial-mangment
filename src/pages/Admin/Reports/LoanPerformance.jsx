@@ -3,10 +3,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Loader from "../../../component/Loader";
 import { Calendar } from "primereact/calendar";
-import { FinanceYearReport } from "./ReportService";
+import { FinanceYearLoanReport } from "./ReportService";
 import { Card } from "primereact/card";
 import BarChart from "../../../component/chart/BarChart";
 import { ColorCode } from "../../../shared/Config";
+import PieChart from "../../../component/chart/PieChart";
 
 const LoanPerformance = () => {
   const [loading, setLoading] = useState(false);
@@ -30,12 +31,29 @@ const LoanPerformance = () => {
 
   const reportData = (startDate, endDate) => {
     setLoading(true);
-    FinanceYearReport({
+    FinanceYearLoanReport({
       startDate: new Date(startDate),
       endDate: new Date(endDate),
     })
       .then((res) => {
-        setData(res.data);
+        const allMonths = new Set([
+          ...res.data.monthWiseLead.map((item) => item._id),
+          ...res.data.monthWiseLoan.map((item) => item._id),
+        ]);
+        const mergedData = Array.from(allMonths).map((month) => {
+          const lead =
+            res.data.monthWiseLead.find((item) => item._id === month)?.total ||
+            0;
+          const loan =
+            res.data.monthWiseLoan.find((item) => item._id === month)?.total ||
+            0;
+          return {
+            month,
+            lead,
+            loan,
+          };
+        });
+        setData({ ...res.data, loanMonthWise: mergedData });
         setLoading(false);
       })
       .catch(() => {
@@ -50,6 +68,7 @@ const LoanPerformance = () => {
 
     setDate(e);
   };
+
   return (
     <>
       {loading && <Loader />}
@@ -71,6 +90,58 @@ const LoanPerformance = () => {
           </div>
         </div>
         <div className="grid justify-content-around mt-4">
+          <div className="sm:col-12 md:col-6">
+            <Card title="Loan Performance">
+              <div style={{ height: "300px" }}>
+                <PieChart
+                  label={[
+                    "Total Lead",
+                    "Approved Loan",
+                    "Incompleted Loan",
+                    "Rejected Loan",
+                  ]}
+                  data={[
+                    data?.loan?.lead,
+                    data?.loan?.approvedLoan,
+                    data?.loan?.incompletedLoan,
+                    data?.loan?.rejectLoan,
+                  ]}
+                  color={[
+                    ColorCode.GREEN,
+                    ColorCode.RED_ORANGE,
+                    ColorCode.CYAN,
+                    ColorCode.RED,
+                  ]}
+                />
+              </div>
+            </Card>
+          </div>
+          <div className="sm:col-12 md:col-6">
+            <Card title="EMI Report">
+              <div style={{ height: "300px" }}>
+                <PieChart
+                  label={[
+                    "Total EMI",
+                    "Paid EMI",
+                    "Unpaid EMI",
+                    "Defaulter EMI",
+                  ]}
+                  data={[
+                    data?.emi?.totalEmi,
+                    data?.emi?.paidEmi,
+                    data?.emi?.unpaidEmi,
+                    data?.emi?.defaultEmi,
+                  ]}
+                  color={[
+                    ColorCode.MEDIUM_BLUE,
+                    ColorCode.RED_ORANGE,
+                    ColorCode.ORANGE,
+                    ColorCode.RED,
+                  ]}
+                />
+              </div>
+            </Card>
+          </div>
           <div className="sm:col-12 md:col-12">
             <Card title="Loan Performance Month Wise Report">
               <div style={{ height: "400px" }}>
@@ -78,15 +149,20 @@ const LoanPerformance = () => {
                   dataset={[
                     {
                       label: "Lead",
-                      data: data?.monthWiseInvestor?.map(
-                        (item) => item.totalInvestAmount
-                      ),
+                      data: data?.loanMonthWise?.map((item) => item.lead),
                       backgroundColor: ColorCode.CYAN,
                       borderWidth: 1,
                       barThickness: 50,
                     },
+                    {
+                      label: "Loan",
+                      data: data?.loanMonthWise?.map((item) => item.loan),
+                      backgroundColor: ColorCode.DARK_BLUE,
+                      borderWidth: 1,
+                      barThickness: 50,
+                    },
                   ]}
-                  label={data?.monthWiseInvestor?.map((item) => item._id)}
+                  label={data?.loanMonthWise?.map((item) => item.month)}
                 />
               </div>
             </Card>
