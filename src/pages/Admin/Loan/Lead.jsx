@@ -14,6 +14,7 @@ import {
   applicationDelete,
   applicationList,
   applicationUpdate,
+  leadAssignAgent,
 } from "./LoanService";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
@@ -25,6 +26,9 @@ import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import LoanSearch from "./LoanSearch";
 import LeadBulkUpload from "./Lead_Bulk_Upload/LeadBulkUpload";
+import { Dropdown } from "primereact/dropdown";
+import { BranchAgentList } from "../Loan_Management/ManageService";
+import { capitalizeFirstLetter } from "../../../shared/constant";
 
 const leadSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -47,6 +51,7 @@ const Lead = () => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [assignAgentVisible, setAssignAgentVisible] = useState(false);
   const [bulVisible, setBulkVisible] = useState(false);
   const [branch, setBranch] = useState([]);
   const [actionType, setActionType] = useState("add");
@@ -54,6 +59,9 @@ const Lead = () => {
   const [loanTypeOption, setLoanTypeOption] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchShow, setSearchShow] = useState(false);
+  const [agentList, setAgentList] = useState([]);
+  const [selectAgent, setSelectAgent] = useState("");
+  const [assignType, setAssignType] = useState("");
 
   useEffect(() => {
     if (searchKey?.page === "lead") {
@@ -134,10 +142,10 @@ const Lead = () => {
           }))
         );
 
-        setLoading(false);
+        // setLoading(false);
       })
       .catch(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   };
   const getLeadList = () => {
@@ -178,7 +186,7 @@ const Lead = () => {
             state: userDetails.state,
             city: userDetails.city,
           };
-    setLoading(true);
+    // setLoading(true);
     branchList(payload)
       .then((res) => {
         setBranch(
@@ -187,10 +195,10 @@ const Lead = () => {
             value: item._id,
           }))
         );
-        setLoading(false);
+        // setLoading(false);
       })
       .catch(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   };
 
@@ -206,6 +214,7 @@ const Lead = () => {
               setBulkVisible(true);
             }}
           />
+
           {searchShow ? (
             <Button
               icon="pi pi-times"
@@ -354,6 +363,20 @@ const Lead = () => {
             confirm();
           },
         },
+        {
+          visible:
+            userDetails.position === Position.ADMIN ||
+            userDetails.position === Position.BM ||
+            userDetails.position === Position.SM ||
+            userDetails.position === Position.CM ||
+            userDetails.position === Position.LM,
+          label: "Assign Agent",
+          command: () => {
+            branchAgentList(selectData.branchDetails._id);
+            setAssignAgentVisible(true);
+            setAssignType("single");
+          },
+        },
       ],
     },
   ];
@@ -387,6 +410,43 @@ const Lead = () => {
   const handelDialogeClose = () => {
     setBulkVisible(false);
     getLeadList();
+  };
+
+  const branchAgentList = (branchId) => {
+    BranchAgentList(branchId).then((res) => {
+      setAgentList(
+        res.data.map((item) => ({
+          ...item,
+          label: `${item.name} (${capitalizeFirstLetter(
+            item.position.replace(/-/g, " ")
+          )}-${item.branchDetails.code})`,
+          value: item._id,
+        }))
+      );
+    });
+  };
+
+  const handelAssingAgentSubmit = () => {
+    const findAgent = agentList.find((item) => item._id === selectAgent);
+    const reqData = {
+      type: assignType,
+      leadId:
+        assignType === "single"
+          ? [{ id: selectData._id, branchId: selectData.branchDetails._id }]
+          : [],
+      agentId: { id: findAgent._id, branchId: findAgent.branch },
+    };
+
+    leadAssignAgent(reqData)
+      .then((res) => {
+        Swal.fire({ title: res.message, icon: "success" });
+        setLoading(false);
+        setAssignAgentVisible(false);
+        getLeadList();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -541,6 +601,40 @@ const Lead = () => {
             </Form>
           )}
         </Formik>
+      </Dialog>
+
+      <Dialog
+        header={"Select Select Agent"}
+        visible={assignAgentVisible}
+        style={{ width: "30vw" }}
+        onHide={() => {
+          setAssignAgentVisible(false);
+          getLeadList();
+          setSelectAgent("");
+        }}
+      >
+        <div className="surface-0">
+          <div className="grid">
+            <div className="col-12 md:col-12 m-2 ">
+              <Dropdown
+                filter
+                value={selectAgent}
+                onChange={(e) => setSelectAgent(e.value)}
+                options={agentList}
+                placeholder="Select a agent"
+                className="w-full"
+              />
+            </div>
+            <div className="col-12 md:col-12 m-2 ">
+              <Button
+                label="Submit"
+                className="w-full"
+                onClick={handelAssingAgentSubmit}
+                disabled={selectAgent === "" ? true : false}
+              />
+            </div>
+          </div>
+        </div>
       </Dialog>
     </>
   );

@@ -91,3 +91,12 @@ export const leadBulkUpload = async (payload) => {
   );
   return response.data;
 };
+
+export const leadAssignAgent = async (payload) => {
+  const response = await Instance.post(
+    `/loan/lead/assign-agent`,
+    payload,
+    headerWithToken()
+  );
+  return response.data;
+};
