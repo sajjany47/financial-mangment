@@ -152,14 +152,14 @@ const LoanPerformance = () => {
                       data: data?.loanMonthWise?.map((item) => item.lead),
                       backgroundColor: ColorCode.CYAN,
                       borderWidth: 1,
-                      barThickness: 50,
+                      barThickness: 30,
                     },
                     {
                       label: "Loan",
                       data: data?.loanMonthWise?.map((item) => item.loan),
                       backgroundColor: ColorCode.DARK_BLUE,
                       borderWidth: 1,
-                      barThickness: 50,
+                      barThickness: 30,
                     },
                   ]}
                   label={data?.loanMonthWise?.map((item) => item.month)}
