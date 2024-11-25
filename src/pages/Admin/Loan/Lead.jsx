@@ -491,6 +491,19 @@ const Lead = () => {
             sortable
             sortField="branchDetails.name"
           />
+          <Column
+            field="leadAssignAgent.name"
+            header="Assign Agent"
+            body={(item) => (
+              <div>
+                {`${
+                  item.leadAssignAgent !== ""
+                    ? `${item.leadAssignAgent.name} (${item.leadAssignAgent.username})`
+                    : ""
+                }  `}
+              </div>
+            )}
+          />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
         <CPaginator totalRecords={total} />
