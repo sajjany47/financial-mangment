@@ -43,10 +43,10 @@ const LoanPerformance = () => {
         const mergedData = Array.from(allMonths).map((month) => {
           const lead =
             res.data.monthWiseLead.find((item) => item._id === month)?.total ||
-            0;
+            "";
           const loan =
             res.data.monthWiseLoan.find((item) => item._id === month)?.total ||
-            0;
+            "";
           return {
             month,
             lead,
