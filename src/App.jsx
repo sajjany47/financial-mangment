@@ -48,6 +48,7 @@ import DocumentType from "./pages/Admin/Operation_Hub/DocumentType";
 import FinancialReports from "./pages/Admin/Reports/FinancialReports";
 import CustomerReports from "./pages/Admin/Reports/CustomerReports";
 import LoanPerformance from "./pages/Admin/Reports/LoanPerformance";
+import Profile from "./pages/Admin/settings/Profile";
 
 function App() {
   let isRefreshing = false;
@@ -180,6 +181,7 @@ function App() {
               path="/reports/loan-performance"
               element={<LoanPerformance />}
             />
+            <Route path="/setting/profile" element={<Profile />} />
           </Route>
         </Routes>
       </BrowserRouter>

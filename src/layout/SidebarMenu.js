@@ -87,22 +87,9 @@ const sidebarMenu = {
       ],
     },
     {
-      title: "Notifications",
-      icon: "pi pi-bell",
-      submenu: [
-        { title: "System Notifications", route: "/notifications/system" },
-        { title: "Customer Notifications", route: "/notifications/customer" },
-        { title: "Email Templates", route: "/notifications/email-templates" },
-      ],
-    },
-    {
-      title: "Support",
-      icon: "pi pi-question-circle",
-      submenu: [
-        { title: "Customer Support Tickets", route: "/support/tickets" },
-        { title: "FAQs", route: "/support/faqs" },
-        { title: "Contact Support", route: "/support/contact" },
-      ],
+      title: "Setting",
+      icon: "pi pi-cog",
+      submenu: [{ title: "Profile", route: "/setting/profile" }],
     },
   ],
   "branch-manager": [],
