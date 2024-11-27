@@ -448,6 +448,7 @@ const Branch = () => {
                           label="Code"
                           component={InputField}
                           name="code"
+                          disabled
                           onChange={(e) =>
                             setFieldValue("code", e.target.value.toUpperCase())
                           }
