@@ -31,7 +31,6 @@ const createBranchSchema = Yup.object().shape({
   phone: Yup.string().required("Phone is required"),
   address: Yup.string().required("Address is required"),
   pincode: Yup.string().required("Pincode is required"),
-  code: Yup.string().required("Code is required"),
 });
 const Branch = () => {
   const dispatch = useDispatch();
@@ -147,7 +146,6 @@ const Branch = () => {
           name: "",
           phone: "",
           email: "",
-          code: "",
           address: "",
           state: "",
           country: "",
@@ -444,16 +442,18 @@ const Branch = () => {
                         name="pincode"
                       />
                     </div>
-                    <div className="col-12 md:col-4">
-                      <Field
-                        label="Code"
-                        component={InputField}
-                        name="code"
-                        onChange={(e) =>
-                          setFieldValue("code", e.target.value.toUpperCase())
-                        }
-                      />
-                    </div>
+                    {actionType !== "add" && (
+                      <div className="col-12 md:col-4">
+                        <Field
+                          label="Code"
+                          component={InputField}
+                          name="code"
+                          onChange={(e) =>
+                            setFieldValue("code", e.target.value.toUpperCase())
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
