@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Position } from "../shared/Config";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { capitalizeFirstLetter } from "../shared/constant";
+import { SlashString } from "../shared/constant";
 import Topbar from "./Topbar";
 
 const SidebarLayout = () => {
@@ -75,7 +75,7 @@ const SidebarLayout = () => {
             icon={<i className={"pi pi-bars"}></i>}
             style={{ marginTop: "5px" }}
           >
-            <h4>{capitalizeFirstLetter(user.data.position)}</h4>
+            <h4>{SlashString(user.data.position)}</h4>
           </MenuItem>
           {userMenu.map((item, index) => {
             return item.submenu ? (
