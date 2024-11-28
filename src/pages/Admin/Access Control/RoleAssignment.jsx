@@ -1,43 +1,68 @@
+import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import Loader from "../../../component/Loader";
-import { DataTable } from "primereact/datatable";
-import { Button } from "primereact/button";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearch } from "../../../store/reducer/searchReducer";
 import { Column } from "primereact/column";
-import {
-  documentTypeCreate,
-  documentTypeList,
-  documentTypeUpdate,
-} from "./OperationHubService";
+import { Tag } from "primereact/tag";
+import { DataTable } from "primereact/datatable";
+import { createMenu, menuList, updateMenu } from "./AccessControlService";
+import Swal from "sweetalert2";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
-import { InputField, RadioField } from "../../../component/FieldType";
-import Swal from "sweetalert2";
+import {
+  InputField,
+  MultiDropdownField,
+  RadioField,
+} from "../../../component/FieldType";
 import * as Yup from "yup";
-import { Tag } from "primereact/tag";
 
-const documentTypeSchema = Yup.object().shape({
+const RoleAssignSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  description: Yup.string().required("Description is required"),
+  menuList: Yup.array()
+    .required("Primary Menu is required")
+    .min(1, "Minimum one field is required"),
 });
-
-const DocumentType = () => {
+const RoleAssignment = () => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
   const [list, setList] = useState([]);
-  const [visible, setVisible] = useState(false);
   const [actionType, setActionType] = useState("add");
-  const [selectData, setSelectData] = useState({});
+  const [visible, setVisible] = useState(false);
 
   const initialValues =
     actionType === "add"
       ? {
           name: "",
-          description: "",
+          menuList: [],
         }
       : {
-          name: selectData.name,
-          description: selectData.description,
-          isActive: selectData.isActive,
+          name: selectedItem.name,
+          menuList: selectedItem.menuList,
+          isActive: selectedItem.isActive,
         };
+
+  useEffect(() => {
+    if (searchKey?.page === "role") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "role",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     getList();
@@ -48,7 +73,7 @@ const DocumentType = () => {
   const getList = () => {
     setLoading(true);
 
-    documentTypeList()
+    menuList()
       .then((res) => {
         setList(res.data);
         setLoading(false);
@@ -57,26 +82,24 @@ const DocumentType = () => {
         setLoading(false);
       });
   };
+
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-        <span className="text-xl text-900 font-bold">
-          {"Document Type List"}
-        </span>
-
-        <Button
-          label="Add"
-          icon="pi pi-plus"
-          type="button"
-          onClick={() => {
-            setVisible(true);
-            setActionType("add");
-          }}
-        />
+        <span className="text-xl text-900 font-bold">{"Role List"}</span>
+        <div className="flex gap-2">
+          <Button
+            label={"Add"}
+            icon="pi pi-plus"
+            onClick={() => {
+              setActionType("add");
+              setVisible(true);
+            }}
+          />
+        </div>
       </div>
     );
   };
-
   const actionBodyTemplate = (item) => {
     return (
       <>
@@ -87,19 +110,18 @@ const DocumentType = () => {
           aria-label="Filter"
           onClick={() => {
             setVisible(true);
-            setSelectData(item);
+            setSelectedItem(item);
             setActionType("edit");
           }}
         />
       </>
     );
   };
-
   const handelSubmits = (values) => {
     setLoading(true);
 
     if (actionType === "add") {
-      documentTypeCreate({ ...values })
+      createMenu({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -110,7 +132,7 @@ const DocumentType = () => {
           setLoading(false);
         });
     } else {
-      documentTypeUpdate({ ...values, _id: selectData._id })
+      updateMenu({ ...values, _id: selectedItem._id })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -126,7 +148,7 @@ const DocumentType = () => {
   const statusTemplate = (item) => {
     return (
       <>
-        {item.isActive ? (
+        {item?.isInvestorActive ? (
           <Tag severity="success" value="Active" rounded />
         ) : (
           <Tag severity="danger" value="Inactive" rounded />
@@ -134,9 +156,11 @@ const DocumentType = () => {
       </>
     );
   };
+
   return (
     <>
       {loading && <Loader />}
+
       <div className="border-2 border-dashed surface-border border-round surface-ground font-medium mt-3 mb-6">
         <DataTable
           value={list}
@@ -147,48 +171,45 @@ const DocumentType = () => {
           showGridlines
         >
           <Column field="name" header="Name" />
-          <Column field="description" header="Description" />
-          <Column field="isActive" header="Status" body={statusTemplate} />
-          <Column field="createdBy" header="CreatedBy" />
-          <Column field="updatedBy" header="UpdatedBy" />
+          <Column field="menuList" header="Menu" />
+          <Column body={statusTemplate} header="Status" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
       </div>
 
       <Dialog
-        header={
-          actionType === "add" ? "Add Document Type" : "Edit Document Type"
-        }
+        header={actionType === "add" ? "Add Role & Menu" : "Edit Role & Menu"}
         visible={visible}
         style={{ width: "60vw" }}
         onHide={() => {
           setVisible(false);
           setActionType("add");
-          setSelectData({});
+          setSelectedItem({});
         }}
       >
         <Formik
           onSubmit={handelSubmits}
           initialValues={initialValues}
-          validationSchema={documentTypeSchema}
+          validationSchema={RoleAssignSchema}
         >
           {({ handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <div className="grid p-3 border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-12">
                   <Field label="Name" component={InputField} name="name" />
                 </div>
-
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-12">
                   <Field
-                    label="Description"
-                    component={InputField}
-                    name="description"
+                    label="Menu"
+                    component={MultiDropdownField}
+                    name="menuList"
+                    filter
+                    options={[]}
                   />
                 </div>
 
                 {actionType === "edit" && (
-                  <div className="col-12 md:col-4">
+                  <div className="col-12 md:col-12">
                     <Field
                       label="Status"
                       component={RadioField}
@@ -219,4 +240,4 @@ const DocumentType = () => {
   );
 };
 
-export default DocumentType;
+export default RoleAssignment;

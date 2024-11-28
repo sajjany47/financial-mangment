@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearch } from "../../../store/reducer/searchReducer";
+import { Button } from "primereact/button";
+import { Tag } from "primereact/tag";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
 import Loader from "../../../component/Loader";
 import { DataTable } from "primereact/datatable";
-import { Button } from "primereact/button";
 import { Column } from "primereact/column";
-import {
-  documentTypeCreate,
-  documentTypeList,
-  documentTypeUpdate,
-} from "./OperationHubService";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
 import { InputField, RadioField } from "../../../component/FieldType";
-import Swal from "sweetalert2";
-import * as Yup from "yup";
-import { Tag } from "primereact/tag";
+import { createMenu, menuList, updateMenu } from "./AccessControlService";
 
-const documentTypeSchema = Yup.object().shape({
+const primaryMenuSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  description: Yup.string().required("Description is required"),
 });
 
-const DocumentType = () => {
+const PrimaryMenu = () => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -31,13 +30,32 @@ const DocumentType = () => {
     actionType === "add"
       ? {
           name: "",
-          description: "",
+          icon: "",
         }
       : {
           name: selectData.name,
-          description: selectData.description,
           isActive: selectData.isActive,
+          icon: "",
         };
+  useEffect(() => {
+    if (searchKey?.page === "primaryMenu") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "primaryMenu",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     getList();
@@ -48,7 +66,7 @@ const DocumentType = () => {
   const getList = () => {
     setLoading(true);
 
-    documentTypeList()
+    menuList()
       .then((res) => {
         setList(res.data);
         setLoading(false);
@@ -57,26 +75,26 @@ const DocumentType = () => {
         setLoading(false);
       });
   };
+
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">
-          {"Document Type List"}
+          {"Primary Menu List"}
         </span>
-
-        <Button
-          label="Add"
-          icon="pi pi-plus"
-          type="button"
-          onClick={() => {
-            setVisible(true);
-            setActionType("add");
-          }}
-        />
+        <div className="flex gap-2">
+          <Button
+            label="Add"
+            icon="pi pi-plus"
+            type="button"
+            onClick={() => {
+              setVisible(true);
+            }}
+          />
+        </div>
       </div>
     );
   };
-
   const actionBodyTemplate = (item) => {
     return (
       <>
@@ -99,7 +117,7 @@ const DocumentType = () => {
     setLoading(true);
 
     if (actionType === "add") {
-      documentTypeCreate({ ...values })
+      createMenu({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -110,7 +128,7 @@ const DocumentType = () => {
           setLoading(false);
         });
     } else {
-      documentTypeUpdate({ ...values, _id: selectData._id })
+      updateMenu({ ...values, _id: selectData._id })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -147,7 +165,6 @@ const DocumentType = () => {
           showGridlines
         >
           <Column field="name" header="Name" />
-          <Column field="description" header="Description" />
           <Column field="isActive" header="Status" body={statusTemplate} />
           <Column field="createdBy" header="CreatedBy" />
           <Column field="updatedBy" header="UpdatedBy" />
@@ -156,11 +173,9 @@ const DocumentType = () => {
       </div>
 
       <Dialog
-        header={
-          actionType === "add" ? "Add Document Type" : "Edit Document Type"
-        }
+        header={actionType === "add" ? "Add Primary Menu" : "Edit Primary Menu"}
         visible={visible}
-        style={{ width: "60vw" }}
+        style={{ width: "30vw" }}
         onHide={() => {
           setVisible(false);
           setActionType("add");
@@ -170,25 +185,24 @@ const DocumentType = () => {
         <Formik
           onSubmit={handelSubmits}
           initialValues={initialValues}
-          validationSchema={documentTypeSchema}
+          validationSchema={primaryMenuSchema}
         >
           {({ handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <div className="grid p-3 border-2 border-dashed surface-border border-round surface-ground font-medium mt-3">
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-12">
                   <Field label="Name" component={InputField} name="name" />
                 </div>
-
-                <div className="col-12 md:col-6">
+                <div className="col-12 md:col-12">
                   <Field
-                    label="Description"
+                    label="Icon (Prime React Icon Only)"
                     component={InputField}
-                    name="description"
+                    name="icon"
                   />
                 </div>
 
                 {actionType === "edit" && (
-                  <div className="col-12 md:col-4">
+                  <div className="col-12 md:col-12">
                     <Field
                       label="Status"
                       component={RadioField}
@@ -219,4 +233,4 @@ const DocumentType = () => {
   );
 };
 
-export default DocumentType;
+export default PrimaryMenu;

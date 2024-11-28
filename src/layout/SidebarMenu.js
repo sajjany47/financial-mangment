@@ -91,7 +91,17 @@ const sidebarMenu = {
       icon: "pi pi-cog",
       submenu: [{ title: "Profile", route: "/setting/profile" }],
     },
+    {
+      title: "Access Control",
+      icon: "pi pi-inbox",
+      submenu: [
+        { title: "Primary Menu", route: "/menu/list" },
+        { title: "Child Menu", route: "/menu/sub-list" },
+        { title: "Role Assignment", route: "/menu/role" },
+      ],
+    },
   ],
+
   "branch-manager": [],
   "state-manager": [],
   "loan-manager": [],
