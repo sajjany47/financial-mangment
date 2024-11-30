@@ -6,7 +6,11 @@ import { setSearch } from "../../../store/reducer/searchReducer";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
 import { DataTable } from "primereact/datatable";
-import { createMenu, menuList, updateMenu } from "./AccessControlService";
+import {
+  PositionCreate,
+  PositionList,
+  PositionUpdate,
+} from "./AccessControlService";
 import Swal from "sweetalert2";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
@@ -73,7 +77,7 @@ const RoleAssignment = () => {
   const getList = () => {
     setLoading(true);
 
-    menuList()
+    PositionList()
       .then((res) => {
         setList(res.data);
         setLoading(false);
@@ -121,7 +125,7 @@ const RoleAssignment = () => {
     setLoading(true);
 
     if (actionType === "add") {
-      createMenu({ ...values })
+      PositionCreate({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -132,7 +136,7 @@ const RoleAssignment = () => {
           setLoading(false);
         });
     } else {
-      updateMenu({ ...values, _id: selectedItem._id })
+      PositionUpdate({ ...values, _id: selectedItem._id })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);

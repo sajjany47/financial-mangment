@@ -11,7 +11,11 @@ import { Column } from "primereact/column";
 import { Dialog } from "primereact/dialog";
 import { Field, Form, Formik } from "formik";
 import { InputField, RadioField } from "../../../component/FieldType";
-import { createMenu, menuList, updateMenu } from "./AccessControlService";
+import {
+  MenuList,
+  PrimeMenuCreate,
+  PrimeMenuUpdate,
+} from "./AccessControlService";
 
 const primaryMenuSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -35,7 +39,7 @@ const PrimaryMenu = () => {
       : {
           name: selectData.name,
           isActive: selectData.isActive,
-          icon: "",
+          icon: selectData.icon,
         };
   useEffect(() => {
     if (searchKey?.page === "primaryMenu") {
@@ -66,7 +70,7 @@ const PrimaryMenu = () => {
   const getList = () => {
     setLoading(true);
 
-    menuList()
+    MenuList()
       .then((res) => {
         setList(res.data);
         setLoading(false);
@@ -117,7 +121,7 @@ const PrimaryMenu = () => {
     setLoading(true);
 
     if (actionType === "add") {
-      createMenu({ ...values })
+      PrimeMenuCreate({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -128,7 +132,7 @@ const PrimaryMenu = () => {
           setLoading(false);
         });
     } else {
-      updateMenu({ ...values, _id: selectData._id })
+      PrimeMenuUpdate({ ...values, _id: selectData._id })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -165,9 +169,34 @@ const PrimaryMenu = () => {
           showGridlines
         >
           <Column field="name" header="Name" />
+          <Column field="icon" header="Icon" />
           <Column field="isActive" header="Status" body={statusTemplate} />
-          <Column field="createdBy" header="CreatedBy" />
-          <Column field="updatedBy" header="UpdatedBy" />
+          <Column
+            field="createdBy"
+            header="CreatedBy"
+            body={(item) => (
+              <div>
+                {`${
+                  item.createdBy
+                    ? `${item.createdBy.name} (${item.createdBy.username})`
+                    : ""
+                }  `}
+              </div>
+            )}
+          />
+          <Column
+            field="updatedBy"
+            header="UpdatedBy"
+            body={(item) => (
+              <div>
+                {`${
+                  item.updatedBy
+                    ? `${item.updatedBy.name} (${item.updatedBy.username})`
+                    : ""
+                }  `}
+              </div>
+            )}
+          />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
       </div>

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../../store/reducer/searchReducer";
-import { createMenu, menuList, updateMenu } from "./AccessControlService";
+import {
+  ChildMenuCreate,
+  ChildMenuList,
+  ChildMenuUpdate,
+} from "./AccessControlService";
 import { Button } from "primereact/button";
 import Swal from "sweetalert2";
 import { Tag } from "primereact/tag";
@@ -27,6 +31,7 @@ const ChildMenu = () => {
   const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
+  const [option, setOptions] = useState([]);
   const [visible, setVisible] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
@@ -39,10 +44,10 @@ const ChildMenu = () => {
           path: "",
         }
       : {
-          primaryMenu: selectData.primaryMenu,
-          name: selectData.name,
-          path: selectData.path,
-          isActive: selectData.isActive,
+          primaryMenu: selectData._id,
+          name: selectData.childMenu.name,
+          path: selectData.childMenu.path,
+          isActive: selectData.childMenu.isActive,
         };
 
   useEffect(() => {
@@ -74,9 +79,13 @@ const ChildMenu = () => {
   const getList = () => {
     setLoading(true);
 
-    menuList()
+    ChildMenuList()
       .then((res) => {
         setList(res.data);
+        const filterData = res.data.filter((item) => item.isActive === true);
+        setOptions(
+          filterData.map((item) => ({ label: item.name, value: item._id }))
+        );
         setLoading(false);
       })
       .catch(() => {
@@ -124,7 +133,7 @@ const ChildMenu = () => {
     setLoading(true);
 
     if (actionType === "add") {
-      createMenu({ ...values })
+      ChildMenuCreate({ ...values })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -135,7 +144,7 @@ const ChildMenu = () => {
           setLoading(false);
         });
     } else {
-      updateMenu({ ...values, _id: selectData._id })
+      ChildMenuUpdate({ ...values, _id: selectData.childMenu._id })
         .then((res) => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
@@ -151,7 +160,7 @@ const ChildMenu = () => {
   const statusTemplate = (item) => {
     return (
       <>
-        {item.isActive ? (
+        {item?.childMenu?.isActive ? (
           <Tag severity="success" value="Active" rounded />
         ) : (
           <Tag severity="danger" value="Inactive" rounded />
@@ -172,10 +181,14 @@ const ChildMenu = () => {
           emptyMessage="No data found."
           showGridlines
         >
-          <Column field="primaryMenu" header="Primary Menu" />
-          <Column field="name" header="Name" />
-          <Column field="isActive" header="Status" body={statusTemplate} />
-          <Column field="path" header="Path" />
+          <Column field="name" header="Primary Menu" />
+          <Column field="childMenu.name" header="Name" />
+          <Column
+            field="childMenu.isActive"
+            header="Status"
+            body={statusTemplate}
+          />
+          <Column field="childMenu.path" header="Path" />
 
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
@@ -205,7 +218,7 @@ const ChildMenu = () => {
                     component={DropdownField}
                     name="primaryMenu"
                     filter
-                    options={[]}
+                    options={option}
                   />
                 </div>
                 <div className="col-12 md:col-12">
