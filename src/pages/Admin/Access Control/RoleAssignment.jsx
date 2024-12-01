@@ -7,6 +7,7 @@ import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
 import { DataTable } from "primereact/datatable";
 import {
+  ChildMenuList,
   PositionCreate,
   PositionList,
   PositionUpdate,
@@ -23,7 +24,7 @@ import * as Yup from "yup";
 
 const RoleAssignSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  menuList: Yup.array()
+  menu: Yup.array()
     .required("Primary Menu is required")
     .min(1, "Minimum one field is required"),
 });
@@ -35,16 +36,17 @@ const RoleAssignment = () => {
   const [list, setList] = useState([]);
   const [actionType, setActionType] = useState("add");
   const [visible, setVisible] = useState(false);
+  const [option, setOptions] = useState([]);
 
   const initialValues =
     actionType === "add"
       ? {
           name: "",
-          menuList: [],
+          menu: [],
         }
       : {
           name: selectedItem.name,
-          menuList: selectedItem.menuList,
+          menu: selectedItem.menu,
           isActive: selectedItem.isActive,
         };
 
@@ -69,7 +71,7 @@ const RoleAssignment = () => {
   }, []);
 
   useEffect(() => {
-    getList();
+    Promise.all([getList(), geChildMenutList()]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -80,6 +82,28 @@ const RoleAssignment = () => {
     PositionList()
       .then((res) => {
         setList(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const geChildMenutList = () => {
+    setLoading(true);
+
+    ChildMenuList()
+      .then((res) => {
+        const filterData = res.data.filter(
+          (item) =>
+            item?.isActive === true && item?.childMenu?.isActive === true
+        );
+        setOptions(
+          filterData.map((item) => ({
+            label: item.childMenu.name,
+            value: item.childMenu._id,
+          }))
+        );
         setLoading(false);
       })
       .catch(() => {
@@ -152,7 +176,7 @@ const RoleAssignment = () => {
   const statusTemplate = (item) => {
     return (
       <>
-        {item?.isInvestorActive ? (
+        {item?.isActive ? (
           <Tag severity="success" value="Active" rounded />
         ) : (
           <Tag severity="danger" value="Inactive" rounded />
@@ -206,9 +230,9 @@ const RoleAssignment = () => {
                   <Field
                     label="Menu"
                     component={MultiDropdownField}
-                    name="menuList"
+                    name="menu"
                     filter
-                    options={[]}
+                    options={option}
                   />
                 </div>
 
