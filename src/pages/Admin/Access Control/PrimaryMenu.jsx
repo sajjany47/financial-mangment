@@ -126,6 +126,7 @@ const PrimaryMenu = () => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
           setVisible(false);
+
           getList();
         })
         .catch(() => {
@@ -137,6 +138,7 @@ const PrimaryMenu = () => {
           Swal.fire({ title: res.message, icon: "success" });
           setLoading(false);
           setVisible(false);
+          setSelectData({});
           getList();
         })
         .catch(() => {

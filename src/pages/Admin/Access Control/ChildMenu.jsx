@@ -5,6 +5,7 @@ import {
   ChildMenuCreate,
   ChildMenuList,
   ChildMenuUpdate,
+  MenuList,
 } from "./AccessControlService";
 import { Button } from "primereact/button";
 import Swal from "sweetalert2";
@@ -71,7 +72,7 @@ const ChildMenu = () => {
   }, []);
 
   useEffect(() => {
-    getList();
+    Promise.all([getList(), PrimeMenuList()]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -82,6 +83,18 @@ const ChildMenu = () => {
     ChildMenuList()
       .then((res) => {
         setList(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const PrimeMenuList = () => {
+    setLoading(true);
+
+    MenuList()
+      .then((res) => {
         const filterData = res.data.filter((item) => item.isActive === true);
         setOptions(
           filterData.map((item) => ({ label: item.name, value: item._id }))
