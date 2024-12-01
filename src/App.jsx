@@ -52,6 +52,7 @@ import Profile from "./pages/Admin/settings/Profile";
 import PrimaryMenu from "./pages/Admin/Access Control/PrimaryMenu";
 import ChildMenu from "./pages/Admin/Access Control/ChildMenu";
 import RoleAssignment from "./pages/Admin/Access Control/RoleAssignment";
+import MenuTreeView from "./pages/Admin/Access Control/MenuTreeView";
 
 function App() {
   let isRefreshing = false;
@@ -188,6 +189,7 @@ function App() {
             <Route path="/menu/sub-list" element={<ChildMenu />} />
             <Route path="/menu/list" element={<PrimaryMenu />} />
             <Route path="/menu/role" element={<RoleAssignment />} />
+            <Route path="/menu/role-view" element={<MenuTreeView />} />
           </Route>
         </Routes>
       </BrowserRouter>

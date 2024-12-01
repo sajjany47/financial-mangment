@@ -21,6 +21,7 @@ import {
   RadioField,
 } from "../../../component/FieldType";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const RoleAssignSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -30,6 +31,7 @@ const RoleAssignSchema = Yup.object().shape({
 });
 const RoleAssignment = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
@@ -199,7 +201,22 @@ const RoleAssignment = () => {
           showGridlines
         >
           <Column field="name" header="Name" />
-          <Column field="menuList" header="Menu" />
+          <Column
+            field="menu"
+            header="Menu"
+            body={(item) => (
+              <div
+                onClick={() =>
+                  navigate("/menu/role-view", { state: { data: item } })
+                }
+                style={{ cursor: "pointer", color: "blue" }}
+                className="hover:text-primary"
+              >
+                {item?.menu ? item.menu.length : null}
+              </div>
+            )}
+          />
+
           <Column body={statusTemplate} header="Status" />
           <Column header="Action" body={actionBodyTemplate} />
         </DataTable>
