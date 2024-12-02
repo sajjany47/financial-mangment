@@ -1,8 +1,8 @@
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import sidebarMenu from "./SidebarMenu";
+// import sidebarMenu from "./SidebarMenu";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Position } from "../shared/Config";
+// import { Position } from "../shared/Config";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { SlashString } from "../shared/constant";
 import Topbar from "./Topbar";
@@ -14,30 +14,36 @@ const SidebarLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    const a = user.data.position;
-    const role =
-      a === Position.ADMIN
-        ? sidebarMenu.admin
-        : a === Position.BM
-        ? sidebarMenu["branch-manager"]
-        : a === Position.CD
-        ? sidebarMenu["collection-department"]
-        : a === Position.CDM
-        ? sidebarMenu["collection-department-head"]
-        : a === Position.CUSTOMER
-        ? sidebarMenu.customer
-        : a === Position.FM
-        ? sidebarMenu["financial-manager"]
-        : a === Position.LD
-        ? sidebarMenu["loan-department"]
-        : a === Position.LM
-        ? sidebarMenu["loan-manager"]
-        : a === Position.PM
-        ? sidebarMenu["state-manager"]
-        : a === Position.VD
-        ? sidebarMenu["verication-department"]
-        : [];
-    setUserMenu(role);
+    // const a = user.data.position;
+    // const role =
+    //   a === Position.ADMIN
+    //     ? sidebarMenu.admin
+    //     : a === Position.BM
+    //     ? sidebarMenu["branch-manager"]
+    //     : a === Position.CD
+    //     ? sidebarMenu["collection-department"]
+    //     : a === Position.CDM
+    //     ? sidebarMenu["collection-department-head"]
+    //     : a === Position.CUSTOMER
+    //     ? sidebarMenu.customer
+    //     : a === Position.FM
+    //     ? sidebarMenu["financial-manager"]
+    //     : a === Position.LD
+    //     ? sidebarMenu["loan-department"]
+    //     : a === Position.LM
+    //     ? sidebarMenu["loan-manager"]
+    //     : a === Position.PM
+    //     ? sidebarMenu["state-manager"]
+    //     : a === Position.VD
+    //     ? sidebarMenu["verication-department"]
+    //     : [];
+    const position = user.data.menu;
+    // .sort((a, b) => {
+    //     if (a.name < b.name) return -1;
+    //     if (a.name > b.name) return 1;
+    //     return 0;
+    //   })
+    setUserMenu(position);
     setCollapsed(window.innerWidth > 540 ? false : true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -78,22 +84,22 @@ const SidebarLayout = () => {
             <h4>{SlashString(user.data.position)}</h4>
           </MenuItem>
           {userMenu.map((item, index) => {
-            return item.submenu ? (
+            return item.childMenu ? (
               <SubMenu
-                label={item.title}
+                label={item.name}
                 key={index}
                 icon={<i className={item.icon}></i>}
                 style={{ marginTop: "1px" }}
               >
-                {item.submenu.map((res, ind) => {
+                {item.childMenu.map((res, ind) => {
                   return (
                     <MenuItem
                       key={ind}
                       icon={<i className={res.icon}></i>}
-                      component={<NavLink to={res.route} />}
-                      active={path === res.route}
+                      component={<NavLink to={res.path} />}
+                      active={path === res.path}
                     >
-                      {res.title}{" "}
+                      {res.name}{" "}
                     </MenuItem>
                   );
                 })}
@@ -103,9 +109,9 @@ const SidebarLayout = () => {
                 key={index}
                 icon={<i className={item.icon}></i>}
                 style={{ marginTop: "5px" }}
-                component={<NavLink to={item.route} />}
+                component={<NavLink to={item.path} />}
               >
-                {item.title}
+                {item.name}
               </MenuItem>
             );
           })}
