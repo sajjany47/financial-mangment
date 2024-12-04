@@ -40,6 +40,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import LoanSearch from "./LoanSearch";
 import { countryList } from "../Employee/AddUserService";
+import { StatusConditional } from "../../../shared/constant";
 
 const ApplicationStatusSchema = Yup.object().shape({
   status: Yup.string().required("Application status is required"),
@@ -361,6 +362,7 @@ const LoanList = (props) => {
   const rowNumberTemplate = (rowData, rowIndex) => {
     return (searchKey.pageNumber - 1) * searchKey.rows + rowIndex.rowIndex + 1;
   };
+
   return (
     <>
       {loading && <Loader />}
@@ -438,7 +440,10 @@ const LoanList = (props) => {
                       label="Status"
                       component={DropdownField}
                       name="status"
-                      options={LoanApplicationSteps}
+                      options={StatusConditional(
+                        LoanApplicationSteps,
+                        userDetails.position
+                      )}
                       filter
                     />
                   </div>

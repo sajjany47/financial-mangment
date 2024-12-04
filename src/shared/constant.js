@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   ACCESS_TOKEN_STORAGE_KEY,
   PayoutKey,
+  Position,
   REFRESH_TOKEN_STORAGE_KEY,
 } from "./Config";
 
@@ -109,6 +110,30 @@ export const PayoutFrequencyConditional = (data, duration) => {
       return (
         item.value === PayoutKey.MONTHLY || item.value === PayoutKey.AT_MATURITY
       );
+    }
+  });
+  return a;
+};
+
+export const StatusConditional = (data, position) => {
+  const a = data.filter((item) => {
+    if (position === Position.ADMIN || position === Position.SUPER_ADMIN) {
+      return item.value;
+    } else if (position === Position.VD) {
+      return (
+        item.value === "document_address_verification" ||
+        item.value === "business_address_verification" ||
+        item.value === "document_verification" ||
+        item.value === "rejected"
+      );
+    } else if (position === Position.BM) {
+      return (
+        item.value === "loan_approved" ||
+        item.value === "rejected" ||
+        item.value === "incompleted"
+      );
+    } else if (position === Position.FM) {
+      return item.value === "disbursed" || item.value === "rejected";
     }
   });
   return a;
