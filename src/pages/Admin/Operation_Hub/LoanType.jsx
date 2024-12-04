@@ -19,6 +19,8 @@ import {
   RadioField,
 } from "../../../component/FieldType";
 import { countryList } from "../Employee/AddUserService";
+import { Position } from "../../../shared/Config";
+import { useSelector } from "react-redux";
 
 const loanTypeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -27,6 +29,7 @@ const loanTypeSchema = Yup.object().shape({
 });
 
 const LoanType = () => {
+  const userDetails = useSelector((state) => state.user.user.data);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -80,15 +83,17 @@ const LoanType = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Loan Type List"}</span>
-
-        <Button
-          label="Add"
-          icon="pi pi-plus"
-          type="button"
-          onClick={() => {
-            setVisible(true);
-          }}
-        />
+        {(userDetails.position === Position.SUPER_ADMIN ||
+          userDetails.position === Position.ADMIN) && (
+          <Button
+            label="Add"
+            icon="pi pi-plus"
+            type="button"
+            onClick={() => {
+              setVisible(true);
+            }}
+          />
+        )}
       </div>
     );
   };
@@ -187,7 +192,10 @@ const LoanType = () => {
           <Column field="isActive" header="Status" body={statusTemplate} />
           <Column field="createdBy" header="CreatedBy" />
           <Column field="updatedBy" header="UpdatedBy" />
-          <Column header="Action" body={actionBodyTemplate} />
+          {(userDetails.position === Position.SUPER_ADMIN ||
+            userDetails.position === Position.ADMIN) && (
+            <Column header="Action" body={actionBodyTemplate} />
+          )}
         </DataTable>
       </div>
 

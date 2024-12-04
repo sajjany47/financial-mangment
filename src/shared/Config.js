@@ -1,5 +1,6 @@
 export const Position = {
   CUSTOMER: "customer",
+  SUPER_ADMIN: "super-admin",
   ADMIN: "admin",
   BM: "branch-manager",
   SM: "state-manager",

@@ -15,6 +15,8 @@ import { Currency, InputField } from "../../../component/FieldType";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { InputSwitch } from "primereact/inputswitch";
+import { useSelector } from "react-redux";
+import { Position } from "../../../shared/Config";
 
 const chargesSchema = Yup.object().shape({
   processingFees: Yup.string().required("Processing Fees is required"),
@@ -26,6 +28,7 @@ const chargesSchema = Yup.object().shape({
 });
 
 const Charges = () => {
+  const userDetails = useSelector((state) => state.user.user.data);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -81,15 +84,17 @@ const Charges = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Charges List"}</span>
-
-        <Button
-          label="Add"
-          icon="pi pi-plus"
-          type="button"
-          onClick={() => {
-            setVisible(true);
-          }}
-        />
+        {(userDetails.position === Position.SUPER_ADMIN ||
+          userDetails.position === Position.ADMIN) && (
+          <Button
+            label="Add"
+            icon="pi pi-plus"
+            type="button"
+            onClick={() => {
+              setVisible(true);
+            }}
+          />
+        )}
       </div>
     );
   };
@@ -138,6 +143,12 @@ const Charges = () => {
   const statusTemplate = (item) => {
     return (
       <InputSwitch
+        disabled={
+          userDetails.position === Position.SUPER_ADMIN ||
+          userDetails.position === Position.ADMIN
+            ? false
+            : true
+        }
         checked={item.isActive}
         onChange={() => handelStatus(!item.isActive, item._id)}
       />

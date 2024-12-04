@@ -22,6 +22,8 @@ import {
   loanTypeList,
 } from "./OperationHubService";
 import { countryList } from "../Employee/AddUserService";
+import { useSelector } from "react-redux";
+import { Position } from "../../../shared/Config";
 
 const documentSchema = Yup.object().shape({
   documentName: Yup.string().required("Name is required"),
@@ -32,6 +34,7 @@ const documentSchema = Yup.object().shape({
 });
 
 const Document = () => {
+  const userDetails = useSelector((state) => state.user.user.data);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -121,15 +124,17 @@ const Document = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
         <span className="text-xl text-900 font-bold">{"Document List"}</span>
-
-        <Button
-          label="Add"
-          icon="pi pi-plus"
-          type="button"
-          onClick={() => {
-            setVisible(true);
-          }}
-        />
+        {(userDetails.position === Position.SUPER_ADMIN ||
+          userDetails.position === Position.ADMIN) && (
+          <Button
+            label="Add"
+            icon="pi pi-plus"
+            type="button"
+            onClick={() => {
+              setVisible(true);
+            }}
+          />
+        )}
       </div>
     );
   };
@@ -251,7 +256,10 @@ const Document = () => {
           <Column field="isActive" header="Status" body={statusTemplate} />
           <Column field="createdBy" header="CreatedBy" />
           <Column field="updatedBy" header="UpdatedBy" />
-          <Column header="Action" body={actionBodyTemplate} />
+          {(userDetails.position === Position.SUPER_ADMIN ||
+            userDetails.position === Position.ADMIN) && (
+            <Column header="Action" body={actionBodyTemplate} />
+          )}
         </DataTable>
       </div>
 

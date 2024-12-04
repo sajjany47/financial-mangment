@@ -20,6 +20,7 @@ import BranchSearch from "./BranchSearch";
 import CPaginator from "../../../component/CPaginator";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import { city, countryList, state } from "../Employee/AddUserService";
+import { Position } from "../../../shared/Config";
 
 const createBranchSchema = Yup.object().shape({
   _id: Yup.string(),
@@ -35,6 +36,7 @@ const createBranchSchema = Yup.object().shape({
 const Branch = () => {
   const dispatch = useDispatch();
   const searchKey = useSelector((state) => state?.search?.value);
+  const userDetails = useSelector((state) => state.user.user.data);
   const [visible, setVisible] = useState(false);
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
@@ -205,14 +207,17 @@ const Branch = () => {
             />
           )}
 
-          <Button
-            label="Add Branch"
-            icon="pi pi-plus"
-            onClick={() => {
-              setVisible(true);
-              setActionType("add");
-            }}
-          />
+          {(userDetails.position === Position.SUPER_ADMIN ||
+            userDetails.position === Position.ADMIN) && (
+            <Button
+              label="Add Branch"
+              icon="pi pi-plus"
+              onClick={() => {
+                setVisible(true);
+                setActionType("add");
+              }}
+            />
+          )}
         </div>
       </div>
     );
@@ -301,6 +306,12 @@ const Branch = () => {
       </>
     );
   };
+  console.log(
+    userDetails.position === Position.SUPER_ADMIN ||
+      userDetails.position === Position.ADMIN
+      ? "Sajjan"
+      : "Yadav"
+  );
   return (
     <>
       {loading && <Loader />}
@@ -351,7 +362,10 @@ const Branch = () => {
             sortField="pincode"
           />
           <Column field="phone" header="Phone" />
-          <Column header="Action" body={actionBodyTemplate} />
+          {(userDetails.position === Position.SUPER_ADMIN ||
+            userDetails.position === Position.ADMIN) && (
+            <Column header="Action" body={actionBodyTemplate} />
+          )}
         </DataTable>
         <CPaginator totalRecords={total} />
       </div>
