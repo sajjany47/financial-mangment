@@ -20,7 +20,8 @@ import {
 } from "../../../component/FieldType";
 import { countryList } from "../Employee/AddUserService";
 import { Position } from "../../../shared/Config";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
 const loanTypeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -29,6 +30,8 @@ const loanTypeSchema = Yup.object().shape({
 });
 
 const LoanType = () => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
   const userDetails = useSelector((state) => state.user.user.data);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
@@ -36,6 +39,26 @@ const LoanType = () => {
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
   const [countryData, setCountryData] = useState([]);
+
+  useEffect(() => {
+    if (searchKey?.page === "loanType") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "loanType",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialValues =
     actionType === "add"

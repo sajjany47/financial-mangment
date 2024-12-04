@@ -7,11 +7,35 @@ import { Card } from "primereact/card";
 import BarChart from "../../../component/chart/BarChart";
 import moment from "moment";
 import { FinanceYearReport } from "./ReportService";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
 const FinancialReports = () => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(null);
   const [data, setData] = useState({});
+
+  useEffect(() => {
+    if (searchKey?.page === "financialReport") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "financialReport",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const currentDate = moment();

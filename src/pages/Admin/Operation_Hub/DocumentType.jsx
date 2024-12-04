@@ -14,8 +14,9 @@ import { InputField, RadioField } from "../../../component/FieldType";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { Tag } from "primereact/tag";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Position } from "../../../shared/Config";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
 const documentTypeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -23,12 +24,34 @@ const documentTypeSchema = Yup.object().shape({
 });
 
 const DocumentType = () => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
   const userDetails = useSelector((state) => state.user.user.data);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [actionType, setActionType] = useState("add");
   const [selectData, setSelectData] = useState({});
+
+  useEffect(() => {
+    if (searchKey?.page === "documentType") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "documentType",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialValues =
     actionType === "add"

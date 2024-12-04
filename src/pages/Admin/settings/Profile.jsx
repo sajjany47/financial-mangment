@@ -8,6 +8,7 @@ const Profile = () => {
   const userDetails = useSelector((state) => state.user?.user.data);
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     getDetails(userDetails._id)

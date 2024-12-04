@@ -8,11 +8,35 @@ import { Card } from "primereact/card";
 import BarChart from "../../../component/chart/BarChart";
 import { ColorCode } from "../../../shared/Config";
 import PieChart from "../../../component/chart/PieChart";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
 const LoanPerformance = () => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(null);
   const [data, setData] = useState({});
+
+  useEffect(() => {
+    if (searchKey?.page === "loanPerformance") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "loanPerformance",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const currentDate = moment();

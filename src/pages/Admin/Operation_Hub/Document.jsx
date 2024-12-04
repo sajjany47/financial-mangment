@@ -22,8 +22,9 @@ import {
   loanTypeList,
 } from "./OperationHubService";
 import { countryList } from "../Employee/AddUserService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Position } from "../../../shared/Config";
+import { setSearch } from "../../../store/reducer/searchReducer";
 
 const documentSchema = Yup.object().shape({
   documentName: Yup.string().required("Name is required"),
@@ -34,6 +35,8 @@ const documentSchema = Yup.object().shape({
 });
 
 const Document = () => {
+  const dispatch = useDispatch();
+  const searchKey = useSelector((state) => state?.search?.value);
   const userDetails = useSelector((state) => state.user.user.data);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
@@ -43,6 +46,26 @@ const Document = () => {
   const [countryData, setCountryData] = useState([]);
   const [documntsList, setDocumntsList] = useState([]);
   const [getLoanList, setLoanList] = useState([]);
+
+  useEffect(() => {
+    if (searchKey?.page === "document") {
+      dispatch(setSearch({ ...searchKey }));
+    } else {
+      dispatch(
+        setSearch({
+          page: "document",
+          filterOptions: {},
+          pageNumber: 1,
+          firstPage: 0,
+          rows: 10,
+          sortOrder: 1,
+          sortField: "name",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initialValues =
     actionType === "add"
