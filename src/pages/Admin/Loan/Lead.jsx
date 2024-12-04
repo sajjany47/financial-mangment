@@ -366,6 +366,7 @@ const Lead = () => {
         {
           visible:
             userDetails.position === Position.ADMIN ||
+            userDetails.position === Position.SUPER_ADMIN ||
             userDetails.position === Position.BM ||
             userDetails.position === Position.SM ||
             userDetails.position === Position.CM ||
@@ -497,7 +498,7 @@ const Lead = () => {
             body={(item) => (
               <div>
                 {`${
-                  item.leadAssignAgent !== ""
+                  item.leadAssignAgent
                     ? `${item.leadAssignAgent.name} (${item.leadAssignAgent.username})`
                     : ""
                 }  `}
