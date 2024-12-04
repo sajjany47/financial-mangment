@@ -10,7 +10,7 @@ const MenuTreeView = () => {
   const [expandedKeys, setExpandedKeys] = useState({ 0: true, "0-0": true });
 
   useEffect(() => {
-    const modifyData = data.menuDetails.map((item, index) => ({
+    const modifyData = data?.menu.map((item, index) => ({
       key: `${index}`,
       label: capitalizeFirstLetter(item.name),
       icon: item.icon,

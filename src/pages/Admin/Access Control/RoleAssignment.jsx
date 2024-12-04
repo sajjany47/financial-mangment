@@ -48,7 +48,7 @@ const RoleAssignment = () => {
         }
       : {
           name: selectedItem.name,
-          menu: selectedItem.menu,
+          menu: selectedItem.childMenus.map((item) => item._id),
           isActive: selectedItem.isActive,
         };
 
@@ -83,7 +83,12 @@ const RoleAssignment = () => {
 
     PositionList()
       .then((res) => {
-        setList(res.data);
+        const modifyData = res.data.map((elm) => ({
+          ...elm,
+          childMenus: elm.menu.flatMap((menu) => menu.childMenu),
+        }));
+
+        setList(modifyData);
         setLoading(false);
       })
       .catch(() => {
@@ -212,7 +217,7 @@ const RoleAssignment = () => {
                 style={{ cursor: "pointer", color: "blue" }}
                 className="hover:text-primary"
               >
-                {item?.menu ? item.menu.length : null}
+                {item?.childMenus ? item.childMenus.length : null}
               </div>
             )}
           />
