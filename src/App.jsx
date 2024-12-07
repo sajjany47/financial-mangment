@@ -53,7 +53,6 @@ import PrimaryMenu from "./pages/Admin/Access Control/PrimaryMenu";
 import ChildMenu from "./pages/Admin/Access Control/ChildMenu";
 import RoleAssignment from "./pages/Admin/Access Control/RoleAssignment";
 import MenuTreeView from "./pages/Admin/Access Control/MenuTreeView";
-import ApprovalHub from "./pages/Branch Manger/Approval Hub/ApprovalHub";
 
 function App() {
   let isRefreshing = false;
@@ -191,7 +190,6 @@ function App() {
             <Route path="/menu/list" element={<PrimaryMenu />} />
             <Route path="/menu/role" element={<RoleAssignment />} />
             <Route path="/menu/role-view" element={<MenuTreeView />} />
-            <Route path="/appproval-hub" element={<ApprovalHub />} />
           </Route>
         </Routes>
       </BrowserRouter>

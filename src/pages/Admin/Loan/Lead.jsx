@@ -589,7 +589,9 @@ const Lead = () => {
                         name="monthlyIncome"
                       />
                     </div>
-                    {userDetails.position === "admin" && (
+                    {(userDetails.position === Position.ADMIN ||
+                      userDetails.position === Position.SM ||
+                      userDetails.position === Position.CM) && (
                       <div className="col-12 md:col-4">
                         <Field
                           label="Branch Name"
