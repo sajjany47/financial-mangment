@@ -107,7 +107,7 @@ const LeadUpload = (props) => {
   };
 
   const handelSubmit = () => {
-    // setLoading(true);
+    setLoading(true);
     if (file) {
       const reader = new FileReader(); // Create a FileReader to read the file
 
@@ -140,7 +140,7 @@ const LeadUpload = (props) => {
           return {
             name: item.NAME,
             mobile: item.MOBILE,
-            email: item.EMAIL.text,
+            email: item.EMAIL,
             loanType: { name: findLoan.name, _id: findLoan._id },
             loanAmount: item["LOAN AMOUNT"],
             loanTenure: item.TENURE,
@@ -148,7 +148,10 @@ const LeadUpload = (props) => {
             branch: item["BRANCH CODE"],
           };
         });
-        props.getData(prepareData); // Set the parsed data into state
+
+        props.getData(prepareData);
+        setLoading(false);
+        props.next(); // Set the parsed data into state
       };
 
       reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
@@ -207,7 +210,6 @@ const LeadUpload = (props) => {
             disabled={file === null ? true : false}
             onClick={() => {
               handelSubmit();
-              props.next();
             }}
             type="submit"
           />

@@ -7,7 +7,6 @@ import { leadBulkUpload } from "../LoanService";
 import Loader from "../../../../component/Loader";
 
 const LeadPreview = (props) => {
-  console.log(props.data);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -42,6 +41,7 @@ const LeadPreview = (props) => {
     leadBulkUpload({ data: data })
       .then(() => {
         setLoading(false);
+        props.next();
       })
       .catch((error) => {
         setLoading(false);
@@ -88,7 +88,6 @@ const LeadPreview = (props) => {
               iconPos="right"
               onClick={() => {
                 handelSubmit();
-                props.next();
               }}
               type="submit"
             />

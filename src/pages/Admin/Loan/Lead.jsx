@@ -493,13 +493,13 @@ const Lead = () => {
             sortField="branchDetails.name"
           />
           <Column
-            field="leadAssignAgent.name"
+            field="assignAgent.name"
             header="Assign Agent"
             body={(item) => (
               <div>
                 {`${
-                  item.leadAssignAgent
-                    ? `${item.leadAssignAgent.name} (${item.leadAssignAgent.username})`
+                  item.assignAgent
+                    ? `${item.assignAgent.name} (${item.assignAgent.username})`
                     : ""
                 }  `}
               </div>
@@ -513,7 +513,7 @@ const Lead = () => {
       <Dialog
         header={"Bulk Lead Upload"}
         visible={bulVisible}
-        style={{ width: "80vw" }}
+        style={{ width: "90vw" }}
         onHide={() => {
           handelDialogeClose();
         }}
