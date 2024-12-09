@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { employeeDataTable } from "./AddUserService";
 import Loader from "../../../component/Loader";
 import { Tag } from "primereact/tag";
-import { RoleSeverityColor } from "../../../shared/Config";
+import { Position, RoleSeverityColor } from "../../../shared/Config";
 import { setSearch } from "../../../store/reducer/searchReducer";
 import CPaginator from "../../../component/CPaginator";
 import EmployeeSearch from "./EmployeeSearch";
@@ -22,6 +22,7 @@ const EmployeeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const searchKey = useSelector((state) => state?.search?.value);
+  const userDetails = useSelector((state) => state.user?.user.data);
   const [loading, setLoading] = useState(false);
   const [employeeList, setEmployeeList] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -104,14 +105,17 @@ const EmployeeList = () => {
               severity="secondary"
             />
           )}
-          <Button
-            label="Add Employee"
-            icon="pi pi-user-plus"
-            onClick={() => {
-              navigate("/employee/add");
-              dispatch(setAddUser({ type: "add", role: "employee" }));
-            }}
-          />
+          {userDetails.position === Position.ADMIN ||
+            (userDetails.position === Position.SUPER_ADMIN && (
+              <Button
+                label="Add Employee"
+                icon="pi pi-user-plus"
+                onClick={() => {
+                  navigate("/employee/add");
+                  dispatch(setAddUser({ type: "add", role: "employee" }));
+                }}
+              />
+            ))}
         </div>
       </div>
     );

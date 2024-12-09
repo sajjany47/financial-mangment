@@ -18,6 +18,7 @@ export const DropdownPosition = [
   { label: "Admin", value: "admin" },
   { label: "Branch Manager", value: "branch-manager" },
   { label: "State Manager", value: "state-manager" },
+  { label: "City Manager", value: "city-manager" },
   { label: "Loan Manager", value: "loan-manager" },
   { label: "Product Manager", value: "product-manager" },
   {
@@ -67,6 +68,8 @@ export const RoleSeverityColor = (role) => {
       return { label: "Branch Manager", severity: "warning" };
     case "state-manager":
       return { label: "State Manager", severity: "success" };
+    case "city-manager":
+      return { label: "City Manager", severity: "secondary" };
     case "loan-manager":
       return { label: "Loan Manager", severity: "help" };
     case "product-manager":
