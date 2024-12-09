@@ -428,6 +428,10 @@ const LoanList = (props) => {
             interestRate: "",
             emiDate: "",
             transactionNumber: "",
+            accountName: selectedItem.accountName,
+            accountNumber: selectedItem.accountNumber,
+            ifsc: selectedItem.ifsc,
+            bankName: selectedItem.bankName,
           }}
           validationSchema={ApplicationStatusSchema}
         >
@@ -435,7 +439,13 @@ const LoanList = (props) => {
             <Form onSubmit={handleSubmit}>
               <div className="border-2 border-dashed surface-border border-round surface-ground  font-medium">
                 <div className="grid p-3">
-                  <div className="col-12 md:col-12">
+                  <div
+                    className={`col-12 md:col-${
+                      values.status === LoanApplicationStepsEnum.DISBURSED
+                        ? "6"
+                        : "12"
+                    }`}
+                  >
                     <Field
                       label="Status"
                       component={DropdownField}
@@ -449,6 +459,38 @@ const LoanList = (props) => {
                   </div>
                   {values.status === LoanApplicationStepsEnum.DISBURSED && (
                     <>
+                      <div className="col-12 md:col-6">
+                        <Field
+                          label="Account Name"
+                          component={InputField}
+                          name="accountName"
+                          disabled
+                        />
+                      </div>
+                      <div className="col-12 md:col-4">
+                        <Field
+                          label="Account Number"
+                          component={InputField}
+                          name="accountNumber"
+                          disabled
+                        />
+                      </div>
+                      <div className="col-12 md:col-4">
+                        <Field
+                          label="IFSC"
+                          component={InputField}
+                          name="ifsc"
+                          disabled
+                        />
+                      </div>
+                      <div className="col-12 md:col-4">
+                        <Field
+                          label="Bank Name"
+                          component={InputField}
+                          name="bankName"
+                          disabled
+                        />
+                      </div>
                       <div className="col-12 md:col-6">
                         <Field
                           label="EMI Date"

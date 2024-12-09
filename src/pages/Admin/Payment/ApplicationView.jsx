@@ -461,11 +461,15 @@ const ApplicationView = () => {
                 <div className="grid">
                   <div className="col-12">
                     <DataTable
-                      value={data?.emiSchedule}
+                      value={data?.emiSchedule.map((item, index) => ({
+                        ...item,
+                        rowNumber: index + 1,
+                      }))}
                       // scrollable
                       // scrollHeight="400px"
                       // style={{ minWidth: "55rem" }}
                     >
+                      <Column field="rowNumber" header="No." />
                       <Column
                         field="emiDate"
                         header="EMI Date"

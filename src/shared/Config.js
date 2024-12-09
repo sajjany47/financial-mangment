@@ -9,7 +9,7 @@ export const Position = {
   CDM: "collection-department-head",
   CD: "collection-department",
   LD: "loan-department",
-  VD: "verication-department",
+  VD: "verification-department",
   FM: "financial-manager",
   CM: "city-manager",
 };
