@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import Loader from "../../../component/Loader";
 import moment from "moment";
 import { Currency } from "../../../component/FieldType";
-import { Fragment } from "react";
 import { capitalizeFirstLetter, FormatString } from "../../../shared/constant";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -394,30 +393,29 @@ const ApplicationView = () => {
             </div>
             <div className="text-500 w-full md:w-10 md:flex-order-0 flex-order-1">
               <div className="grid">
-                {data?.document?.map((item, index) => {
-                  return (
-                    <Fragment key={index}>
-                      <div className="col-12 md:col-3">
-                        <div className="view-app">Type</div>
-                        {item.type}
-                      </div>
-                      <div className="col-12 md:col-3">
-                        <div className="view-app">Document Name</div>
-                        {item.documentType}
-                      </div>
-                      <div className="col-12 md:col-3">
-                        <div className="view-app">Document Number</div>
-                        {item.documentNumber}
-                      </div>
-                      <div className="col-12 md:col-3">
-                        <div className="view-app">Document Verified By</div>
-                        {data?.documentVerifiedBy
-                          ? `${data?.documentVerifiedBy?.name} (${data?.documentVerifiedBy?.username})`
-                          : ""}
-                      </div>
-                    </Fragment>
-                  );
-                })}
+                <div className="col-12">
+                  <DataTable
+                    value={data?.document ? data?.document : []}
+                    // scrollable
+                    // scrollHeight="400px"
+                    // style={{ minWidth: "55rem" }}
+                  >
+                    <Column field="type" header="Type" />
+                    <Column field="documentType" header="Name" />
+
+                    <Column field="documentNumber" header="Number" />
+                    <Column
+                      header="Verified By"
+                      body={() => (
+                        <>
+                          {data?.documentVerifiedBy
+                            ? `${data?.documentVerifiedBy?.name} (${data?.documentVerifiedBy?.username})`
+                            : ""}
+                        </>
+                      )}
+                    />
+                  </DataTable>
+                </div>
               </div>
             </div>
           </li>
