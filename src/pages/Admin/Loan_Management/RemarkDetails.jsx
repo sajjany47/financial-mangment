@@ -24,13 +24,17 @@ const RemarkDetails = () => {
             opposite={(item) => item.remark}
             content={(item) => (
               <>
-                <small className="text-color-secondary">
-                  {moment(item.date).format("DD MMM,YYYY HH:mm:ss")}
-                </small>
-                <br />
-                <small className="text-color-secondary">
-                  {item.createdBy_name} ({item.createdBy_username})
-                </small>
+                {item.date && (
+                  <>
+                    <small className="text-color-secondary">
+                      {moment(item.date).format("DD MMM,YYYY HH:mm:ss")}
+                    </small>
+                    <br />
+                    <small className="text-color-secondary">
+                      {item.createdBy_name} ({item.createdBy_username})
+                    </small>
+                  </>
+                )}
               </>
             )}
             className="mt-3 mb-3"

@@ -232,36 +232,23 @@ const ManagementList = (props) => {
         style={{ cursor: "pointer" }}
       >
         <div className="flex  justify-content-between">
-          <div className="text-900 text-sm mb-1 font-medium">Paid EMI</div>
+          <div className="text-900 text-sm mb-1 font-medium">Paid</div>
           <span className="text-700 line-height-3 text-primary">
             {rowData.paidEmi}
           </span>
         </div>
         <div className="flex  justify-content-between">
-          <div className="text-900 text-sm mb-1 font-medium">Unpaid EMI</div>
+          <div className="text-900 text-sm mb-1 font-medium">Unpaid</div>
           <span className="text-700 line-height-3 text-primary">
             {rowData.unpaidEmi}
           </span>
         </div>
         <div className="flex  justify-content-between">
-          <div className="text-900 text-sm mb-1 font-medium">OverDue EMI</div>
+          <div className="text-900 text-sm mb-1 font-medium">OverDue</div>
           <span className="text-700 line-height-3 text-primary">
             {rowData.overDueEmi}
           </span>
         </div>
-
-        {/* <div className="flex  justify-content-between">
-          <div className="text-500 font-medium">Paid EMI</div>
-          <div className="text-900 text-primary">{rowData.paidEmi}</div>
-        </div>
-        <div className="flex  justify-content-between">
-          <div className="text-500 font-medium">Unpaid EMI</div>
-          <div className="text-900 text-primary">{rowData.unpaidEmi}</div>
-        </div>
-        <div className="flex  justify-content-between">
-          <div className="text-500 font-medium">OverDue EMI</div>
-          <div className="text-900 text-primary">{rowData.overDueEmi}</div>
-        </div> */}
       </div>
     );
   };

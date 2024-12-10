@@ -15,10 +15,16 @@ import {
 } from "./FinanceService";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
-import { InvestmentTypes, PayoutFrequencies } from "../../../shared/Config";
+import {
+  InvestmentTypes,
+  PayoutFrequencies,
+  Position,
+} from "../../../shared/Config";
 import { findIFSC } from "../Employee/AddUserService";
 import { Button } from "primereact/button";
 import { PayoutFrequencyConditional } from "../../../shared/constant";
+import { useSelector } from "react-redux";
+import { branchList } from "../Branch/BranchService";
 
 const financeSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -44,14 +50,34 @@ const financeSchema = Yup.object().shape({
   payoutDate: Yup.string().required("Payout date is required"),
   aadharNumber: Yup.string().required("Aadhar Number is required"),
   panNumber: Yup.string().required("Pan number is required"),
+  branch: Yup.string().required("Branch is required"),
 });
 const AddInvestor = () => {
   const navigation = useNavigate();
+  const userDetails = useSelector((state) => state.user.user.data);
   const propsData = useLocation().state;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
+  const [branch, setBranch] = useState([]);
 
   useEffect(() => {
+    if (
+      userDetails.position === Position.ADMIN ||
+      userDetails.position === Position.SUPER_ADMIN
+    ) {
+      getBranchList({});
+    } else if (userDetails.position === Position.SM) {
+      getBranchList({
+        country: userDetails.country,
+        state: userDetails.state,
+      });
+    } else {
+      getBranchList({
+        country: userDetails.country,
+        state: userDetails.state,
+        city: userDetails.city,
+      });
+    }
     if (propsData.type === "edit") {
       getInvestorDetails(propsData.id)
         .then((res) => {
@@ -65,7 +91,22 @@ const AddInvestor = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const getBranchList = (payload) => {
+    setLoading(true);
+    branchList(payload)
+      .then((res) => {
+        setBranch(
+          res.data.map((item) => ({
+            label: `${item.name} (${item.code})`,
+            value: item._id,
+          }))
+        );
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
   const initialValues =
     propsData.type === "edit"
       ? {
@@ -87,6 +128,7 @@ const AddInvestor = () => {
           _id: data._id,
           panNumber: data.panNumber,
           aadharNumber: data.aadharNumber,
+          branch: data.branch,
         }
       : {
           name: "",
@@ -106,6 +148,13 @@ const AddInvestor = () => {
           accountName: "",
           panNumber: "",
           aadharNumber: "",
+          branch:
+            userDetails.position === Position.SM ||
+            userDetails.position === Position.CM ||
+            userDetails.position === Position.ADMIN ||
+            userDetails.position === Position.SUPER_ADMIN
+              ? ""
+              : userDetails.branch,
         };
 
   const handelSubmit = (values) => {
@@ -213,6 +262,23 @@ const AddInvestor = () => {
                   </div>
                   <div className="col-12 md:col-3">
                     <Field
+                      label="Branch"
+                      component={DropdownField}
+                      name="branch"
+                      filter
+                      options={branch}
+                      disabled={
+                        userDetails.position === Position.SM ||
+                        userDetails.position === Position.CM ||
+                        userDetails.position === Position.ADMIN ||
+                        userDetails.position === Position.SUPER_ADMIN
+                          ? false
+                          : true
+                      }
+                    />
+                  </div>
+                  <div className="col-12 md:col-3">
+                    <Field
                       label="Investment Type"
                       component={DropdownField}
                       options={InvestmentTypes}
@@ -279,7 +345,7 @@ const AddInvestor = () => {
                   </div>
                   <div className="col-12 md:col-3">
                     <Field
-                      label="Branch Name"
+                      label="Baank Branch Name"
                       component={InputField}
                       name="bankBranchName"
                     />

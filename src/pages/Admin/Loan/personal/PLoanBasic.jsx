@@ -131,6 +131,7 @@ const PLoanBasic = (props) => {
           motherName: "",
           branch:
             userDetails.position === Position.SM ||
+            userDetails.position === Position.CM ||
             userDetails.position === Position.ADMIN
               ? ""
               : userDetails.branch,
@@ -268,6 +269,7 @@ const PLoanBasic = (props) => {
                       options={branch}
                       disabled={
                         userDetails.position === Position.SM ||
+                        userDetails.position === Position.CM ||
                         userDetails.position === Position.ADMIN
                           ? false
                           : true
