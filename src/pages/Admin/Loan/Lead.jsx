@@ -28,7 +28,7 @@ import LoanSearch from "./LoanSearch";
 import LeadBulkUpload from "./Lead_Bulk_Upload/LeadBulkUpload";
 import { Dropdown } from "primereact/dropdown";
 import { BranchAgentList } from "../Loan_Management/ManageService";
-import { capitalizeFirstLetter } from "../../../shared/constant";
+import { AgentListLoan, capitalizeFirstLetter } from "../../../shared/constant";
 
 const leadSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -415,8 +415,11 @@ const Lead = () => {
 
   const branchAgentList = (branchId) => {
     BranchAgentList(branchId).then((res) => {
+      const filterData = res.data.filter((item) =>
+        AgentListLoan(userDetails.position, item.position)
+      );
       setAgentList(
-        res.data.map((item) => ({
+        filterData.map((item) => ({
           ...item,
           label: `${item.name} (${capitalizeFirstLetter(
             item.position.replace(/-/g, " ")

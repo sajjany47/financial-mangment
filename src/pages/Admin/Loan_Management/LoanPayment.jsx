@@ -90,18 +90,17 @@ const LoanPayment = () => {
 
   const handelType = (setFieldValue, value) => {
     setFieldValue("type", value);
+
     if (value === "emi_pay" || value === "emi_settlement") {
-      setFieldValue(
-        "amount",
-        Number(selectData.emiAmount) + Number(selectData.overdueAmount)
-      );
+      setFieldValue("amount", Number(selectData.payableAmount || 0));
     }
     if (value === "foreclosure" || value === "loan_settlement") {
-      let foreclosureAmount = Number(selectData.emiAmount);
+      let foreclosureAmount = Number(selectData.foreclosureAmount);
       for (let index = 0; index < data.length; index++) {
         const element = data[index];
         foreclosureAmount += Number(element.overdueAmount);
       }
+
       setFieldValue("amount", Number(foreclosureAmount));
     }
   };

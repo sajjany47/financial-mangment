@@ -159,3 +159,47 @@ export const TransformData = (data) => {
 
   return chunked;
 };
+
+export const AgentListLoan = (position, agentPosition) => {
+  if (
+    position === Position.ADMIN ||
+    position === Position.SUPER_ADMIN ||
+    position === Position.SM ||
+    position === Position.CM
+  ) {
+    return (
+      agentPosition === Position.LD ||
+      agentPosition === Position.LM ||
+      agentPosition === Position.BM
+    );
+  }
+  if (position === Position.BM) {
+    return agentPosition === Position.LD || agentPosition === Position.LM;
+  }
+  if (position === Position.LM) {
+    return agentPosition === Position.LD;
+  }
+  return false;
+};
+
+export const AgentListCollection = (position, agentPosition) => {
+  if (
+    position === Position.ADMIN ||
+    position === Position.SUPER_ADMIN ||
+    position === Position.SM ||
+    position === Position.CM
+  ) {
+    return (
+      agentPosition === Position.CD ||
+      agentPosition === Position.CDM ||
+      agentPosition === Position.BM
+    );
+  }
+  if (position === Position.BM) {
+    return agentPosition === Position.CD || agentPosition === Position.CDM;
+  }
+  if (position === Position.LM) {
+    return agentPosition === Position.CD;
+  }
+  return false;
+};

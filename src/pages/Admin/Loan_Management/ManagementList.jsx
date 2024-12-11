@@ -24,7 +24,10 @@ import { Tag } from "primereact/tag";
 import { Dropdown } from "primereact/dropdown";
 import Swal from "sweetalert2";
 import { InputTextarea } from "primereact/inputtextarea";
-import { capitalizeFirstLetter } from "../../../shared/constant";
+import {
+  AgentListCollection,
+  capitalizeFirstLetter,
+} from "../../../shared/constant";
 import { useNavigate } from "react-router-dom";
 
 const ManagementList = (props) => {
@@ -73,8 +76,11 @@ const ManagementList = (props) => {
 
   const branchAgentList = (branchId) => {
     BranchAgentList(branchId).then((res) => {
+      const filterData = res.data.filter((item) =>
+        AgentListCollection(userDetails.position, item.position)
+      );
       setAgentList(
-        res.data.map((item) => ({
+        filterData.map((item) => ({
           label: `${item.name} (${capitalizeFirstLetter(
             item.position.replace(/-/g, " ")
           )}-${item.branchDetails.code})`,
@@ -143,6 +149,7 @@ const ManagementList = (props) => {
           visible:
             props.type === "delinquentLoan" &&
             (userDetails.position === Position.ADMIN ||
+              userDetails.position === Position.SUPER_ADMIN ||
               userDetails.position === Position.SM ||
               userDetails.position === Position.CM ||
               userDetails.position === Position.BM),
