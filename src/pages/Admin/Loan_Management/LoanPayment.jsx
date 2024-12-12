@@ -49,7 +49,7 @@ const LoanPayment = () => {
     PaymentDetails({ loanId: id })
       .then((res) => {
         setData(res?.data.filter((item) => item.isPaid === false));
-        setPaidList(res?.data.filter((item) => item.isPaid === true));
+        // setPaidList(res?.data.filter((item) => item.isPaid === true));
         setLoading(false);
       })
       .catch(() => {
@@ -98,7 +98,12 @@ const LoanPayment = () => {
       let foreclosureAmount = Number(selectData.foreclosureAmount);
       for (let index = 0; index < data.length; index++) {
         const element = data[index];
-        foreclosureAmount += Number(element.overdueAmount);
+        if (
+          new Date(element.emiDate) < new Date() &&
+          element.isPaid === false
+        ) {
+          foreclosureAmount += Number(element.overdueAmount);
+        }
       }
 
       setFieldValue("amount", Number(foreclosureAmount));
