@@ -3,6 +3,7 @@ import { getDetails } from "../Employee/AddUserService";
 import Loader from "../../../component/Loader";
 import { useSelector } from "react-redux";
 import { capitalizeFirstLetter } from "../../../shared/constant";
+import { Card } from "primereact/card";
 
 const Profile = () => {
   const userDetails = useSelector((state) => state.user?.user.data);
@@ -24,74 +25,210 @@ const Profile = () => {
   return (
     <>
       {loading && <Loader />}
-      <section className="surface-section w-full overflow-hidden">
-        {/* Profile Image */}
-        <div className="sm:w-8 xs:w-9  flex gap-4">
+      <div className="surface-section p-4">
+        {/* Profile Section */}
+        <div className="flex flex-column md:flex-row align-items-center gap-4 mb-4">
           <img
-            src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw3fHxwZW9wbGV8ZW58MHwwfHx8MTcxMTExMTM4N3ww&ixlib=rb-4.0.3&q=80&w=1080"
+            src={`path_to_images/${data.userImage}`}
             alt="User Profile"
-            className="border-round-md outline outline-2 outline-offset-2 outline-primary lg:w-12rem lg:h-12rem md:w-10rem md:h-10rem sm:w-8rem sm:h-8rem xs:w-7rem xs:h-7rem relative lg:bottom-5rem sm:bottom-4rem xs:bottom-3rem"
+            className="border-circle shadow-2 w-12rem h-12rem"
           />
-          {/* FullName */}
           <div>
-            <h1 className=" text-start mt-2 sm:ml-4 xs:pl-4 text-gray-800 lg:text-4xl md:text-3xl sm:text-3xl xs:text-xl font-bold">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">
               {data.name}
             </h1>
-            <h3 className="ml-5">{capitalizeFirstLetter(data.position)}</h3>
+            <h3 className="text-xl text-primary mb-2 capitalize">
+              {data.position}
+            </h3>
+            <p className="text-sm text-gray-600">
+              Employee ID: {data.employeeId}
+            </p>
           </div>
         </div>
-        <div className="xl:w-8 lg:w-9 md:w-9 sm:w-9 xs:w-9  flex flex-column gap-4 align-items-center relative lg:top-8 md:top-6 sm:top-4 xs:top-4">
-          {/* Detail */}
-          <div className="w-full py-1 flex flex-column gap-2 align-items-center">
-            <div className="w-full flex sm:flex-row xs:flex-column gap-2 justify-content-center">
-              <div className="w-full">
-                <dl className="text-gray-900">
-                  <div className="flex flex-column pb-3">
-                    <div className="mb-1 text-500">First Name</div>
-                    <div className="font-semibold">Samuel</div>
-                  </div>
-                  <div className="flex flex-column py-3">
-                    <dt className="mb-1 text-500">Last Name</dt>
-                    <dd className="font-semibold">Abera</dd>
-                  </div>
-                  <div className="flex flex-column py-3">
-                    <dt className="mb-1 text-500">Date Of Birth</dt>
-                    <dd className="font-semibold">21/02/1997</dd>
-                  </div>
-                  <div className="flex flex-column py-3">
-                    <dt className="mb-1 text-500">Gender</dt>
-                    <dd className="font-semibold">Male</dd>
-                  </div>
-                </dl>
-              </div>
-              <div className="w-full">
-                <dl className="text-gray-900">
-                  <div className="flex flex-column pb-3">
-                    <dt className="mb-1 text-500">Location</dt>
-                    <dd className="font-semibold">Ethiopia, Addis Ababa</dd>
-                  </div>
-                  <div className="flex flex-column pt-3">
-                    <dt className="mb-1 text-500">Phone Number</dt>
-                    <dd className="font-semibold">+251913****30</dd>
-                  </div>
-                  <div className="flex flex-column pt-3">
-                    <dt className="mb-1 text-500">Email</dt>
-                    <dd className="font-semibold">samuelabera87@gmail.com</dd>
-                  </div>
-                  <div className="flex flex-column pt-3">
-                    <dt className="mb-1 text-500">Website</dt>
-                    <dd className="font-semibold">
-                      <a href="https://techakim.com" className="text-primary">
-                        https://www.teclick.com
-                      </a>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
+
+        {/* Basic Information */}
+        <Card title="Basic Information" className="mb-4">
+          <div className="grid">
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Username:</p>
+              <p className="text-gray-800">{data.username}</p>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Mobile:</p>
+              <p className="text-gray-800">{data.mobile}</p>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Email:</p>
+              <p className="text-gray-800">{data.email}</p>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Date of Birth:</p>
+              <p className="text-gray-800">
+                {new Date(data.dob).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="col-12">
+              <p className="mb-1 font-semibold">Address:</p>
+              <p className="text-gray-800">{data.address || "N/A"}</p>
             </div>
           </div>
-        </div>
-      </section>
+        </Card>
+
+        {/* Permanent Address */}
+        <Card title="Permanent Address" className="mb-4">
+          <p className="text-gray-800">
+            {`${data.permanentHouseOrBuildingNumber}, ${data.permanentStreet}, ${data.permanentLandmark}, ${data.permanentCity}, ${data.permanentState}, ${data.permanentCountry} - ${data.permanentPincode}`}
+          </p>
+        </Card>
+
+        {/* Residence Address */}
+        <Card title="Residence Address" className="mb-4">
+          <p className="text-gray-800">
+            {`${data.residenceHouseOrBuildingNumber}, ${data.residenceStreet}, ${data.residenceLandmark}, ${data.residenceCity}, ${data.residenceState}, ${data.residenceCountry} - ${data.residencePincode}`}
+          </p>
+        </Card>
+
+        {/* Education */}
+        <Card title="Education" className="mb-4">
+          {data?.education?.map((edu, index) => (
+            <div key={edu._id} className="mb-3">
+              <p className="mb-1 font-semibold">Board Name: {edu.boardName}</p>
+              <p className="mb-1">Passing Year: {edu.passingYear}</p>
+              <p className="mb-1">Marks Percentage: {edu.marksPercentage}%</p>
+              <a
+                href={`path_to_images/${edu.resultImage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary"
+              >
+                View Result
+              </a>
+            </div>
+          ))}
+        </Card>
+
+        {/* Work Details */}
+        <Card title="Work Details" className="mb-4">
+          {data?.workDetail?.map((work, index) => (
+            <div key={work._id} className="mb-3">
+              <p className="mb-1 font-semibold">
+                Company Name: {work.companyName}
+              </p>
+              <p className="mb-1">Position: {work.position}</p>
+              <p className="mb-1">
+                Duration: {new Date(work.startingYear).toLocaleDateString()} -{" "}
+                {new Date(work.endingYear).toLocaleDateString()}
+              </p>
+              <div className="flex flex-column gap-2">
+                <a
+                  href={`path_to_images/${work.experienceLetter}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary"
+                >
+                  Experience Letter
+                </a>
+                <a
+                  href={`path_to_images/${work.relievingLetter}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary"
+                >
+                  Relieving Letter
+                </a>
+                <a
+                  href={`path_to_images/${work.appointmentLetter}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary"
+                >
+                  Appointment Letter
+                </a>
+                <a
+                  href={`path_to_images/${work.salarySlip}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary"
+                >
+                  Salary Slip
+                </a>
+              </div>
+            </div>
+          ))}
+        </Card>
+
+        {/* Bank Details */}
+        <Card title="Bank Details" className="mb-4">
+          <div className="grid">
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Account Number:</p>
+              <p className="text-gray-800">{data.accountNumber}</p>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Bank Name:</p>
+              <p className="text-gray-800">{data.bankName}</p>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">IFSC Code:</p>
+              <p className="text-gray-800">{data.ifsc}</p>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Branch Name:</p>
+              <p className="text-gray-800">{data.bankBranchName}</p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Documents */}
+        <Card title="Documents" className="mb-4">
+          <div className="grid">
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Aadhar:</p>
+              <a
+                href={`path_to_images/${data.aadharImage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary"
+              >
+                View Aadhar
+              </a>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">PAN:</p>
+              <a
+                href={`path_to_images/${data.panImage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary"
+              >
+                View PAN
+              </a>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Passport:</p>
+              <a
+                href={`path_to_images/${data.passportImage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary"
+              >
+                View Passport
+              </a>
+            </div>
+            <div className="col-12 md:col-6">
+              <p className="mb-1 font-semibold">Voter ID:</p>
+              <a
+                href={`path_to_images/${data.voterImage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary"
+              >
+                View Voter ID
+              </a>
+            </div>
+          </div>
+        </Card>
+      </div>
     </>
   );
 };
