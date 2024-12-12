@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getDetails } from "../Employee/AddUserService";
+import { getEmployeeApplicationView } from "../Employee/AddUserService";
 import Loader from "../../../component/Loader";
 import { useSelector } from "react-redux";
-import { capitalizeFirstLetter } from "../../../shared/constant";
+import { SlashString } from "../../../shared/constant";
 import { Card } from "primereact/card";
 
 const Profile = () => {
@@ -12,7 +12,7 @@ const Profile = () => {
 
   useEffect(() => {
     setLoading(true);
-    getDetails(userDetails._id)
+    getEmployeeApplicationView(userDetails._id)
       .then((res) => {
         setData(res.data);
         setLoading(false);
@@ -29,7 +29,7 @@ const Profile = () => {
         {/* Profile Section */}
         <div className="flex flex-column md:flex-row align-items-center gap-4 mb-4">
           <img
-            src={`path_to_images/${data.userImage}`}
+            src={data.userImageUrl}
             alt="User Profile"
             className="border-circle shadow-2 w-12rem h-12rem"
           />
@@ -38,7 +38,7 @@ const Profile = () => {
               {data.name}
             </h1>
             <h3 className="text-xl text-primary mb-2 capitalize">
-              {data.position}
+              {data?.position ? SlashString(data?.position) : ""}
             </h3>
             <p className="text-sm text-gray-600">
               Employee ID: {data.employeeId}
@@ -49,27 +49,23 @@ const Profile = () => {
         {/* Basic Information */}
         <Card title="Basic Information" className="mb-4">
           <div className="grid">
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Username:</p>
               <p className="text-gray-800">{data.username}</p>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Mobile:</p>
               <p className="text-gray-800">{data.mobile}</p>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Email:</p>
               <p className="text-gray-800">{data.email}</p>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Date of Birth:</p>
               <p className="text-gray-800">
                 {new Date(data.dob).toLocaleDateString()}
               </p>
-            </div>
-            <div className="col-12">
-              <p className="mb-1 font-semibold">Address:</p>
-              <p className="text-gray-800">{data.address || "N/A"}</p>
             </div>
           </div>
         </Card>
@@ -90,13 +86,13 @@ const Profile = () => {
 
         {/* Education */}
         <Card title="Education" className="mb-4">
-          {data?.education?.map((edu, index) => (
+          {data?.education?.map((edu) => (
             <div key={edu._id} className="mb-3">
               <p className="mb-1 font-semibold">Board Name: {edu.boardName}</p>
               <p className="mb-1">Passing Year: {edu.passingYear}</p>
               <p className="mb-1">Marks Percentage: {edu.marksPercentage}%</p>
               <a
-                href={`path_to_images/${edu.resultImage}`}
+                href={edu.resultImageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary"
@@ -109,7 +105,7 @@ const Profile = () => {
 
         {/* Work Details */}
         <Card title="Work Details" className="mb-4">
-          {data?.workDetail?.map((work, index) => (
+          {data?.workDetail?.map((work) => (
             <div key={work._id} className="mb-3">
               <p className="mb-1 font-semibold">
                 Company Name: {work.companyName}
@@ -121,7 +117,7 @@ const Profile = () => {
               </p>
               <div className="flex flex-column gap-2">
                 <a
-                  href={`path_to_images/${work.experienceLetter}`}
+                  href={work.experienceLetterUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary"
@@ -129,7 +125,7 @@ const Profile = () => {
                   Experience Letter
                 </a>
                 <a
-                  href={`path_to_images/${work.relievingLetter}`}
+                  href={work.relievingLetterUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary"
@@ -137,7 +133,7 @@ const Profile = () => {
                   Relieving Letter
                 </a>
                 <a
-                  href={`path_to_images/${work.appointmentLetter}`}
+                  href={work.appointmentLetterUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary"
@@ -145,7 +141,7 @@ const Profile = () => {
                   Appointment Letter
                 </a>
                 <a
-                  href={`path_to_images/${work.salarySlip}`}
+                  href={work.salarySlipUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary"
@@ -160,21 +156,44 @@ const Profile = () => {
         {/* Bank Details */}
         <Card title="Bank Details" className="mb-4">
           <div className="grid">
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Account Number:</p>
               <p className="text-gray-800">{data.accountNumber}</p>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Bank Name:</p>
               <p className="text-gray-800">{data.bankName}</p>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">IFSC Code:</p>
               <p className="text-gray-800">{data.ifsc}</p>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Branch Name:</p>
               <p className="text-gray-800">{data.bankBranchName}</p>
+            </div>
+            <div className="col-12 md:col-3">
+              <p className="mb-1 font-semibold">UAN:</p>
+              <p className="text-gray-800">{data.uan}</p>
+              <a
+                href={data.uanImageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary"
+              >
+                View UAN
+              </a>
+            </div>
+            <div className="col-12 md:col-3">
+              <p className="mb-1 font-semibold">Passbook:</p>
+              <a
+                href={data.passbookImageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary"
+              >
+                View Passbook
+              </a>
             </div>
           </div>
         </Card>
@@ -182,10 +201,11 @@ const Profile = () => {
         {/* Documents */}
         <Card title="Documents" className="mb-4">
           <div className="grid">
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Aadhar:</p>
+              <p className="text-gray-800">{data.aadharNumber}</p>
               <a
-                href={`path_to_images/${data.aadharImage}`}
+                href={data.aadharImageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary"
@@ -193,10 +213,11 @@ const Profile = () => {
                 View Aadhar
               </a>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">PAN:</p>
+              <p className="text-gray-800">{data.panNumber}</p>
               <a
-                href={`path_to_images/${data.panImage}`}
+                href={`path_to_images/${data.panImageUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary"
@@ -204,10 +225,11 @@ const Profile = () => {
                 View PAN
               </a>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Passport:</p>
+              <p className="text-gray-800">{data.passportNumber}</p>
               <a
-                href={`path_to_images/${data.passportImage}`}
+                href={data.passportImageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary"
@@ -215,10 +237,11 @@ const Profile = () => {
                 View Passport
               </a>
             </div>
-            <div className="col-12 md:col-6">
+            <div className="col-12 md:col-3">
               <p className="mb-1 font-semibold">Voter ID:</p>
+              <p className="text-gray-800">{data.voterNumber}</p>
               <a
-                href={`path_to_images/${data.voterImage}`}
+                href={data.voterImageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary"
