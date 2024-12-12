@@ -169,7 +169,7 @@ const EducationDetails = (props) => {
             boardName: values.boardName,
             passingYear: values.passingYear,
             marksPercentage: values.marksPercentage,
-            resultImage: values.resultImage,
+            resultImage: values?.resultImage ? values?.resultImage : "",
             actionType: actionType,
             dataType: dataType,
           }

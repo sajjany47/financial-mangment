@@ -15,6 +15,7 @@ export const Position = {
 };
 
 export const DropdownPosition = [
+  { label: "Super Admin", value: "super-admin" },
   { label: "Admin", value: "admin" },
   { label: "Branch Manager", value: "branch-manager" },
   { label: "State Manager", value: "state-manager" },
@@ -64,6 +65,8 @@ export const RoleSeverityColor = (role) => {
   switch (role) {
     case "admin":
       return { label: "Admin", severity: "info" };
+    case "super-admin":
+      return { label: "Super Admin", severity: "help" };
     case "branch-manager":
       return { label: "Branch Manager", severity: "warning" };
     case "state-manager":
