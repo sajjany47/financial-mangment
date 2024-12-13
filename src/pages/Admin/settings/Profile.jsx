@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { capitalizeFirstLetter, SlashString } from "../../../shared/constant";
 import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
+import { Tag } from "primereact/tag";
 
 const Profile = () => {
   const userDetails = useSelector((state) => state.user?.user.data);
@@ -43,6 +44,53 @@ const Profile = () => {
             </h3>
             <p className="text-sm text-gray-600">
               Employee ID: {data?.employeeId}
+            </p>
+
+            <p className="text-sm text-gray-600">
+              Country: {data.country || "N/A"}
+            </p>
+            <p className="text-sm text-gray-600">
+              State: {data.state || "N/A"}
+            </p>
+            <p className="text-sm text-gray-600">City: {data.city || "N/A"}</p>
+            <p className="text-sm text-gray-600">
+              Branch: {data?.branch?.name || "N/A"}
+            </p>
+            <p className="text-sm text-gray-600">
+              Profile Verified:
+              <Tag
+                className="ml-1"
+                severity={
+                  data.isProfileVerified === "pending"
+                    ? "warning"
+                    : data.isProfileVerified === "verified"
+                    ? "success"
+                    : "danger"
+                }
+                value={capitalizeFirstLetter(data.isProfileVerified)}
+                rounded
+              />
+            </p>
+            <p className="text-sm text-gray-600">
+              Profile Ratio: {data.profileRatio || "N/A"}%
+            </p>
+            <p className="text-sm text-gray-600">
+              Active Status:{" "}
+              {data.isActive ? (
+                <Tag
+                  severity="success"
+                  value="Active"
+                  rounded
+                  className="ml-1"
+                />
+              ) : (
+                <Tag
+                  severity="danger"
+                  value="Inactive"
+                  rounded
+                  className="ml-1"
+                />
+              )}
             </p>
           </div>
         </div>
