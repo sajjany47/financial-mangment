@@ -185,13 +185,16 @@ const Branch = () => {
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-        <span className="text-xl text-900 font-bold">{"Branch List"}</span>
-        <div className="flex gap-2">
+        <span className="text-xl text-900 font-bold w-full md:w-auto text-start md:text-left">
+          {"Branch List"}
+        </span>
+        <div className="flex flex-wrap justify-content-start md:justify-content-end gap-2 w-full md:w-auto">
           {searchShow ? (
             <Button
               icon="pi pi-times"
               severity="help"
               label="Hide"
+              className="w-full sm:w-6 md:w-auto"
               onClick={() => {
                 setSearchShow(!searchShow);
               }}
@@ -200,6 +203,7 @@ const Branch = () => {
             <Button
               label="Search"
               icon="pi pi-search"
+              className="w-full sm:w-6 md:w-auto"
               onClick={() => {
                 setSearchShow(!searchShow);
               }}
@@ -212,6 +216,7 @@ const Branch = () => {
             <Button
               label="Add Branch"
               icon="pi pi-plus"
+              className="w-full sm:w-6 md:w-auto"
               onClick={() => {
                 setVisible(true);
                 setActionType("add");
@@ -372,7 +377,8 @@ const Branch = () => {
       <Dialog
         header={actionType === "add" ? "Add Branch" : "Edit Branch"}
         visible={visible}
-        style={{ width: "50vw" }}
+        // style={{ width: "50vw" }}
+        className="w-full md:w-7"
         onHide={() => {
           setVisible(false);
           getBranchList();

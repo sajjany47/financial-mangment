@@ -109,12 +109,15 @@ const ChildMenu = () => {
   const header = () => {
     return (
       <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-        <span className="text-xl text-900 font-bold">{"Child Menu List"}</span>
-        <div className="flex gap-2">
+        <span className="text-xl text-900 font-bold w-full md:w-auto text-start md:text-left">
+          {"Child Menu List"}
+        </span>
+        <div className="flex flex-wrap justify-content-start md:justify-content-end gap-2 w-full md:w-auto">
           <Button
             label="Add"
             icon="pi pi-plus"
             type="button"
+            className="w-full sm:w-6 md:w-auto"
             onClick={() => {
               setActionType("add");
               setVisible(true);
@@ -210,7 +213,7 @@ const ChildMenu = () => {
       <Dialog
         header={actionType === "add" ? "Add Child Menu" : "Edit Child Menu"}
         visible={visible}
-        style={{ width: "30vw" }}
+        className="w-full md:w-5"
         onHide={() => {
           setVisible(false);
           setActionType("add");

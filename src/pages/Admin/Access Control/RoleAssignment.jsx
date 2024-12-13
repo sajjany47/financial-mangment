@@ -231,6 +231,7 @@ const RoleAssignment = () => {
         header={actionType === "add" ? "Add Role & Menu" : "Edit Role & Menu"}
         visible={visible}
         style={{ width: "60vw" }}
+        className="w-full md:w-6"
         onHide={() => {
           setVisible(false);
           setActionType("add");

@@ -129,7 +129,7 @@ export default function Topbar() {
       <Dialog
         header={"Reset Password"}
         visible={visible}
-        style={{ width: "30vw" }}
+        className="w-full md:w-5"
         onHide={() => {
           setVisible(false);
         }}
